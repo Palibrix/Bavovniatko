@@ -33,3 +33,24 @@ class UniqueConstraintMixin:
                                     violation_error_message=self.error_message)
         ]
         return constraints
+
+
+class UniqueItemConstraintMixin:
+    """
+    For small, helper models like 'AntennaType', not 'Antenna', etc.
+    """
+    fields = []
+    error_message = ''
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._meta.constraints = self.get_unique_constraints()
+
+    def get_unique_constraints(self):
+        constraints = [
+            # For item is_public == False
+            models.UniqueConstraint(fields=self.fields, name='unique_component_when_public',
+                                    condition=Q(is_public=False),
+                                    violation_error_message=self.error_message),
+        ]
+        return constraints
