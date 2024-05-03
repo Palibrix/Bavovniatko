@@ -8,10 +8,3 @@ def validate_integer_length(value):
             _("%(value)s length must be between 2 and 3"),
             params={"value": value},
         )
-
-
-def validate_even_number(value):
-    if value % 2 == 0:
-        raise ValidationError(
-            _("%(value)s even number must be even"),
-        )
