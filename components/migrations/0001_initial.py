@@ -95,7 +95,7 @@ class Migration(migrations.Migration):
                 ('voltage_min', models.FloatField(help_text='Voltage Range - Minimal Voltage', validators=[django.core.validators.MinValueValidator(2), django.core.validators.MaxValueValidator(28)], verbose_name='Minimal Voltage')),
                 ('voltage_max', models.FloatField(help_text='Voltage Range - Maximal Voltage', validators=[django.core.validators.MinValueValidator(2), django.core.validators.MaxValueValidator(28)], verbose_name='Maximal Voltage')),
                 ('ratio', models.CharField(choices=[('4:3', '4:3'), ('16:9', '16:9'), ('switch', 'Switchable')], default='switch', help_text='Aspect Ratio', max_length=10, verbose_name='Aspect Ratio')),
-                ('fov', models.IntegerField(help_text='FOV Horizontally', validators=[components.validators.validate_integer_length], verbose_name='FOV')),
+                ('fov', models.IntegerField(help_text='FOV Horizontally', validators=[components.validators.validate_fov_length], verbose_name='FOV')),
                 ('output_type', models.CharField(choices=[('A', 'Analog'), ('D', 'Digital')], default='A', max_length=10, verbose_name='Output Type')),
                 ('light_sens', models.CharField(choices=[('unknown', 'Unknown'), ('low', 'Low (0.01 and higher)'), ('normal', 'Normal'), ('high', 'High (0.00001 and below)')], default='unknown', help_text='Higher light sensitivity = Better night vision', max_length=10, verbose_name='Light Sensitivity')),
                 ('weight', models.FloatField(blank=True, help_text='Weight oh the camera in grams', null=True)),

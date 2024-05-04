@@ -4,7 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from components.mixins import UniqueConstraintMixin
-from components.validators import validate_integer_length
+from components.validators import validate_fov_length
 
 User = get_user_model()
 
@@ -42,7 +42,7 @@ class Camera(models.Model, UniqueConstraintMixin):
                                     help_text='Voltage Range - Maximal Voltage', verbose_name='Maximal Voltage')
     ratio = models.CharField(max_length=10, choices=RatioChoices.choices, verbose_name='Aspect Ratio',
                              help_text='Aspect Ratio', default=RatioChoices.SWITCHABLE)
-    fov = models.IntegerField(validators=[validate_integer_length],
+    fov = models.IntegerField(validators=[validate_fov_length],
                               verbose_name='FOV', help_text='FOV Horizontally')
     output_type = models.CharField(max_length=10, choices=OutputChoices.choices, verbose_name='Output Type',
                                    default=OutputChoices.ANALOG)
