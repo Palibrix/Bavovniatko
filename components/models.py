@@ -15,7 +15,3 @@
 
 # class Stack(models.Model):
 #     raise NotImplementedError
-
-
-# class Battery(models.Model, UniqueConstraintMixin):
-#     raise NotImplementedError
