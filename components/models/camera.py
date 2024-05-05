@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from components.mixins import UniqueConstraintMixin
 from components.validators import validate_fov_length
@@ -46,6 +47,9 @@ class Camera(models.Model, UniqueConstraintMixin):
                               verbose_name='FOV', help_text='FOV Horizontally')
     output_type = models.CharField(max_length=10, choices=OutputChoices.choices, verbose_name='Output Type',
                                    default=OutputChoices.ANALOG)
+
+    video_format = models.ManyToManyField('VideoFormat')
+
     light_sens = models.CharField(max_length=10, choices=SensitivityChoices.choices, verbose_name='Light Sensitivity',
                                   help_text='Higher light sensitivity = Better night vision',
                                   default=SensitivityChoices.UNKNOWN)
@@ -100,3 +104,18 @@ class CameraDetail(models.Model):
         verbose_name = 'Camera Detail'
         verbose_name_plural = 'Camera Details'
         unique_together = ['camera', 'height', 'width']
+
+
+class VideoFormat(models.Model):
+    format = models.CharField(max_length=50, unique=True,
+                              help_text="Format of the video (e.g. NTSC/PAL)", verbose_name="Video Format")
+
+    def __str__(self):
+        return self.format
+
+    class Meta:
+        app_label = 'components'
+        db_table = 'components_video_format'
+
+        verbose_name = _('Video Format')
+        verbose_name_plural = _('Video Formats')

@@ -4,6 +4,7 @@ from .battery_admin import *
 from .camera_admin import *
 from .receiver_admin import *
 from .propeller_admin import *
+from .transmitter_admin import *
 
 
 __all__ = [
@@ -20,4 +21,6 @@ __all__ = [
     'PropellerAdmin',
 
     'ReceiverAdmin',
+
+    'TransmitterAdmin',
 ]

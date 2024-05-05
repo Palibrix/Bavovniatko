@@ -1,3 +1,4 @@
+from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.core.validators import MinLengthValidator, MaxValueValidator, MinValueValidator
 from django.db import models
@@ -14,7 +15,7 @@ class Battery(models.Model, UniqueConstraintMixin):
                      'weight', 'length', 'height', 'thickness'
                      ]
     fields_private = fields_public + ['user', ]
-    error_message = f'A {__build_class__.__name__} with these attributes already exists for this user.'
+    error_message = 'A Battery with these attributes already exists for this user.'
 
     class Types(models.TextChoices):
         LIPO = 'LIPO', 'LiPo'
@@ -52,6 +53,7 @@ class Battery(models.Model, UniqueConstraintMixin):
         return (f'{self.configuration} {self.capacity}mAh {self.size} '
                 f'{self.type} {self.discharge_current}A')
 
+    @admin.display(description='Physical Params')
     def get_params(self):
         return _(f'L{self.length} x H{self.height} x T{self.thickness}')
 

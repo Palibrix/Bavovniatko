@@ -4,6 +4,7 @@ from .receiver import *
 from .frame import *
 from .camera import *
 from .propeller import *
+from .transmitter import *
 
 __all__ = [
     'Antenna',
@@ -24,4 +25,9 @@ __all__ = [
     'Receiver',
     'ReceiverDetail',
     'ReceiverProtocolType',
+
+    'Transmitter',
+    'TransmitterDetail',
+
+    'VideoFormat',
 ]
