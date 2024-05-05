@@ -7,10 +7,6 @@
 
 # class Motor(models.Model):
 #     raise NotImplementedError
-#
-#
-# class Transmitter(models.Model):  # VTX
-#     raise NotImplementedError
 
 
 # class Stack(models.Model):
