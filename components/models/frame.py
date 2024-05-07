@@ -57,7 +57,7 @@ class Frame(models.Model, UniqueConstraintMixin):
 
 
 class FrameDetail(models.Model):
-    frame = models.ForeignKey('Frame', on_delete=models.CASCADE, related_name='frame_details')
+    frame = models.ForeignKey('Frame', on_delete=models.CASCADE, related_name='details')
 
     camera_mount_height = models.FloatField(max_length=5, help_text="Height of the camera in mm",
                                             verbose_name="Camera mount size height")
@@ -78,7 +78,7 @@ class FrameDetail(models.Model):
         return self.frame.model
 
     def delete(self, *args, **kwargs):
-        if self.frame.frame_details.count() > 1:
+        if self.frame.details.count() > 1:
             super().delete(*args, **kwargs)
         else:
             raise models.ProtectedError("Cannot delete the only FrameDetail for this Frame.", self)

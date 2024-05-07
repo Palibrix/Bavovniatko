@@ -5,9 +5,5 @@
 # from models.propeller import *
 
 
-# class Motor(models.Model):
-#     raise NotImplementedError
-
-
 # class Stack(models.Model):
 #     raise NotImplementedError

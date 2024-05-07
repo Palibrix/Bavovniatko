@@ -81,7 +81,7 @@ class Camera(models.Model, UniqueConstraintMixin):
 
 
 class CameraDetail(models.Model):
-    camera = models.ForeignKey('Camera', on_delete=models.CASCADE, related_name="camera_details")
+    camera = models.ForeignKey('Camera', on_delete=models.CASCADE, related_name="details")
 
     height = models.FloatField(max_length=5, help_text="Height of the camera in mm",
                                verbose_name="Camera mount size height")
@@ -92,7 +92,7 @@ class CameraDetail(models.Model):
         return f'{self.height}x{self.width}'
 
     def delete(self, *args, **kwargs):
-        if self.camera.camera_details.count() > 1:
+        if self.camera.details.count() > 1:
             super().delete(*args, **kwargs)
         else:
             raise models.ProtectedError("Cannot delete the only CameraDetail for this Camera.", self)
