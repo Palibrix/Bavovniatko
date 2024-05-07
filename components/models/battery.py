@@ -44,7 +44,7 @@ class Battery(models.Model, UniqueConstraintMixin):
 
     length = models.FloatField(help_text=_('Length of the battery, mm'))
     height = models.FloatField(help_text=_('Height of the battery, mm'))
-    thickness = models.FloatField(help_text=_('Thickness of the battery, mm'))
+    width = models.FloatField(help_text=_('Width of the battery, mm'))
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, help_text=_("Public if empty"),
                              blank=True, null=True)
@@ -55,7 +55,7 @@ class Battery(models.Model, UniqueConstraintMixin):
 
     @admin.display(description='Physical Params')
     def get_params(self):
-        return _(f'L{self.length} x H{self.height} x T{self.thickness}')
+        return _(f'L{self.length} x H{self.height} x W{self.width}')
 
     def save(self, *args, **kwargs):
         self.full_clean()
