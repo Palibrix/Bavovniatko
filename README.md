@@ -1,7 +1,6 @@
 
 # Bavovniatko
 
-____
 ## Table of Contents
 1. [What is this repository about?](#what-is-this-repository-about)
 2. [Why?](#why)
@@ -11,11 +10,10 @@ ____
 
 ## What is this repository about?
 To be continued...
-____
+
 
 ## Why?
 Well... To be continued...
-____
 
 ## Technologies
 * Python
@@ -23,9 +21,9 @@ ____
 * DRF
 * PostgreSQL
 * To be continued...
-____
 
 # User story
+____
 
 <details>
 <summary>
@@ -50,7 +48,6 @@ ____
 
 </details>
 
-____
 
 <details>
 <summary>
