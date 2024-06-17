@@ -1,3 +1,0 @@
-:anon: Anonymous
-:user: User
-:admin: Administrator
