@@ -1,0 +1,18 @@
+include::variables.adoc[]
+
+.`{anon}`
+
+. As an `{anon}`, I can ..., so that ...
+. As an `{anon}`,
+
+
+.`{user}`
+
+. As a `{user}`, I can do everything `{anon}` does
+. As a `{user}`, I can ..., so that ...
+. As a `{user}`,
+
+.`{admin}`
+
+. As an `{admin}`, I can do everything `{user}` does
+. As an `{admin}`,

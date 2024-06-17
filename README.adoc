@@ -1,0 +1,37 @@
+= Bavovniatko
+:toc:
+:docinfo: shared
+
+include::docs/variables.adoc[]
+
+== What is this repository about?
+To be continued...
+
+== Why?
+Well... To be continued...
+
+== Technologies
+* Python
+* Django
+* DRF
+* PostgreSQL
+* To be continued...
+
+== User stories
+
+[%collapsible, title=v1]
+====
+include::docs/v1.adoc[]
+====
+
+[%collapsible, title=v2]
+====
+include::docs/v2.adoc[]
+====
+
+
+
+
+
+
+
