@@ -1,5 +1,5 @@
 = Bavovniatko
-:toc:
+// :toc:
 :docinfo: shared
 
 == What is this repository about?
@@ -19,16 +19,12 @@ Well... To be continued...
 
 [%collapsible, title=v1]
 ====
-....
 include::docs/v1.adoc[]
-....
 ====
 
 [%collapsible, title=v2]
 ====
-....
 include::docs/v2.adoc[]
-....
 ====
 
 
