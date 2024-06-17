@@ -2,8 +2,6 @@
 :toc:
 :docinfo: shared
 
-include::docs/variables.adoc[]
-
 == What is this repository about?
 To be continued...
 
@@ -21,12 +19,16 @@ Well... To be continued...
 
 [%collapsible, title=v1]
 ====
+....
 include::docs/v1.adoc[]
+....
 ====
 
 [%collapsible, title=v2]
 ====
+....
 include::docs/v2.adoc[]
+....
 ====
 
 
