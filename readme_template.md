@@ -9,7 +9,7 @@ as_ad: As an `Administrator`, I can
 ----
 
 # 🚀 Bavovniatko 🔥
-    [![Me][user-badge]][user-url]
+[![Me][user-badge]][user-url]
 
 ----
 

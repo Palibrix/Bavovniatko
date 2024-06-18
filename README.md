@@ -1,6 +1,6 @@
 
 # 🚀 Bavovniatko 🔥
-    [![Me][user-badge]][user-url]
+[![Me][user-badge]][user-url]
 
 ----
 
@@ -113,7 +113,8 @@ ____
 ## V3
 ### Social part
 [//]: # (Comments for official parts, create account with socials, user actions)
-[//]: # (New rola - Manager (from Admin}, that can no longer edit users)
+
+[//]: # (New role - Manager (from Admin}, that can no longer edit users)
 
 </summary>
 
