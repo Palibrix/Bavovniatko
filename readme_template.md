@@ -3,13 +3,13 @@ anon: Anonymous
 user: User
 admin: Administrator
 
-as_an: As an `Anonymous`,
-as_u: As a `User`,
-as_ad: As an `Administrator`,
+as_an: As an `Anonymous`, I can
+as_u: As a `User`, I can
+as_ad: As an `Administrator`, I can
 ----
 
 # 🚀 Bavovniatko 🔥
-[![Me][user-badge]][user-url]
+    [![Me][user-badge]][user-url]
 
 ----
 
@@ -36,7 +36,7 @@ ____
 ## 🔍 What is this repository about?
 Welcome, dear stranger, on a journey to the skies with Bavovniatko.
 
-You might ask yourself a question: “What does this name means?”. Well, The term “бавовна” (bavovna), which literally means “cotton” in Ukrainian, became an internet meme and symbol during the russian invasion of Ukraine. It humorously refers to explosions, both in Russian-occupied Ukraine and in Russia itself. The word is a mistranslation of the Russian “хлопок”(crack, snap, pop, a euphemism for an explosion), that also means “cotton” in Russian and was incorrectly translated by automated translation tools.
+>You might ask yourself a question: “What does this name means?”. Well, The term “бавовна” (bavovna), which literally means “cotton” in Ukrainian, became an internet meme and symbol during the russian invasion of Ukraine. It humorously refers to explosions, both in Russian-occupied Ukraine and in Russia itself. The word is a mistranslation of the Russian “хлопок”(crack, snap, pop, a euphemism for an explosion), that also means “cotton” in Russian and was incorrectly translated by automated translation tools.
 
 Let's get back to the point. This project is all about building your FPV drones. 
 But the most important feature — it helps to pick right parts and providing complete and detail information about them.  
@@ -46,7 +46,7 @@ FPV drones have revolutionized the way warfare is conducted, serving as the eyes
 
 Selecting the right parts for building FPV drones can be quite challenging due to the various parameters to consider, such as fittings, types of antennas, batteries, and more. It's easy to become overwhelmed if you're new to this. You might end up spending a lot of money on parts, only to find out that they are not compatible with each other. Even if you are knowledgeable about drones, the sheer variety of available parts with unique properties can be daunting. Furthermore, different websites may provide conflicting specifications for the same model.
 
-The goal of the project is to help individuals find parts with confirmed specifications through documentation or testing.
+> The goal of the project is to help individuals find parts with confirmed specifications through documentation or testing.
 
 
 ## 🐒 Installing
@@ -63,29 +63,17 @@ Nothing here (yet)
 # 👤 User story
 ____
 
-<details>
-<summary>
-
-## V1
-
-</summary>
 
 include::docs/v1.md
 
-</details>
-
-
-<details>
-<summary>
-
-## V2
-
-</summary>
 
 include::docs/v2.md
 
-</details>
 
+include::docs/v3.md
+
+
+include::docs/v4.md
 
 [user-badge]: https://img.shields.io/badge/Palibrix-DD9623?style=plastic
 [user-url]: https://github.com/Palibrix
