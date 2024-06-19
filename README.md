@@ -63,14 +63,14 @@ ____
 
 </summary>
 
-## Anonymous
-1. As an `Anonymous`, I can view all public parts via API or site
-2. As an `Anonymous`, I can view any detailed information of any part via API or site
-3. As an `Anonymous`, I can view any public drone, that is, public drone ca contain only public parts
+## `Anonymous`
+1. As an `Anonymous`, I can view all public parts, that is I can search across the site or get data via open API
+2. As an `Anonymous`, I can view any detailed information of any part, that is I can either send a request via API or open information about part on website
+3. As an `Anonymous`, I can view any public drone, that is I can view only drones, that are made of official, public parts
 
 ----
-## User
-1. As a `User`, I can do everything Anonymous does 
+## `User`
+1. As a `User`, I can do everything `Anonymous` does 
 2. As a `User`, I can login, so that I can use all functionality of website
 3. As a `User`, I can logout
 4. As a `User`, I can register new account
@@ -82,14 +82,15 @@ ____
 10. As a `User`, I can view any Drone, so that I could filter public and private and see warnings if viewed Drone is not official
 
 ---- 
-## Administrator
-1. As an `Administrator`, I can do everything User does 
-2. As an `Administrator`, I can update any part, that is I can make part public
-3. As an `Administrator`, I can delete any part
-4. As an `Administrator`, I can update any drone, that is I can make drone public
-5. As an `Administrator`, I can delete any drone
-6. As an `Administrator`, I can update any user
-7. As an `Administrator`, I can delete any user
+## `Administrator`
+1. As an `Administrator`, I can do everything `User` does 
+2. As an `Administrator`, I can use Django admin website do manage database
+3. As an `Administrator`, I can update any part, that is I can make part public
+4. As an `Administrator`, I can delete any part
+5. As an `Administrator`, I can update any drone, that is I can make drone public
+6. As an `Administrator`, I can delete any drone
+7. As an `Administrator`, I can update any user
+8. As an `Administrator`, I can delete any user
 
 </details>
 
@@ -102,7 +103,28 @@ ____
 
 </summary>
 
-[//]: # (User can get contribution points if their part or drone became public)
+## `Anonymous`
+1. As an `Anonymous`, I can do everything I could do in a V1
+
+----
+## `User`
+1. As a `User`, I can do everything I could do in a V1 
+2. As a `User`, I can make a publicity request for a part or a build, that is admin would review my part or build and make it public if everything is correct
+3. As a `User`, I can add a comment to publicity request, so that reviewer will get some information on where or how he can confirm part characteristics
+4. As a `User`, I can add a file to publicity request, that is I can add documentation documents
+5. As a `User`, I can receive points for my profile, that is I can get new statuses or badges
+6. As a `User`, I can see other people statuses or badges, that is near their name everywhere
+7. As a `User`, I can send a change request for any official part, that is I can specify what exactly needs to be changed and why
+8. As a `User`, I can add a file to my change request, that is I can proof myself correct
+9. As a `User`, I can view all pending change requests, so that I won't send same request
+10. As a `User`, I can not longer update or delete item after it became public, even if I created it
+
+---- 
+## `Administrator`
+1. As an `Administrator`, I can do everything I could do in a V1
+2. As an `Administrator`, I can accept or deny publicity requests, that is part's or build's publicity will be changed automatically
+3. As an `Administrator`, I can accept or deny change request
+
 
 </details>
 
@@ -111,10 +133,7 @@ ____
 <summary>
 
 ## V3
-### Social part
-[//]: # (Comments for official parts, create account with socials, user actions)
-
-[//]: # (New role - Manager (from Admin}, that can no longer edit users)
+### Parts compatibility checker
 
 </summary>
 
@@ -127,9 +146,25 @@ ____
 <summary>
 
 ## V4
-### Parts compatibility checker
+### Social part
+[//]: # (Comments for official parts, create account with socials, user actions)
+
+[//]: # (New role - Manager (from Admin}, that can no longer edit users)
 
 </summary>
+
+## `Anonymous`
+1. As an `Anonymous`, I can do everything I could do in a V3
+
+----
+## `User`
+1. As a `User`, I can do everything I could do in a V3
+2. As a `User`, I can vote for change requests, that is if I think that it is correct change, I can give my upvote for admins for easier and quicker change
+3. As a `User`, I can vote for drone
+
+---- 
+## `Administrator`
+1. As an `Administrator`, I can do everything I could do in a V3
 
 
 

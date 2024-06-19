@@ -1,7 +1,7 @@
 ----
-anon: Anonymous
-user: User
-admin: Administrator
+anon: `Anonymous`
+user: `User`
+admin: `Administrator`
 
 as_an: As an `Anonymous`, I can
 as_u: As a `User`, I can
