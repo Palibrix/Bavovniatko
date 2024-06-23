@@ -117,7 +117,7 @@ ____
 1. As a `User`, I can do everything I could do in a V1 
 2. As a `User`, I can make a publicity request for a Part or a build, that is admin would review my Part or build and make it public if everything is correct, so that my Part will become official
 3. As a `User`, I can add a comment to the publicity request, so that reviewer will get some information on where or how he can confirm Part characteristics
-4. As a `User`, I can add a file to publicity request, that is I can add documentation documents
+4. As a `User`, I can add a file to publicity request, that is I can add documentation
 5. As a `User`, I can receive points for my profile, that is I can get new statuses or badges
 6. As a `User`, I can see other people statuses or badges, that is near their name everywhere
 7. As a `User`, I can send a change request for any official Part, that is I can specify what exactly needs to be changed and why
@@ -150,7 +150,11 @@ ____
 ----
 ## `User`
 1. As a `User`, I can do everything I could do in a V2
-2. As a `User`, I can 
+2. As a `User`, I can see list of drones, that was made of specific Part, that I am looking at, so that whenever I read detailed information, I can see list of official Drones 
+3. As a `User`, I can check Parts compatibility in my Drone, so that I can press a button and receive list of all incompatibilities
+4. As a `User`, I can get system notifications/errors if Parts are not compatible, so that even if I am looking at not my Drone I can see if it built correctly
+5. As a `User`, I can see system notifications in real time if Parts are not compatible together in my Build
+6. As a `User`, I can receive recommendations for some parts, if I system meets minimum requirements
 
 ---- 
 ## `Administrator`
