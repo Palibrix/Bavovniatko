@@ -36,7 +36,7 @@ ____
 ## 🔍 What is this repository about?
 Welcome, dear stranger, on a journey to the skies with Bavovniatko.
 
->You might ask yourself a question: “What does this name means?”. Well, The term “бавовна” (bavovna), which literally means “cotton” in Ukrainian, became an internet meme and symbol during the russian invasion of Ukraine. It humorously refers to explosions, both in Russian-occupied Ukraine and in Russia itself. The word is a mistranslation of the Russian “хлопок”(crack, snap, pop, a euphemism for an explosion), that also means “cotton” in Russian and was incorrectly translated by automated translation tools.
+> You might ask yourself a question: “What does this name means?”. Well, The term “бавовна” (bavovna), which literally means “cotton” in Ukrainian, became an internet meme and symbol during the russian invasion of Ukraine. It humorously refers to explosions, both in Russian-occupied Ukraine and in Russia itself. The word is a mistranslation of the Russian “хлопок”(crack, snap, pop, a euphemism for an explosion), that also means “cotton” in Russian and was incorrectly translated by automated translation tools.
 
 Let's get back to the point. This project is all about building your FPV drones. 
 But the most important feature — it helps to pick right parts and providing complete and detail information about them.  
