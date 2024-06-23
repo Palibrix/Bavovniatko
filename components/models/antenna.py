@@ -29,8 +29,8 @@ class Antenna(models.Model, UniqueConstraintMixin):
 
     center_frequency = models.FloatField(help_text="Center frequency of the antenna",
                                          )
-    bandwidth_min = models.FloatField(help_text="Minimum bandwidth (frequency) of the antenna",)
-    bandwidth_max = models.FloatField(help_text="Maximum bandwidth (frequency) of the antenna",)
+    bandwidth_min = models.FloatField(help_text="Min. bandwidth (frequency) of the antenna",)
+    bandwidth_max = models.FloatField(help_text="Max. bandwidth (frequency) of the antenna",)
 
     swr = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(100)],
                             help_text="SWR of the antenna at Center Frequency (lower=better)",

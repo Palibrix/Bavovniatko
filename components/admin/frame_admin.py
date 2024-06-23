@@ -28,3 +28,7 @@ class FrameAdmin(admin.ModelAdmin, IsPublicMixin):
         return 'No FrameDetail'
 
     frame_detail_info.short_description = _('Mounting Types Q-ty')
+
+
+
+admin.site.register(FrameDetail)
