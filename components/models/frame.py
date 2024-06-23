@@ -1,135 +1,95 @@
-from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 
-from components.mixins import BaseComponentMixin, BaseModelMixin
+from components.mixins import UniqueConstraintMixin
+
+User = get_user_model()
 
 
-class Frame(BaseComponentMixin):
+class Frame(models.Model, UniqueConstraintMixin):
+    fields_public = ['manufacturer', 'model', 'prop_size', 'size',
+                     'weight', 'material', 'configuration'
+                     ]
+    fields_private = fields_public + ['user', ]
+    error_message = 'A Frame with these attributes already exists for this user.'
 
     class MaterialChoice(models.TextChoices):
-        ALUMINIUM = 'aluminum', _('Aluminium')
-        FIBRE = 'fibre', _('Carbon fibre')
-        ANOTHER = 'another', _('Another')
+        ALUMINIUM = 'aluminum', 'Aluminium'
+        FIBRE = 'fibre', 'Carbon fibre'
 
     class ConfigurationChoice(models.TextChoices):
-        H_FRAME = 'h', _('H Frame')
-        X = 'x', _('X Frame')
-        HYBRID = 'hybrid', _('Hybrid-X')
-        BOX = 'box', _('Box')
-        ANOTHER = 'another', _('Another')
+        H_FRAME = 'h', 'H Frame'
+        X = 'x', 'X Frame'
+        HYBRID = 'hybrid', 'Hybrid-X'
+        BOX = 'box', 'Box'
 
-    prop_size = models.CharField(max_length=50, help_text=_("Propeller size in inches"),
-                                 verbose_name=_("Propeller size"))
-    size = models.CharField(max_length=50, help_text=_("Size(Diagonal) of the frame in mm"),
-                            verbose_name=_("Frame size"))
+    manufacturer = models.CharField(max_length=50)
+    model = models.CharField(max_length=50, help_text="Full name of the item")
+    prop_size = models.CharField(max_length=50, help_text="Propeller size in inches",
+                                 verbose_name="Propeller size")
+    size = models.CharField(max_length=50, help_text="Size(Diagonal) of the frame in mm",
+                            verbose_name="Frame size",
+                            blank=True, null=True)
 
-    weight = models.FloatField(help_text=_('Weight oh the frame in grams'),
+    weight = models.FloatField(help_text='Weight oh the frame in grams',
                                blank=True, null=True)
-    material = models.CharField(max_length=50, choices=MaterialChoice.choices)
-    configuration = models.CharField(max_length=50, choices=ConfigurationChoice.choices)
+    material = models.CharField(max_length=50, choices=MaterialChoice.choices,
+                                blank=True, null=True)
+    configuration = models.CharField(max_length=50, choices=ConfigurationChoice.choices,
+                                     blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, help_text="Public if empty",
+                             blank=True, null=True)
+
+    def __str__(self):
+        return self.model
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         app_label = 'components'
         db_table = 'components_frame'
 
-        verbose_name = _('Frame')
-        verbose_name_plural = _('Frames')
+        verbose_name = 'Frame'
+        verbose_name_plural = 'Frames'
         ordering = ['manufacturer', 'model', ]
-        unique_together = (('manufacturer', 'model', ),)
 
 
-class FrameCameraDetail(BaseModelMixin):
-    frame = models.ForeignKey('Frame', on_delete=models.CASCADE, related_name='camera_details')
+class FrameDetail(models.Model):
+    frame = models.ForeignKey('Frame', on_delete=models.CASCADE, related_name='frame_details')
 
-    camera_mount_height = models.FloatField(max_length=5, help_text=_("Height of the camera in mm"),
-                                            verbose_name=_("Camera mount size height"))
-    camera_mount_width = models.FloatField(max_length=5, help_text=_("Width of the camera in mm"),
-                                           verbose_name=_("Camera mount size width"))
+    camera_mount_height = models.FloatField(max_length=5, help_text="Height of the camera in mm",
+                                            verbose_name="Camera mount size height")
+    camera_mount_width = models.FloatField(max_length=5, help_text="Width of the camera in mm",
+                                           verbose_name="Camera mount size width")
 
-    @property
-    @admin.display(description=_("Camera mount dimensions"))
-    def get_camera_mount_dimensions(self):
-        return f'{self.camera_mount_height}x{self.camera_mount_width}mm'
+    motor_mount_height = models.FloatField(max_length=5, help_text="Height of the motor in mm",
+                                           verbose_name="Motor mount size height")
+    motor_mount_width = models.FloatField(max_length=5, help_text="Width of the motor in mm",
+                                          verbose_name="Motor mount size width")
+
+    vtx_mount_height = models.FloatField(max_length=5, help_text="Height of the vtx in mm",
+                                         verbose_name="VTX mount size height")
+    vtx_mount_width = models.FloatField(max_length=5, help_text="Width of the vtx in mm",
+                                        verbose_name="VTX mount size width")
 
     def __str__(self):
-        return f'Camera: {self.get_camera_mount_dimensions}'
+        return self.frame.model
 
     def delete(self, *args, **kwargs):
-        if self.frame.camera_details.count() > 1:
+        if self.frame.frame_details.count() > 1:
             super().delete(*args, **kwargs)
         else:
-            raise models.ProtectedError("Cannot delete the only Camera Mounting Detail for this Frame.", self)
+            raise models.ProtectedError("Cannot delete the only FrameDetail for this Frame.", self)
 
     class Meta:
         app_label = 'components'
         db_table = 'components_frame_detail'
 
-        verbose_name = _('Frame Camera Detail')
-        verbose_name_plural = _('Frame Camera Details')
-        ordering = ('id', )
-        unique_together = ['frame', 'camera_mount_height', 'camera_mount_width']
-
-
-class FrameMotorDetail(BaseModelMixin):
-    frame = models.ForeignKey('Frame', on_delete=models.CASCADE, related_name='motor_details')
-
-    motor_mount_height = models.FloatField(max_length=5, help_text=_("Height of the motor in mm"),
-                                           verbose_name=_("Motor mount size height"))
-    motor_mount_width = models.FloatField(max_length=5, help_text=_("Width of the motor in mm"),
-                                          verbose_name=_("Motor mount size width"))
-
-    @property
-    @admin.display(description=_("Motor mount dimensions"))
-    def get_motor_mount_dimensions(self):
-        return f'{self.motor_mount_height}x{self.motor_mount_width}mm'
-
-    def __str__(self):
-        return f'Motor: {self.get_motor_mount_dimensions}'
-
-    def delete(self, *args, **kwargs):
-        if self.frame.motor_details.count() > 1:
-            super().delete(*args, **kwargs)
-        else:
-            raise models.ProtectedError("Cannot delete the only Motor Mount Detail for this Frame.", self)
-
-    class Meta:
-        app_label = 'components'
-        db_table = 'components_frame_motor_detail'
-
-        verbose_name = _('Frame Motor Detail')
-        verbose_name_plural = _('Frame Motor Details')
-        ordering = ('id', )
-        unique_together = ['frame', 'motor_mount_height', 'motor_mount_width']
-
-
-class FrameVTXDetail(BaseModelMixin):
-    frame = models.ForeignKey('Frame', on_delete=models.CASCADE, related_name='vtx_details')
-
-    vtx_mount_height = models.FloatField(max_length=5, help_text=_("Height of the vtx in mm"),
-                                         verbose_name=_("VTX mount size height"))
-    vtx_mount_width = models.FloatField(max_length=5, help_text=_("Width of the vtx in mm"),
-                                        verbose_name=_("VTX mount size width"))
-
-    @property
-    @admin.display(description=_("VTX mount dimensions"))
-    def get_vtx_mount_dimensions(self):
-        return f'{self.vtx_mount_height}x{self.vtx_mount_width}mm'
-
-    def __str__(self):
-        return f'VTX: {self.get_vtx_mount_dimensions}'
-
-    def delete(self, *args, **kwargs):
-        if self.frame.vtx_details.count() > 1:
-            super().delete(*args, **kwargs)
-        else:
-            raise models.ProtectedError("Cannot delete the only VTX Mounting Detail for this Frame.", self)
-
-    class Meta:
-        app_label = 'components'
-        db_table = 'components_frame_vtx_detail'
-
-        verbose_name = _('Frame VTX Detail')
-        verbose_name_plural = _('Frame VTX Details')
-        ordering = ('id', )
-        unique_together = ['frame', 'vtx_mount_height', 'vtx_mount_width']
+        verbose_name = 'FrameDetail'
+        verbose_name_plural = 'FrameDetails'
+        ordering = ('frame__manufacturer', 'frame__model')
+        unique_together = ['frame', 'camera_mount_height', 'camera_mount_width',
+                           'motor_mount_height', 'motor_mount_width',
+                           'vtx_mount_height', 'vtx_mount_width']
