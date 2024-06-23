@@ -92,6 +92,12 @@ class MotorDetail(BaseModelMixin):
         self.full_clean()
         super().save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        if self.motor.details.count() > 1:
+            super().delete(*args, **kwargs)
+        else:
+            raise models.ProtectedError("Cannot delete the only MotorDetail for this Motor.", self)
+
     class Meta:
         app_label = 'components'
         db_table = 'components_motor_details'
