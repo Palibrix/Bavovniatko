@@ -64,9 +64,10 @@ ____
 </summary>
 
 ## `Anonymous`
-1. As an `Anonymous`, I can view all public Parts, that is I can search across the site or get data via open API
-2. As an `Anonymous`, I can view any detailed information of any Part, that is I can either send a request via API or open information about Part on website
-3. As an `Anonymous`, I can view any public drone, that is I can view only drones, that are made of official, public Parts
+1. As an `Anonymous`, I can view all official Parts, that is I can search across the site or get data via open API
+2. As an `Anonymous`, I can view any detailed information of any official Part, that is I can either send a request via API or open information about Part on website
+3. As an `Anonymous`, I can search and filter official Parts
+4. As an `Anonymous`, I can view any official drone, that is I can view only drones, that are made of official Parts and were selected by administrators
 
 ----
 ## `User`
@@ -75,17 +76,20 @@ ____
 3. As a `User`, I can logout
 4. As a `User`, I can register new account
 5. As a `User`, I can create any drone Part, that I can add to my own Drone
-6. As a `User`, I can create Drone from either public or my own Parts, that is I can name it and select any Parts
-7. As a `User`, I can view, search and filter Parts on a Drone creation page, that is I can easily find what I was looking for. Official Parts will be included first
-8. As a `User`, I can see warnings if Part is not official and/or not fully completed
-9. As a `User`, I can drag-and-drop Part when creating Drone, that is I can pick Part from a list and drop it onto build
-10. As a `User`, I can get a more detailed information about Part, when I hover over it on Drone creation page 
-11. As a `User`, I can update any of my drone Parts
-12. As a `User`, I can delete any of my drone Parts
-13. As a `User`, I can view any Part, so that I could filter public and private and see warnings if viewed Part is not official
-14. As a `User`, I can view any Drone, so that I could filter public and private and see warnings if viewed Drone is not official
-15. As a `User`, I can search for a Part, that is I can search something in a specific category (e.g. engine, batteries) by model and manufacturer
-16. As a `User`, I can filter Parts, that is I can filter Part in a specific category by manufacturer or Part-specific values
+6. As a `User`, I can not create Part, that is a copy of my own Part or official Part
+7. As a `User`, I can create Drone from either official, unofficial or my own Parts, that is I can name it and select any Parts
+8. As a `User`, I can view, search and filter Parts on a Drone creation page, that is I can easily find what I was looking for. Official Parts will be included first
+9. As a `User`, I can see warnings if Part is not official and/or not fully completed
+10. As a `User`, I can drag-and-drop Part when creating Drone, that is I can pick Part from a list and drop it onto build
+11. As a `User`, I can get a more detailed information about Part, when I hover over it on Drone creation page 
+12. As a `User`, I can update any of my drone Parts
+13. As a `User`, I can delete any of my drone Parts
+14. As a `User`, I can view any Part, so that I could filter official and unofficial and see warnings if viewed Part is not official
+15. As a `User`, I can view any Drone, so that I could filter official and unofficial and see warnings if viewed Drone is not official
+16. As a `User`, I can search for a Part, that is I can search something in a specific category (e.g. engine, batteries) by model and manufacturer
+17. As a `User`, I can filter Parts, that is I can filter Part in a specific category by manufacturer or Part-specific values
+18. As a `User`, I can search for a Drone, that is I can search something in a specific category (sport, photography) by name
+19. As a `User`, I can filter Parts, that is I can filter Drone in a specific category by Drones Part-specific values
 
 ---- 
 ## `Administrator`
@@ -93,10 +97,10 @@ ____
 2. As an `Administrator`, I can use Django admin website do manage database
 3. As an `Administrator`, I can update any Part, that is I can make Part public
 4. As an `Administrator`, I can delete any Part
-5. As an `Administrator`, I can update any drone, that is I can make drone public
-6. As an `Administrator`, I can delete any drone
-7. As an `Administrator`, I can update any user
-8. As an `Administrator`, I can delete any user
+5. As an `Administrator`, I can update any Drone, that is I can make drone public
+6. As an `Administrator`, I can delete any Drone
+7. As an `Administrator`, I can update any `User`
+8. As an `Administrator`, I can delete any `User`
 
 </details>
 
@@ -169,11 +173,11 @@ ____
 
 ## V4
 ### Social Part
-[//]: # (Comments for official Parts, create account with socials, user actions; Lists of favorites, some kind of named lists to save and group Parts)
+[//]: # (Comments for official Parts, create account with socials, user actions;)
 
-[//]: # (Make your Part public or private, but not officially; add ability users to report Parts for inapropraite names etc.)
+[//]: # (add ability users to report Parts for inapropraite names etc.)
 
-[//]: # (New role - Manager (from Admin}, that can no longer edit users)
+[//]: # (New role - Manager (from Admin}, that can edit only Parts and Drones)
 
 </summary>
 
@@ -183,12 +187,62 @@ ____
 ----
 ## `User`
 1. As a `User`, I can do everything I could do in a V3
-2. As a `User`, I can vote for change requests, that is if I think that it is correct change, I can give my upvote for admins for easier and quicker change
-3. As a `User`, I can vote for drone
+2. As a `User`, I will automatically create Actions, that is system will write down anything I do on the website: GET, POST, PUT, PATCH, DELETE
+3. As a `User`, I can I can view details of deleted Part of a Drone that I used in my Build, that is after author deleted part I can view its last data from Actions
+4. As a `User`, I can comment any Part or Drone, that is I can comment official and unofficial Parts
+5. As a `User`, I can view all comments to any Part or Drone
+6. As a `User`, I can delete my comment on any Part or Drone, that is other users will see that comment was deleted
+7. As a `User`, I can change my comment on any Part or Drone, that is other users will see changes and that message was edited
+8. As a `User`, I can report any `User` comment, that is I can select why I am reporting it or write short note to get `User` banned
+9. As a `User`, I can report any `User` Part or Drone
+10. As a `User`, I can reply to any `User` comment, so that I can create discussion
+11. As a `User`, I can rate a Part or Drone, that is I can rank it from 1 to 5
+12. As a `User`, I can view Part or Drone rankings
+13. As a `User`, I can sort Part or Drone by ranking, that is while I'm searching for a Part or Drone I can sort and view most popular choices
+14. As a `User`, I can view number of votes
+15. As a `User`, I can vote for change requests, that is if I think that it is correct change, I can give my upvote for admins for easier and quicker change
+
+----
+## `Manager`
+1. As a `Manager`, I can
+
+[//]: # (1. As a `Manager`, I can do everything that `Administrator` does, except managing Users, that is I can manage any Part, Drone, Request etc., but can't change User's password or any other data)
 
 ---- 
 ## `Administrator`
 1. As an `Administrator`, I can do everything I could do in a V3
+2. As an `Administrator`, I can view any user Actions
+
+
+
+</details>
+
+
+<details>
+<summary>
+
+## V5
+### Lists of parts
+[//]: # (Lists of favorites, some kind of named lists to save and group Parts)
+
+</summary>
+
+## `Anonymous`
+1. As an `Anonymous`, I can do everything I could do in a V3
+
+----
+## `User`
+1. As a `User`, I can do everything I could do in a V3
+
+
+----
+## `Manager`
+1. As a `Manager`, I can 
+
+---- 
+## `Administrator`
+1. As an `Administrator`, I can do everything I could do in a V3
+2. 
 
 
 
