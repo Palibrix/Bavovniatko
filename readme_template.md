@@ -2,12 +2,17 @@
 anon: `Anonymous`
 user: `User`
 admin: `Administrator`
+manager: `Manager`
 
 as_an: As an `Anonymous`, I can
 as_u: As a `User`, I can
+as_u_will: As a `User`, I will
+as_m: As a `Manager`, I can
 as_ad: As an `Administrator`, I can
 
 official: official
+
+p_or_d: Part or Drone
 ----
 
 # 🚀 Bavovniatko 🔥
