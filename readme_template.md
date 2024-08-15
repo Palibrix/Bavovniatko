@@ -6,6 +6,8 @@ admin: `Administrator`
 as_an: As an `Anonymous`, I can
 as_u: As a `User`, I can
 as_ad: As an `Administrator`, I can
+
+official: official
 ----
 
 # 🚀 Bavovniatko 🔥
@@ -59,6 +61,17 @@ Nothing here (yet)
 * DRF
 * PostgreSQL
 * To be continued...
+
+## Features:
+1. Base: view all available parts and drones
+2. Suggestions: users can suggest parts to add them to the database
+3. Reviews: users can comment any Part or Drone
+4. Comparison: users can compare parts of the same type: motors, frames etc.
+5. Creation: users can create drones from parts and see if parts are compatible with each other
+6. Feedback: users can ask specific questions about any part or answer them
+7. Community: users can share drones they built. They also can share videos with drones they built
+8. Favorites: users can select parts and drones for ease access in the future. They can create item groups (like music playlists)
+
 
 # 👤 User story
 ____

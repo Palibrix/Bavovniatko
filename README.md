@@ -51,6 +51,17 @@ Nothing here (yet)
 * PostgreSQL
 * To be continued...
 
+## Features:
+1. Base: view all available parts and drones
+2. Suggestions: users can suggest parts to add them to the database
+3. Reviews: users can comment any Part or Drone
+4. Comparison: users can compare parts of the same type: motors, frames etc.
+5. Creation: users can create drones from parts and see if parts are compatible with each other
+6. Feedback: users can ask specific questions about any part or answer them
+7. Community: users can share drones they built. They also can share videos with drones they built
+8. Favorites: users can select parts and drones for ease access in the future. They can create item groups (like music playlists)
+
+
 # 👤 User story
 ____
 
@@ -64,135 +75,17 @@ ____
 </summary>
 
 ## `Anonymous`
-1. As an `Anonymous`, I can view all public Parts, that is I can search across the site or get data via open API
-2. As an `Anonymous`, I can view any detailed information of any Part, that is I can either send a request via API or open information about Part on website
-3. As an `Anonymous`, I can view any public drone, that is I can view only drones, that are made of official, public Parts
 
-----
-## `User`
-1. As a `User`, I can do everything `Anonymous` does 
-2. As a `User`, I can login, so that I can use all functionality of website
-3. As a `User`, I can logout
-4. As a `User`, I can register new account
-5. As a `User`, I can create any drone Part, that I can add to my own Drone
-6. As a `User`, I can create Drone from either public or my own Parts, that is I can name it and select any Parts
-7. As a `User`, I can view, search and filter Parts on a Drone creation page, that is I can easily find what I was looking for. Official Parts will be included first
-8. As a `User`, I can see warnings if Part is not official and/or not fully completed
-9. As a `User`, I can drag-and-drop Part when creating Drone, that is I can pick Part from a list and drop it onto build
-10. As a `User`, I can get a more detailed information about Part, when I hover over it on Drone creation page 
-11. As a `User`, I can update any of my drone Parts
-12. As a `User`, I can delete any of my drone Parts
-13. As a `User`, I can view any Part, so that I could filter public and private and see warnings if viewed Part is not official
-14. As a `User`, I can view any Drone, so that I could filter public and private and see warnings if viewed Drone is not official
-15. As a `User`, I can search for a Part, that is I can search something in a specific category (e.g. engine, batteries) by model and manufacturer
-16. As a `User`, I can filter Parts, that is I can filter Part in a specific category by manufacturer or Part-specific values
-
----- 
-## `Administrator`
-1. As an `Administrator`, I can do everything `User` does 
-2. As an `Administrator`, I can use Django admin website do manage database
-3. As an `Administrator`, I can update any Part, that is I can make Part public
-4. As an `Administrator`, I can delete any Part
-5. As an `Administrator`, I can update any drone, that is I can make drone public
-6. As an `Administrator`, I can delete any drone
-7. As an `Administrator`, I can update any user
-8. As an `Administrator`, I can delete any user
+1. As an `Anonymous`, I can use public API to retrieve detailed information about any Part in the database
+2. As an `Anonymous`, I can use public API to retrieve detailed information about any Drone in the database
 
 </details>
 
 
-<details>
-<summary>
-
-## V2
-### Making Parts or drones public
-
-</summary>
-
-## `Anonymous`
-1. As an `Anonymous`, I can do everything I could do in a V1
-
-----
-## `User`
-1. As a `User`, I can do everything I could do in a V1 
-2. As a `User`, I can make a publicity request for a Part or a build, that is admin would review my Part or build and make it public if everything is correct, so that my Part will become official
-3. As a `User`, I can add a comment to the publicity request, so that reviewer will get some information on where or how he can confirm Part characteristics
-4. As a `User`, I can add a file to publicity request, that is I can add documentation
-5. As a `User`, I can receive points for my profile, that is I can get new statuses or badges
-6. As a `User`, I can see other people statuses or badges, that is near their name everywhere
-7. As a `User`, I can send a change request for any official Part, that is I can specify what exactly needs to be changed and why
-8. As a `User`, I can add a file to my change request, that is I can proof myself correct
-9. As a `User`, I can view all pending change requests, so that I won't send same request
-10. As a `User`, I can not longer update or delete item after it became public, even if I created it
-
----- 
-## `Administrator`
-1. As an `Administrator`, I can do everything I could do in a V1
-2. As an `Administrator`, I can accept or deny publicity requests, that is Part's or build's publicity will be changed automatically
-3. As an `Administrator`, I can accept or deny change request
-
-
-</details>
-
-
-<details>
-<summary>
-
-## V3
-### Parts compatibility checker
-
-</summary>
-
-## `Anonymous`
-1. As an `Anonymous`, I can do everything I could do in a V2
-2. As an `Anonymous`, I can read featured guides about FPV Parts
-
-----
-## `User`
-1. As a `User`, I can do everything I could do in a V2
-2. As a `User`, I can see list of drones, that was made of specific Part, that I am looking at, so that whenever I read detailed information, I can see list of official Drones 
-3. As a `User`, I can check Parts compatibility in my Drone, so that I can press a button and receive list of all incompatibilities
-4. As a `User`, I can get system notifications/errors if Parts are not compatible, so that even if I am looking at not my Drone I can see if it built correctly
-5. As a `User`, I can see system notifications in real time if Parts are not compatible together in my Build
-6. As a `User`, I can receive recommendations for some parts, if I system meets minimum requirements
-
----- 
-## `Administrator`
-1. As an `Administrator`, I can do everything I could do in a V2
-
-
-</details>
-
-
-<details>
-<summary>
-
-## V4
-### Social Part
-[//]: # (Comments for official Parts, create account with socials, user actions; Lists of favorites, some kind of named lists to save and group Parts)
-
-[//]: # (Make your Part public or private, but not officially; add ability users to report Parts for inapropraite names etc.)
-
-[//]: # (New role - Manager (from Admin}, that can no longer edit users)
-
-</summary>
-
-## `Anonymous`
-1. As an `Anonymous`, I can do everything I could do in a V3
-
-----
-## `User`
-1. As a `User`, I can do everything I could do in a V3
-2. As a `User`, I can vote for change requests, that is if I think that it is correct change, I can give my upvote for admins for easier and quicker change
-3. As a `User`, I can vote for drone
-
----- 
-## `Administrator`
-1. As an `Administrator`, I can do everything I could do in a V3
 
 
 
-</details>
+
 
 [user-badge]: https://img.shields.io/badge/Palibrix-DD9623?style=plastic
 [user-url]: https://github.com/Palibrix
