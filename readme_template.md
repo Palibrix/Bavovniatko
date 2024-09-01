@@ -37,7 +37,8 @@ p_or_d: Part or Drone
 2. [❓ Why?](#-why)
 3. [💻 Installing](#-installing)
 4. [🛠 Technologies](#-technologies)
-5. [👤 User story](#-user-story)
+5. [Features](#what-you-can-do)
+6. [👤 User story](#-user-story)
 ____
 
 ## 🔍 What is this repository about?
@@ -61,21 +62,31 @@ Nothing here (yet)
 
 ## 🛠 Technologies
 * Python
-* My own markdown library (yet to be published)
+* My own markdown library (PyMarkEditor)
 * Django
 * DRF
 * PostgreSQL
 * To be continued...
 
-## Features:
-1. Base: view all available parts and drones
-2. Suggestions: users can suggest parts to add them to the database
-3. Reviews: users can comment any Part or Drone
-4. Comparison: users can compare parts of the same type: motors, frames etc.
-5. Creation: users can create drones from parts and see if parts are compatible with each other
-6. Feedback: users can ask specific questions about any part or answer them
-7. Community: users can share drones they built. They also can share videos with drones they built
-8. Favorites: users can select parts and drones for ease access in the future. They can create item groups (like music playlists)
+## What you can do:
+1. [ ] Base: view all available parts and drones
+2. [ ] Search: search any item 
+3. [ ] Filter: filter any {{p_or_d}} by item-specific values
+4. [ ] Suggest: suggest parts to add them to the database
+5. [ ] Save: select parts and drones for ease access in the future. You also can create item groups (like music playlists)
+6. [ ] Create: create drones from parts and see if parts are compatible with each other
+7. [ ] Review: comment any Part or Drone
+8. [ ] Compare: compare parts of the same type: motors, frames etc.
+9. [ ] Chat: ask specific questions about any part or answer them
+10. [ ] Share: share drones you built. You also can share videos with drones you built
+
+| Version     | №  | Features |
+|:------------|:--:|:--------:|
+| Base        | v1 | 1, 2, 3  |
+| Suggestions | v2 |   4, 5   |
+| Creations   | v3 |    6     |
+| Social      | v4 |   7, 8   |
+| Social 2    | v5 |  9, 10   |
 
 
 # 👤 User story
