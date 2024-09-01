@@ -28,15 +28,22 @@ ____
 ## 🔍 What is this repository about?
 Welcome, dear stranger, on a journey to the skies with Bavovniatko.
 
-> You might ask yourself a question: “What does this name means?”. Well, The term “бавовна” (bavovna), which literally means “cotton” in Ukrainian, became an internet meme and symbol during the russian invasion of Ukraine. It humorously refers to explosions, both in Russian-occupied Ukraine and in Russia itself. The word is a mistranslation of the Russian “хлопок”(crack, snap, pop, a euphemism for an explosion), that also means “cotton” in Russian and was incorrectly translated by automated translation tools.
+> You might ask yourself a question: “What does this name mean?” Well, The term “бавовна” (bavovna), which literally means “cotton” in Ukrainian, became an internet meme and symbol during the russian invasion of Ukraine. It humorously refers to explosions, both in russian-occupied Ukraine and in russia itself. The word is a mistranslation of the russian “хлопок”(crack, snap, pop, a euphemism for an explosion), that also means “cotton” in Russian and was incorrectly translated by automated translation tools.
 
-Let's get back to the point. This project is all about building your FPV drones. 
-But the most important feature — it helps to pick right parts and providing complete and detail information about them.  
+Let us get back to the point.
+This project is all about building your FPV drones. 
+But the most important feature –
+it helps to pick the right parts and provide complete and detail information about them.  
 
 ## 🤔 Why?
 FPV drones have revolutionized the way warfare is conducted, serving as the eyes and arms of soldiers. While some may not consider it, drones could become a form of rehabilitation for many individuals after the war. Additionally, FPV drones have also found their place as a popular hobby, with tournaments being held for enthusiasts.
 
-Selecting the right parts for building FPV drones can be quite challenging due to the various parameters to consider, such as fittings, types of antennas, batteries, and more. It's easy to become overwhelmed if you're new to this. You might end up spending a lot of money on parts, only to find out that they are not compatible with each other. Even if you are knowledgeable about drones, the sheer variety of available parts with unique properties can be daunting. Furthermore, different websites may provide conflicting specifications for the same model.
+Selecting the right parts for building FPV drones can be quite challenging due to the various parameters to consider,
+such as fittings, types of antennas, batteries, and more.
+It is easy to become overwhelmed if you're new to this.
+You might end up spending a lot of money on parts, only to find out that they aren't compatible with each other.
+Even if you're knowledgeable about drones, the sheer variety of available parts with unique properties can be daunting.
+Furthermore, different websites may provide conflicting specifications for the same model.
 
 > The goal of the project is to help individuals find parts with confirmed specifications through documentation or testing.
 
@@ -46,7 +53,7 @@ Nothing here (yet)
 
 ## 🛠 Technologies
 * Python
-* My own markdown library (PyMarkEditor)
+* My own Markdown library (PyMarkEditor)
 * Django
 * DRF
 * PostgreSQL
@@ -60,7 +67,7 @@ Nothing here (yet)
 5. [ ] Save: select parts and drones for ease access in the future. You also can create item groups (like music playlists)
 6. [ ] Create: create drones from parts and see if parts are compatible with each other
 7. [ ] Review: comment any Part or Drone
-8. [ ] Compare: compare parts of the same type: motors, frames etc.
+8. [ ] Compare: compare parts of the same type: motors, frames, and so on
 9. [ ] Chat: ask specific questions about any part or answer them
 10. [ ] Share: share drones you built. You also can share videos with drones you built
 
@@ -88,9 +95,9 @@ ____
 ## `Anonymous`
 
 1. As an `Anonymous`, I can use public API or website to retrieve detailed information about any Part or Drone in the database
-2. As an `Anonymous`, I can use public API or website to retrieve list of Parts or Drones in the database
-3. As an `Anonymous`, I can use public API or website to retrieve list of Parts or Drones in the database, filtered by category or category-specific values
-4. As an `Anonymous`, I can use public API or website to search for Part or Drone and retrieve list of results
+2. As an `Anonymous`, I can use public API or website to retrieve a list of Parts or Drones in the database
+3. As an `Anonymous`, I can use public API or website to retrieve a list of Parts or Drones in the database, filtered by category or category-specific values
+4. As an `Anonymous`, I can use public API or website to search for Part or Drone and retrieve a list of results
 
 ## `Administrator`
 
@@ -102,6 +109,45 @@ ____
 </details>
 
 
+<details>
+<summary>
+
+## V2
+### Users, requests, favorites
+
+</summary>
+
+## `Anonymous`
+
+1. As an `Anonymous`, I can do everything I could do in a V1
+2. As an `Anonymous`, I can create my account using email, username, password, name, and surname
+3. As an `Anonymous`, I can log in into my account using username and password 
+
+## `User`
+1. As a `User`, I can log out
+2. As a `User`, I can make **Suggestion request** for any type of Part to add into the database
+3. As a `User`, I can add commentary and files to my **Suggestion request**
+4. As a `User`, I can view all my **Suggestion request** and their statuses (_pending_, _denied_, _approved_) on a separate page
+5. As a `User`, I can view commentary to the _status_ if it exists, that is if `Administrator` denied it, I can see the reason
+6. As a `User`, I can edit any of my unapproved **Suggestion request**
+7. As a `User`, I can reopen any of my _denied_ **Suggestion request** with updated information
+8. As a `User`, I can delete any of my **Suggestion request**, regardless of _status_
+
+9. As a `User`, I can add Part to the list of favorites. This list will be displayed as `Favorite`, will be default for each `User` and couldn't be deleted or renamed by me
+10. As a `User`, I can create **Part list** with any name to contain any Parts
+11. As a `User`, I can edit or delete **Part list**, created by me
+12. As a `User`, I can view any of my **Part list**
+13. As a `User`, I can add Parts to any of my **Part list**
+14. As a `User`, I can remove any Part from any of my **Part list**
+
+## `Administrator`
+
+1. As an `Administrator`, I can do everything I could do in a V1
+2. As an `Administrator`, I can CRUD any `User`
+3. As an `Administrator`, I can CRUD any **Suggestion request**
+4. As an `Administrator`, I can CRUD any **Part list**
+
+</details>
 
 
 

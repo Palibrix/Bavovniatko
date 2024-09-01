@@ -10,7 +10,8 @@ as_u_will: As a `User`, I will
 as_m: As a `Manager`, I can
 as_ad: As an `Administrator`, I can
 
-official: official
+request: **Suggestion request**
+list: **Part list**
 
 p_or_d: Part or Drone
 ----
@@ -44,15 +45,22 @@ ____
 ## 🔍 What is this repository about?
 Welcome, dear stranger, on a journey to the skies with Bavovniatko.
 
-> You might ask yourself a question: “What does this name means?”. Well, The term “бавовна” (bavovna), which literally means “cotton” in Ukrainian, became an internet meme and symbol during the russian invasion of Ukraine. It humorously refers to explosions, both in Russian-occupied Ukraine and in Russia itself. The word is a mistranslation of the Russian “хлопок”(crack, snap, pop, a euphemism for an explosion), that also means “cotton” in Russian and was incorrectly translated by automated translation tools.
+> You might ask yourself a question: “What does this name mean?” Well, The term “бавовна” (bavovna), which literally means “cotton” in Ukrainian, became an internet meme and symbol during the russian invasion of Ukraine. It humorously refers to explosions, both in russian-occupied Ukraine and in russia itself. The word is a mistranslation of the russian “хлопок”(crack, snap, pop, a euphemism for an explosion), that also means “cotton” in Russian and was incorrectly translated by automated translation tools.
 
-Let's get back to the point. This project is all about building your FPV drones. 
-But the most important feature — it helps to pick right parts and providing complete and detail information about them.  
+Let us get back to the point.
+This project is all about building your FPV drones. 
+But the most important feature –
+it helps to pick the right parts and provide complete and detail information about them.  
 
 ## 🤔 Why?
 FPV drones have revolutionized the way warfare is conducted, serving as the eyes and arms of soldiers. While some may not consider it, drones could become a form of rehabilitation for many individuals after the war. Additionally, FPV drones have also found their place as a popular hobby, with tournaments being held for enthusiasts.
 
-Selecting the right parts for building FPV drones can be quite challenging due to the various parameters to consider, such as fittings, types of antennas, batteries, and more. It's easy to become overwhelmed if you're new to this. You might end up spending a lot of money on parts, only to find out that they are not compatible with each other. Even if you are knowledgeable about drones, the sheer variety of available parts with unique properties can be daunting. Furthermore, different websites may provide conflicting specifications for the same model.
+Selecting the right parts for building FPV drones can be quite challenging due to the various parameters to consider,
+such as fittings, types of antennas, batteries, and more.
+It is easy to become overwhelmed if you're new to this.
+You might end up spending a lot of money on parts, only to find out that they aren't compatible with each other.
+Even if you're knowledgeable about drones, the sheer variety of available parts with unique properties can be daunting.
+Furthermore, different websites may provide conflicting specifications for the same model.
 
 > The goal of the project is to help individuals find parts with confirmed specifications through documentation or testing.
 
@@ -62,7 +70,7 @@ Nothing here (yet)
 
 ## 🛠 Technologies
 * Python
-* My own markdown library (PyMarkEditor)
+* My own Markdown library (PyMarkEditor)
 * Django
 * DRF
 * PostgreSQL
@@ -76,7 +84,7 @@ Nothing here (yet)
 5. [ ] Save: select parts and drones for ease access in the future. You also can create item groups (like music playlists)
 6. [ ] Create: create drones from parts and see if parts are compatible with each other
 7. [ ] Review: comment any Part or Drone
-8. [ ] Compare: compare parts of the same type: motors, frames etc.
+8. [ ] Compare: compare parts of the same type: motors, frames, and so on
 9. [ ] Chat: ask specific questions about any part or answer them
 10. [ ] Share: share drones you built. You also can share videos with drones you built
 
