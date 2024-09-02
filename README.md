@@ -132,24 +132,67 @@ ____
 6. As a `User`, I can edit any of my unapproved **Suggestion request**
 7. As a `User`, I can reopen any of my _denied_ **Suggestion request** with updated information
 8. As a `User`, I can delete any of my **Suggestion request**, regardless of _status_
+9. As a `User`, I can make **Change request** to any part that is if you spot a mistake or information is not completed
 
-9. As a `User`, I can add Part to the list of favorites. This list will be displayed as `Favorite`, will be default for each `User` and couldn't be deleted or renamed by me
-10. As a `User`, I can create **Part list** with any name to contain any Parts
-11. As a `User`, I can edit or delete **Part list**, created by me
-12. As a `User`, I can view any of my **Part list**
-13. As a `User`, I can add Parts to any of my **Part list**
-14. As a `User`, I can remove any Part from any of my **Part list**
+10. As a `User`, I can add Part to the list of favorites. This list will be displayed as `Favorite`, will be default for each `User` and couldn't be deleted or renamed by me
+11. As a `User`, I can create **Part list** with any name to contain any Parts
+12. As a `User`, I can edit or delete **Part list**, created by me
+13. As a `User`, I can view any of my **Part list**
+14. As a `User`, I can add Parts to any of my **Part list**
+15. As a `User`, I can remove any Part from any of my **Part list**
 
 ## `Administrator`
 
 1. As an `Administrator`, I can do everything I could do in a V1
-2. As an `Administrator`, I can CRUD any `User`
-3. As an `Administrator`, I can CRUD any **Suggestion request**
-4. As an `Administrator`, I can CRUD any **Part list**
+2. As an `Administrator`, I can do everything `User` does
+3. As an `Administrator`, I can CRUD any `User`
+4. As an `Administrator`, I can CRUD any **Suggestion request**
+5. As an `Administrator`, I can CRUD any **Part list**
 
 </details>
 
 
+<details>
+<summary>
+
+## V3
+### Create your own drones
+
+</summary>
+
+## `Anonymous`
+
+1. As an `Anonymous`, I can do everything I could do in a V2
+
+## `User`
+1. As a `User`, I can do everything I could do in a V2
+
+2. As a `User`, I can view other people's profiles and _public_ drones they created
+3. As a `User`, I can read _public_ drones from people's profiles
+4. As a `User`, I can any Drone on the website
+5. As a `User`, I can get the list of all my liked Drones
+6. As a `User`, I can remove like from any Drone on the website
+
+7. As a `User`, I can view all _public_ Drones created by any `User`
+8. As a `User`, I can read any _public_ Drone created any `User`
+9. As a `User`, I can filter all _public_ Drones by specifications
+10. As a `User`, I can filter all _public_ Drones by completion
+11. As a `User`, I can create a new drone with any available Parts. Those drones are _private_ by default. Might not be completed completely
+12. As a `User`, I can change visibility of my Drone to _public_ or _private_
+13. As a `User`, I can get a warning if Parts aren't compatible with each other. This warning can be disabled. 
+Users might send **False error** request with detailed information. Not compatible parts will be displayed with a yellow error triangle
+14. As a `User`, I can see a notification if Drone is not completed by any number of Parts
+15. As a `User`, I can edit my Drone
+16. As a `User`, I can delete my Drone
+
+## `Administrator`
+
+1. As an `Administrator`, I can do everything I could do in a V2
+2. As an `Administrator`, I can CRUD any Drone, created by any `User`
+
+</details>
+
+----
 
 
 
