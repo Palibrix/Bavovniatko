@@ -93,14 +93,12 @@ ____
 </summary>
 
 ## `Anonymous`
-
 1. As an `Anonymous`, I can use public API or website to retrieve detailed information about any Part or Drone in the database
 2. As an `Anonymous`, I can use public API or website to retrieve a list of Parts or Drones in the database
 3. As an `Anonymous`, I can use public API or website to retrieve a list of Parts or Drones in the database, filtered by category or category-specific values
 4. As an `Anonymous`, I can use public API or website to search for Part or Drone and retrieve a list of results
 
 ## `Administrator`
-
 1. As an `Administrator`, I can do everything `Anonymous` does
 2. As an `Administrator`, I can use Django admin website do manage database
 3. As an `Administrator`, I can CRUD any Part
@@ -124,22 +122,23 @@ ____
 3. As an `Anonymous`, I can log in into my account using username and password 
 
 ## `User`
-1. As a `User`, I can log out
-2. As a `User`, I can make **Suggestion request** for any type of Part to add into the database
-3. As a `User`, I can add commentary and files to my **Suggestion request**
-4. As a `User`, I can view all my **Suggestion request** and their statuses (_pending_, _denied_, _approved_) on a separate page
-5. As a `User`, I can view commentary to the _status_ if it exists, that is if `Administrator` denied it, I can see the reason
-6. As a `User`, I can edit any of my unapproved **Suggestion request**
-7. As a `User`, I can reopen any of my _denied_ **Suggestion request** with updated information
-8. As a `User`, I can delete any of my **Suggestion request**, regardless of _status_
-9. As a `User`, I can make **Change request** to any part that is if you spot a mistake or information is not completed
+1. As a `User`, I can do everything `Anonymous` does
+2. As a `User`, I can log out
+3. As a `User`, I can make **Suggestion request** for any type of Part to add into the database
+4. As a `User`, I can add commentary and files to my **Suggestion request**
+5. As a `User`, I can view all my **Suggestion request** and their statuses (_pending_, _denied_, _approved_) on a separate page
+6. As a `User`, I can view commentary to the _status_ if it exists, that is if `Administrator` denied it, I can see the reason
+7. As a `User`, I can edit any of my unapproved **Suggestion request**
+8. As a `User`, I can reopen any of my _denied_ **Suggestion request** with updated information
+9. As a `User`, I can delete any of my **Suggestion request**, regardless of _status_
+10. As a `User`, I can make **Change request** to any part that is if you spot a mistake or information is not completed
 
-10. As a `User`, I can add Part to the list of favorites. This list will be displayed as `Favorite`, will be default for each `User` and couldn't be deleted or renamed by me
-11. As a `User`, I can create **Part list** with any name to contain any Parts
-12. As a `User`, I can edit or delete **Part list**, created by me
-13. As a `User`, I can view any of my **Part list**
-14. As a `User`, I can add Parts to any of my **Part list**
-15. As a `User`, I can remove any Part from any of my **Part list**
+11. As a `User`, I can add Part to the list of favorites. This list will be displayed as `Favorite`, will be default for each `User` and couldn't be deleted or renamed by me
+12. As a `User`, I can create **Part list** with any name to contain any Parts
+13. As a `User`, I can edit or delete **Part list**, created by me
+14. As a `User`, I can view any of my **Part list**
+15. As a `User`, I can add Parts to any of my **Part list**
+16. As a `User`, I can remove any Part from any of my **Part list**
 
 ## `Administrator`
 1. As an `Administrator`, I can do everything I could do in a V1
@@ -196,6 +195,45 @@ Users might send **False error** request with detailed information. Not compatib
 </details>
 
 
+<details>
+<summary>
+
+## V4
+### Commentaries and comparison
+
+</summary>
+
+## `Anonymous`
+1. As an `Anonymous`, I can do everything I could do in a V3
+
+2. As an `Anonymous`, I can read all comments on any part using website
+
+3. As an `Anonymous`, I can compare Parts on the website; that is, I can compare multiple Motors, Cameras, and so on. I couldn't compare different parts, for example, Camera and Motor
+4. As an `Anonymous`, I can select which Parts I want to compare from the search list
+
+## `User`
+1. As a `User`, I can do everything I could do in a V3
+
+2. As a `User`, I can write a `Comment` to any Part
+3. As a `User`, I can reply to any `Comment`
+4. As a `User`, I can delete my `Comment`
+5. As a `User`, I can get notification to app and email if any `User` replies to my `Comment`
+6. As a `User`, I can disable email notifications in settings
+7. As a `User`, I can view all Parts I commented on my profile page
+8. As a `User`, I can view my comment highlighted on the Part page
+9. As a `User`, I can see the number of `Comment` to each Part on the search page results
+
+
+## `Administrator`
+1. As an `Administrator`, I can do everything I could do in a V3
+
+2. As an `Administrator`, I can view any `Comment` in the database 
+3. As an `Administrator`, I can delete any `Comment` in the database
+
+4. As an `Administrator`, I can block any `User` in the database, so that they will not be able to use their credentials to create a new account or log in to existing
+5. As an `Administrator`, I can unblock any `User` in the database
+
+</details>
 
 [user-badge]: https://img.shields.io/badge/Palibrix-DD9623?style=plastic
 [user-url]: https://github.com/Palibrix

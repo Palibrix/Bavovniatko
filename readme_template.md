@@ -13,6 +13,8 @@ as_ad: As an `Administrator`, I can
 request: **Suggestion request**
 list: **Part list**
 
+comment: `Comment`
+
 p_or_d: Part or Drone
 ----
 
