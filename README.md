@@ -118,8 +118,8 @@ ____
 </summary>
 
 ## `Anonymous`
-
 1. As an `Anonymous`, I can do everything I could do in a V1
+
 2. As an `Anonymous`, I can create my account using email, username, password, name, and surname
 3. As an `Anonymous`, I can log in into my account using username and password 
 
@@ -142,12 +142,16 @@ ____
 15. As a `User`, I can remove any Part from any of my **Part list**
 
 ## `Administrator`
-
 1. As an `Administrator`, I can do everything I could do in a V1
+
 2. As an `Administrator`, I can do everything `User` does
 3. As an `Administrator`, I can CRUD any `User`
 4. As an `Administrator`, I can CRUD any **Suggestion request**
 5. As an `Administrator`, I can CRUD any **Part list**
+6. As an `Administrator`, I can view all **Suggestion request**
+7. As an `Administrator`, I can accept **Suggestion request**, so that Part will be added to the database
+8. As an `Administrator`, I can deny **Suggestion request**, that is Part won't be added to the database and `User`, who sent the request, will be notified and view the reason
+9. As an `Administrator`, I can view all **Change request** and change Part if necessary
 
 </details>
 
@@ -161,7 +165,6 @@ ____
 </summary>
 
 ## `Anonymous`
-
 1. As an `Anonymous`, I can do everything I could do in a V2
 
 ## `User`
@@ -186,13 +189,11 @@ Users might send **False error** request with detailed information. Not compatib
 16. As a `User`, I can delete my Drone
 
 ## `Administrator`
-
 1. As an `Administrator`, I can do everything I could do in a V2
 2. As an `Administrator`, I can CRUD any Drone, created by any `User`
+3. As an `Administrator`, I can view all **False error** requests and accept or deny it
 
 </details>
-
-----
 
 
 
