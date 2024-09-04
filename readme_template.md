@@ -88,15 +88,15 @@ Nothing here (yet)
 7. [ ] Review: comment any Part or Drone
 8. [ ] Compare: compare parts of the same type: motors, frames, and so on
 9. [ ] Chat: ask specific questions about any part or answer them
-10. [ ] Share: share drones you built. You also can share videos with drones you built
+10. [ ] Share: share videos with drones you built
 
-| Version     | №  | Features |
-|:------------|:--:|:--------:|
-| Base        | v1 | 1, 2, 3  |
-| Suggestions | v2 |   4, 5   |
-| Creations   | v3 |    6     |
-| Social      | v4 |   7, 8   |
-| Social 2    | v5 |  9, 10   |
+| Version     | №  | Features |     State     |
+|:------------|:--:|:--------:|:-------------:|
+| Base        | v1 | 1, 2, 3  | Documentation |
+| Suggestions | v2 |   4, 5   | Documentation |
+| Creations   | v3 |    6     | Documentation |
+| Social      | v4 |   7, 8   | Documentation |
+| Social 2    | v5 |  9, 10   |   Suspended   |
 
 
 # 👤 User story
