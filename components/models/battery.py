@@ -14,7 +14,7 @@ class Battery(BaseComponentMixin):
         LIHV = 'LIHV', _('LiHV')
         Another = 'ANOTHER', _('Another')
 
-    drone = models.OneToOneField('Drone', on_delete=models.CASCADE, related_name='battery')
+    # drone = models.OneToOneField('Drone', on_delete=models.CASCADE, related_name='battery')
 
     model = None
     series = models.PositiveSmallIntegerField(verbose_name='Cells in series',
