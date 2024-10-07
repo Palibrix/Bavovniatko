@@ -18,8 +18,8 @@ class Antenna(BaseComponentMixin):
 
     center_frequency = models.FloatField(help_text=_("Center frequency of the antenna"),
                                          )
-    bandwidth_min = models.FloatField(help_text=_("Minimum bandwidth (frequency) of the antenna"),)
-    bandwidth_max = models.FloatField(help_text=_("Maximum bandwidth (frequency) of the antenna"),)
+    bandwidth_min = models.FloatField(help_text=_("Min. bandwidth (frequency) of the antenna"),)
+    bandwidth_max = models.FloatField(help_text=_("Max. bandwidth (frequency) of the antenna"),)
 
     swr = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(100)],
                             help_text=_("SWR of the antenna at Center Frequency (lower=better)"),
