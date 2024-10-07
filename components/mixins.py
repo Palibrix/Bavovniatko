@@ -1,56 +1,35 @@
+from ckeditor.fields import RichTextField
 from django.contrib import admin
 from django.db import models
-from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 
-class IsPublicMixin:
-    @admin.display(boolean=True, description=_('Is Public?'))
-    def is_public(self, obj):
-        return obj.user is None
+class BaseModelMixin(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    class Meta:
+        abstract = True
 
 
-class UniqueConstraintMixin:
-    # Define class-level attributes for fields and error message
-    fields_public = []
-    fields_private = []
-    error_message = ''
+class BaseComponentMixin(BaseModelMixin):
+    manufacturer = models.CharField(max_length=50)
+    model = models.CharField(max_length=50, help_text=_("Full name of the item"))
+    description = RichTextField(blank=True, help_text=_("Long description of the item"))
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._meta.constraints = self.get_unique_constraints()
+    def __str__(self):
+        return f"{self.manufacturer} {self.model}"
 
-    def get_unique_constraints(self):
-        # Generate constraints based on class-level attributes
-
-        constraints = [
-            # For user == null only
-            models.UniqueConstraint(fields=self.fields_public, name='unique_component_when_public',
-                                    condition=Q(user__isnull=True),
-                                    violation_error_message=self.error_message),
-            # For user != null only
-            models.UniqueConstraint(fields=self.fields_private, name='unique_component_when_private',
-                                    violation_error_message=self.error_message)
-        ]
-        return constraints
+    class Meta:
+        abstract = True
+        unique_together = (('manufacturer', 'model',),)
 
 
-class UniqueItemConstraintMixin:
-    """
-    For small, helper models like 'AntennaType', not 'Antenna', etc.
-    """
-    fields = []
-    error_message = ''
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._meta.constraints = self.get_unique_constraints()
-
-    def get_unique_constraints(self):
-        constraints = [
-            # For item is_public == False
-            models.UniqueConstraint(fields=self.fields, name='unique_component_when_public',
-                                    condition=Q(is_public=False),
-                                    violation_error_message=self.error_message),
-        ]
-        return constraints
+class BaseModelAdminMixin(admin.ModelAdmin):
+    empty_value_display = '???'
+    readonly_fields = ('id', 'created_at', 'updated_at')
+    list_display_links = ('__str__', )

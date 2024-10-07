@@ -1,70 +1,71 @@
-from django.contrib.auth import get_user_model
+from django.contrib import admin
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
-from components.mixins import UniqueConstraintMixin
-
-User = get_user_model()
+from components.mixins import BaseComponentMixin, BaseModelMixin
 
 
-class Receiver(models.Model, UniqueConstraintMixin):
-    fields_public = ['manufacturer', 'model', 'processor', 'voltage_min', 'voltage_max'
-                     ]
-    fields_private = fields_public + ['user', ]
-    error_message = 'A Frame with these attributes already exists for this user.'
+class Receiver(BaseComponentMixin):
 
-    manufacturer = models.CharField(max_length=50)
-    model = models.CharField(max_length=50, help_text="Full name of the item")
-
-    processor = models.CharField(max_length=100, help_text="Name of the processor",
+    processor = models.CharField(max_length=100, help_text=_("Name of the processor(MCU)"),
                                  null=True, blank=True)
     voltage_min = models.FloatField(validators=[MinValueValidator(2), MaxValueValidator(28)],
-                                    help_text='Voltage Range - Minimal Voltage', verbose_name='Minimal Voltage')
+                                    help_text=_('Voltage Range - Minimal Voltage'), verbose_name=_('Minimal Voltage'))
     voltage_max = models.FloatField(validators=[MinValueValidator(2), MaxValueValidator(28)],
-                                    help_text='Voltage Range - Maximal Voltage', verbose_name='Maximal Voltage',
+                                    help_text=_('Voltage Range - Maximal Voltage, optional'), verbose_name=_('Maximal Voltage'),
                                     null=True, blank=True)
 
     antenna_connector = models.ManyToManyField('AntennaConnector')
     protocol = models.ManyToManyField('ReceiverProtocolType',
-                                      verbose_name="Output Protocol", help_text="Rx To FC")
+                                      verbose_name=_("Output Protocol"), help_text=_("Rx To FC"))
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, help_text="Public if empty",
-                             blank=True, null=True)
-
-    def __str__(self):
-        return self.model
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
+    @property
+    # @admin.display(_('Voltage'))
+    def get_voltage(self):
+        if not self.voltage_max:
+            return f'{self.voltage_min}V'
+        else:
+            return f'{self.voltage_min}-{self.voltage_max}V'
 
     class Meta:
         app_label = 'components'
         db_table = 'components_receiver'
 
-        verbose_name = 'Receiver'
-        verbose_name_plural = 'Receivers'
+        verbose_name = _('Receiver')
+        verbose_name_plural = _('Receivers')
         ordering = ['manufacturer', 'model', ]
 
 
-class ReceiverDetail(models.Model):
-    receiver = models.ForeignKey('Receiver', on_delete=models.PROTECT, related_name='receiver_details')
+class ReceiverDetail(BaseModelMixin):
+    receiver = models.ForeignKey('Receiver', on_delete=models.PROTECT, related_name='details')
 
-    frequency = models.FloatField(validators=[MinValueValidator(0), ], )
-    weight = models.FloatField(validators=[MinValueValidator(0), ], )
-    telemetry_power = models.FloatField(validators=[MinValueValidator(0), ], help_text="Telemetry Power, In dBm")
-    rf_chip = models.CharField(max_length=50, help_text="RF Chip Number",
+    frequency = models.FloatField(validators=[MinValueValidator(0), ], help_text=_('Frequency, in Mhz'),
+                                  verbose_name=_('Frequency'))
+    weight = models.FloatField(validators=[MinValueValidator(0), ], help_text=_('Weight in grams, without Antenna'))
+    telemetry_power = models.FloatField(validators=[MinValueValidator(0), ], help_text=_("Telemetry Power, In dBm"))
+    rf_chip = models.CharField(max_length=50, help_text=_("RF Chip Number"),
                                null=True, blank=True)
 
     def __str__(self):
         return f"{self.frequency}"
+
+    @property
+    @admin.display(description=_('Telemetry'))
+    def get_telemetry(self):
+        return f'{self.telemetry_power}dBm'
+
+    @property
+    @admin.display(description=_('Frequency'))
+    def get_frequency(self):
+        return f'{self.frequency}Mhz'
 
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        if self.receiver.receiver_details.count() > 1:
+        if self.receiver.details.count() > 1:
             super().delete(*args, **kwargs)
         else:
             raise models.ProtectedError("Cannot delete the only ReceiverDetail for this Receiver.", self)
@@ -73,15 +74,14 @@ class ReceiverDetail(models.Model):
         app_label = 'components'
         db_table = 'components_receiver_detail'
 
-        verbose_name = 'Receiver Detail'
-        verbose_name_plural = 'Receiver Details'
+        verbose_name = _('Receiver Detail')
+        verbose_name_plural = _('Receiver Details')
         ordering = ['receiver', 'frequency', 'weight', 'telemetry_power', 'rf_chip']
-        unique_together = ['receiver', 'frequency', 'weight', 'telemetry_power', 'rf_chip']
+        unique_together = ['receiver', 'frequency']
 
 
-class ReceiverProtocolType(models.Model):
+class ReceiverProtocolType(BaseModelMixin):
     type = models.CharField(max_length=50, verbose_name="Output Protocol Type", help_text="Rx To FC")
-    is_public = models.BooleanField(default=False, help_text="Is public?")
 
     def __str__(self):
         return self.type
@@ -90,6 +90,6 @@ class ReceiverProtocolType(models.Model):
         app_label = 'components'
         db_table = 'components_receiver_protocol_type'
 
-        verbose_name = 'Receiver Protocol Type'
-        verbose_name_plural = 'Receiver Protocol Types'
-        ordering = ['type', '-is_public']
+        verbose_name = _('Receiver Protocol Type')
+        verbose_name_plural = _('Receiver Protocol Types')
+        ordering = ['type',]

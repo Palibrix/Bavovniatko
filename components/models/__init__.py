@@ -1,3 +1,4 @@
+# flake8: noqa
 from .antenna import *
 from .battery import *
 from .camera import *
@@ -20,7 +21,9 @@ __all__ = [
     'CameraDetail',
 
     'Frame',
-    'FrameDetail',
+    'FrameMotorDetail',
+    'FrameVTXDetail',
+    'FrameCameraDetail',
     'FlightController',
     'FlightControllerFirmware',
 
@@ -29,6 +32,8 @@ __all__ = [
     'Motor',
     'MotorDetail',
     'RatedVoltage',
+
+    'OutputPower',
 
     'Propeller',
 
@@ -42,7 +47,6 @@ __all__ = [
     'SpeedControllerFirmware',
 
     'Transmitter',
-    'TransmitterDetail',
 
     'VideoFormat',
 ]

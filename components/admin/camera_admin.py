@@ -1,19 +1,30 @@
 from django.contrib import admin
 
-from .filters import IsPublicFilter
-from components.mixins import IsPublicMixin
-from components.models import Camera, VideoFormat
+from builds.forms import RequiredInlineFormSet
+from components.mixins import BaseModelAdminMixin
+from components.models import Camera, VideoFormat, CameraDetail
+
+
+class CameraDetailInline(admin.StackedInline):
+    model = CameraDetail
+    min_num = 1
+    extra = 0
+    formset = RequiredInlineFormSet
+    fk_name = 'camera'
 
 
 @admin.register(Camera)
-class CameraAdmin(admin.ModelAdmin, IsPublicMixin):
-    list_display = ('model', 'manufacturer', 'id', 'tvl', 'light_sens', 'ratio', 'user', 'is_public')
-    list_filter = ('manufacturer', 'light_sens', 'output_type', 'ratio', IsPublicFilter)
+class CameraAdmin(BaseModelAdminMixin):
+    inlines = [CameraDetailInline,]
+
+    list_display = ('__str__', 'id', 'output_type', 'tvl', 'get_voltage', 'light_sens', 'ratio', 'fov')
+    list_filter = ('manufacturer', 'light_sens', 'output_type', 'ratio')
+    sortable_by = ('weight',)
     search_fields = ('model', 'manufacturer', 'id', 'tvl')
 
 
 @admin.register(VideoFormat)
-class VideoFormatAdmin(admin.ModelAdmin):
-    list_display = ('format',)
+class VideoFormatAdmin(BaseModelAdminMixin):
+    list_display = ('__str__',)
     list_filter = ('format',)
     search_fields = ('format',)

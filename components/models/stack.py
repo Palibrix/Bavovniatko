@@ -1,41 +1,31 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from components.mixins import UniqueConstraintMixin
-
-User = get_user_model()
+from components.mixins import BaseComponentMixin, BaseModelMixin
 
 
-class FlightController(models.Model, UniqueConstraintMixin):
-    fields_public = ['manufacturer', 'model',
-                     'gyro', 'osd', 'bluetooth', 'wifi', 'barometer',
-                     'voltage', 'connector_type',
-                     ]
-    fields_private = fields_public + ['user', ]
-    error_message = _('A FC with these attributes already exists for this user.')
+class FlightController(BaseComponentMixin):
 
     class ConnectorTypeChoices(models.TextChoices):
         MICRO = 'micro', _('Micro-USB')
         C = 'c', _('Type C')
         Another = 'another', _('Another')
 
-    manufacturer = models.CharField(max_length=50)
-    model = models.CharField(max_length=50, help_text=_("Full name of the item"))
     microcontroller = models.CharField(max_length=50, help_text=_("Microcontroller Unit"),
                                        verbose_name=_("Microcontroller Unit"))
     gyro = models.ForeignKey('Gyro', on_delete=models.CASCADE)
-    osd = models.CharField(max_length=50, help_text=_("OSD Chip Model"), verbose_name=_("OSD Chip"))
+    osd = models.CharField(max_length=50, help_text=_("OSD Chip Model"), verbose_name=_("OSD Chip"),
+                           null=True, blank=True)
 
-    bluetooth = models.BooleanField(help_text=_("Bluetooth Support"), default=True)
-    wifi = models.BooleanField(help_text=_("Wifi Support"), default=True)
-    barometer = models.BooleanField(help_text=_("Barometer Support"), default=True)
+    bluetooth = models.BooleanField(help_text=_("Bluetooth Support"), default=False)
+    wifi = models.BooleanField(help_text=_("Wifi Support"), default=False)
+    barometer = models.BooleanField(help_text=_("Barometer Support"), default=False)
 
     voltage = models.ForeignKey('RatedVoltage', on_delete=models.CASCADE, related_name='fc_power_input',
                                 verbose_name=_('Power Input'))
-    firmwares = models.ManyToManyField('FlightControllerFirmware')
+    firmwares = models.ManyToManyField('FlightControllerFirmware', null=True, blank=True)
 
     connector_type = models.CharField(max_length=50, choices=ConnectorTypeChoices.choices,
                                       verbose_name=_("Connector Type"))
@@ -51,28 +41,21 @@ class FlightController(models.Model, UniqueConstraintMixin):
                                null=True, blank=True)
     width = models.FloatField(help_text=_('Width of the FC, mm'))
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, help_text=_("Public if empty"),
-                             blank=True, null=True)
-
     @property
-    @admin.display(description='Physical Params')
-    def get_params(self):
+    @admin.display(description=_('Physical Dimensions'))
+    def get_dimensions(self):
         if self.height:
             return _(f'L{self.length} x H{self.height} x W{self.width}')
         else:
             return _(f'L{self.length} x W{self.width}')
 
     @property
-    @admin.display(description='Mount Params')
-    def get_mount_params(self):
+    @admin.display(description=_('Mount Dimensions'))
+    def get_mount_dimensions(self):
         return _(f'L{self.mount_length} x W{self.mount_width}')
 
     def __str__(self):
-        return f'{self.manufacturer} {self.model} {self.get_mount_params}'
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
+        return f'{self.manufacturer} {self.model} {self.get_mount_dimensions}'
 
     class Meta:
         app_label = 'components'
@@ -80,26 +63,18 @@ class FlightController(models.Model, UniqueConstraintMixin):
 
         verbose_name = _('Flight Controller')
         verbose_name_plural = _('Flight Controllers')
-        ordering = ('manufacturer', 'model')
 
 
-class SpeedController(models.Model, UniqueConstraintMixin):
-    fields_public = ['manufacturer', 'model',
-                     'voltage', 'esc_type', 'cont_current', 'burst_current',
-                     ]
-    fields_private = fields_public + ['user', ]
-    error_message = 'A ESC with these attributes already exists for this user.'
+class SpeedController(BaseComponentMixin):
 
     class ESCTypeChoices(models.TextChoices):
         ALL = 'all', _('4-in-1')
         SINGLE = 'single', _('Single')
 
-    manufacturer = models.CharField(max_length=50)
-    model = models.CharField(max_length=50, help_text="Full name of the item")
-
     voltage = models.ForeignKey('RatedVoltage', on_delete=models.CASCADE, related_name='esc_power_input',
                                 verbose_name=_('Power Input'))
-    is_wireless_conf = models.BooleanField(default=True, verbose_name=_('Is Wireless Configuration Available?'))
+
+    is_wireless_conf = models.BooleanField(default=False, verbose_name=_('Is Wireless Configuration Available?'))
     esc_type = models.CharField(max_length=50, choices=ESCTypeChoices.choices,)
     cont_current = models.FloatField(validators=[MinValueValidator(0),], help_text=_("Continuous current, A"))
     burst_current = models.FloatField(validators=[MinValueValidator(0),], help_text=_("Burst current, A"))
@@ -118,38 +93,31 @@ class SpeedController(models.Model, UniqueConstraintMixin):
                                null=True, blank=True)
     width = models.FloatField(help_text=_('Width of the ESC, mm'))
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, help_text=_("Public if empty"),
-                             blank=True, null=True)
-
     @property
-    @admin.display(description='Physical Params')
-    def get_params(self):
+    @admin.display(description=_('Physical Dimensions'))
+    def get_dimensions(self):
         if self.height:
             return _(f'L{self.length} x H{self.height} x W{self.width}')
         else:
             return _(f'L{self.length} x W{self.width}')
 
     @property
-    @admin.display(description='Mount Params')
-    def get_mount_params(self):
+    @admin.display(description=_('Mount Dimensions'))
+    def get_mount_dimensions(self):
         return _(f'L{self.mount_length} x W{self.mount_width}')
 
     @property
-    @admin.display(description='Cont. Current, A')
+    @admin.display(description=_('Cont. Current, A'))
     def get_cont_current(self):
         return f'{self.cont_current}A'
 
     @property
-    @admin.display(description='Burst Current, A')
+    @admin.display(description=_('Burst Current, A'))
     def get_burst_current(self):
         return f'{self.burst_current}A'
 
     def __str__(self):
-        return f'{self.manufacturer} {self.model} {self.get_cont_current} {self.get_mount_params} {self.esc_type}'
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
+        return f'{self.manufacturer} {self.model} {self.get_cont_current} {self.get_mount_dimensions} {self.esc_type}'
 
     class Meta:
         app_label = 'components'
@@ -157,25 +125,12 @@ class SpeedController(models.Model, UniqueConstraintMixin):
 
         verbose_name = _('Speed Controller')
         verbose_name_plural = _('Speed Controllers')
-        ordering = ('manufacturer', 'model')
 
 
-class Stack(models.Model, UniqueConstraintMixin):
-    fields_public = ['model',
-                     'flight_controller', 'speed_controller'
-                     ]
-    fields_private = fields_public + ['user', ]
-    error_message = 'A Stack with these attributes already exists for this user.'
+class Stack(BaseComponentMixin):
 
-    model = models.CharField(max_length=50, help_text="Full name of the item")
     flight_controller = models.ForeignKey('FlightController', on_delete=models.CASCADE)
     speed_controller = models.ForeignKey('SpeedController', on_delete=models.CASCADE)
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, help_text=_("Public if empty"),
-                             blank=True, null=True)
-
-    def __str__(self):
-        return f'{self.model}'
 
     class Meta:
         app_label = 'components'
@@ -183,16 +138,16 @@ class Stack(models.Model, UniqueConstraintMixin):
 
         verbose_name = _('Stack')
         verbose_name_plural = _('Stacks')
-        ordering = ('model',)
 
 
-class Gyro(models.Model):
+class Gyro(BaseModelMixin):
+
     manufacturer = models.CharField(max_length=50)
     imu = models.CharField(max_length=50, help_text=_("Inertial Measurement Unit (e.g. MPU6000, BMI270)"),
                            verbose_name=_("Inertial Measurement Unit"))
     max_freq = models.FloatField(max_length=50, verbose_name=_("Maximum Frequency"),
                                  help_text=_("Max. Effective Gyro Sampling Frequency, KHz"))
-    spi_support = models.BooleanField(default=True, verbose_name=_("SPI Support"))
+    spi_support = models.BooleanField(default=False, verbose_name=_("SPI Support"))
 
     def __str__(self):
         return f'{self.imu} {self.manufacturer} {self.get_max_freq}'
@@ -206,12 +161,12 @@ class Gyro(models.Model):
         app_label = 'components'
         db_table = 'components_gyro'
 
-        verbose_name = 'Gyro'
-        verbose_name_plural = 'Gyros'
-        unique_together = ('manufacturer', 'imu', 'max_freq', 'spi_support')
+        verbose_name = _('Gyro')
+        verbose_name_plural = _('Gyros')
+        unique_together = ('manufacturer', 'imu', 'max_freq')
 
 
-class FlightControllerFirmware(models.Model):
+class FlightControllerFirmware(BaseModelMixin):
     firmware = models.CharField(max_length=50, help_text=_("Firmware Type (e.g. BetaFlight, OneShot125)"), unique=True)
 
     def __str__(self):
@@ -220,11 +175,11 @@ class FlightControllerFirmware(models.Model):
     class Meta:
         app_label = 'components'
         db_table = 'components_fc_firmware'
-        verbose_name = 'FC Firmware'
-        verbose_name_plural = 'FC Firmwares'
+        verbose_name = _('FC Firmware')
+        verbose_name_plural = _('FC Firmwares')
 
 
-class SpeedControllerFirmware(models.Model):
+class SpeedControllerFirmware(BaseModelMixin):
     firmware = models.CharField(max_length=50, help_text=_("Firmware Type (e.g. BLHeli_S, AM32)"), unique=True)
 
     def __str__(self):
@@ -234,11 +189,11 @@ class SpeedControllerFirmware(models.Model):
         app_label = 'components'
         db_table = 'components_esc_firmware'
 
-        verbose_name = 'ESC Firmware'
-        verbose_name_plural = 'ESC Firmwares'
+        verbose_name = _('ESC Firmware')
+        verbose_name_plural = _('ESC Firmwares')
 
 
-class SpeedControllerProtocol(models.Model):
+class SpeedControllerProtocol(BaseModelMixin):
     protocol = models.CharField(max_length=50, help_text=_("Firmware Type (e.g. DShot150 , DShot300 )"), unique=True)
 
     def __str__(self):
@@ -248,5 +203,5 @@ class SpeedControllerProtocol(models.Model):
         app_label = 'components'
         db_table = 'components_esc_protocol'
 
-        verbose_name = 'ESC Protocol'
-        verbose_name_plural = 'ESC Protocols'
+        verbose_name = _('ESC Protocol')
+        verbose_name_plural = _('ESC Protocols')

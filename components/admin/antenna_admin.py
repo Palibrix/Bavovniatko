@@ -1,40 +1,36 @@
 from django.contrib import admin
-from django.utils.translation import gettext_lazy as _
 
 from builds.forms import RequiredInlineFormSet
-from .filters import IsPublicFilter
+from components.mixins import BaseModelAdminMixin
 from components.models import Antenna, AntennaDetail, AntennaType, AntennaConnector
-from components.mixins import IsPublicMixin
 
 
-class AntennaDetainInline(admin.StackedInline):
+class AntennaDetailInline(admin.StackedInline):
     model = AntennaDetail
     min_num = 1
     extra = 0
     formset = RequiredInlineFormSet
+    fk_name = 'antenna'
 
 
 @admin.register(Antenna)
-class AntennaAdmin(admin.ModelAdmin, IsPublicMixin):
-    inlines = [AntennaDetainInline, ]
-    list_display = ('model', 'id', 'type', 'center_frequency', 'bandwidth_range', 'user', 'is_public')
-    list_filter = ('manufacturer', 'type', IsPublicFilter)
-    search_fields = ('model', 'id', 'type', 'swr')
+class AntennaAdmin(BaseModelAdminMixin):
+    inlines = [AntennaDetailInline, ]
+    list_display = ('__str__', 'id', 'type', 'center_frequency', 'get_bandwidth', 'swr', 'radiation')
+    sortable_by = ('swr', 'radiation',)
+    list_filter = ('manufacturer', 'type', 'center_frequency', 'swr')
+    search_fields = ('manufacturer', 'model', 'id',)
 
-    @admin.display(description=_('Bandwidth Range'))
-    def bandwidth_range(self, obj):
-        return f'{obj.bandwidth_min} - {obj.bandwidth_max}'
-    
 
 @admin.register(AntennaType)
-class AntennaTypeAdmin(admin.ModelAdmin):
-    list_display = ('type', 'direction', 'polarization', 'is_public')
-    list_filter = ('type', 'direction', 'polarization', 'is_public')
+class AntennaTypeAdmin(BaseModelAdminMixin):
+    list_display = ('__str__',)
+    list_filter = ('direction', 'polarization',)
     search_fields = ('type',)
 
 
 @admin.register(AntennaConnector)
-class AntennaConnectorAdmin(admin.ModelAdmin):
-    list_display = ('type', 'is_public')
-    list_filter = ('type', 'is_public')
+class AntennaConnectorAdmin(BaseModelAdminMixin):
+    list_display = ('__str__', )
+    list_filter = ('type', )
     search_fields = ('type',)

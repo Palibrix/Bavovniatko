@@ -31,8 +31,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',
+    # 'jazzmin',
     'django_extensions',
+    'ckeditor',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,7 +44,7 @@ INSTALLED_APPS = [
 
     'components',
     'builds',
-    'authentication',
+    'gallery',
 ]
 
 MIDDLEWARE = [

@@ -1,13 +1,12 @@
 from django.contrib import admin
 
-from .filters import IsPublicFilter
-from components.mixins import IsPublicMixin
+from components.mixins import BaseModelAdminMixin
 from components.models import Propeller
 
 
 @admin.register(Propeller)
-class PropellerAdmin(admin.ModelAdmin, IsPublicMixin):
-    list_display = ('model', 'id', 'size', 'pitch', 'blade_count', 'user', 'is_public')
-    list_filter = ('manufacturer', 'blade_count', IsPublicFilter)
-    search_fields = ('model', 'id', 'size', 'pitch', 'blade_count')
-    
+class PropellerAdmin(BaseModelAdminMixin):
+    list_display = ('__str__', 'id', 'size', 'pitch', 'blade_count')
+    list_filter = ('manufacturer', 'blade_count', 'weight')
+    search_fields = ('manufacturer', 'model', 'id', 'size', 'pitch',)
+    sortable_by = ('manufacturer', 'weight')

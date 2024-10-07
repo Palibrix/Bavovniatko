@@ -1,3 +1,4 @@
+# flake8: noqa
 from .frame_admin import *
 from .antenna_admin import *
 from .battery_admin import *
@@ -20,16 +21,23 @@ __all__ = [
 
     'FrameAdmin',
     'FlightControllerAdmin',
+    'FlightControllerFirmwareAdmin',
+
+    'GyroAdmin',
 
     'MotorAdmin',
-    'RatedVoltageAdmin',
+
+    'OutputPowerAdmin',
 
     'PropellerAdmin',
 
+    'RatedVoltageAdmin',
     'ReceiverAdmin',
 
     'StackAdmin',
     'SpeedControllerAdmin',
+    'SpeedControllerProtocolAdmin',
+    'SpeedControllerFirmwareAdmin',
 
     'TransmitterAdmin',
 ]

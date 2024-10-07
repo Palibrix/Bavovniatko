@@ -1,14 +1,8 @@
 from django.contrib import admin
 
 from builds.forms import RequiredInlineFormSet
-from .filters import IsPublicFilter
-from components.mixins import IsPublicMixin
+from components.mixins import BaseModelAdminMixin
 from components.models import Receiver, ReceiverDetail, ReceiverProtocolType
-
-from django.utils.translation import gettext_lazy as _
-
-
-admin.site.register(ReceiverProtocolType)
 
 
 class ReceiverDetailInline(admin.StackedInline):
@@ -16,19 +10,19 @@ class ReceiverDetailInline(admin.StackedInline):
     min_num = 1
     extra = 0
     formset = RequiredInlineFormSet
+    fk_name = 'receiver'
 
 
 @admin.register(Receiver)
-class ReceiverAdmin(admin.ModelAdmin, IsPublicMixin):
+class ReceiverAdmin(BaseModelAdminMixin):
     inlines = [ReceiverDetailInline, ]
-    list_display = ('model', 'id', 'processor', 'get_frequency', 'is_public')
-    list_filter = ('manufacturer', IsPublicFilter)
+    list_display = ('__str__', 'id', 'processor', 'get_voltage')
+    list_filter = ('manufacturer',)
     search_fields = ('model', 'id', 'processor', 'manufacturer')
+    sortable_by = ('manufacturer', 'voltage_min', 'voltage_max')
 
-    def get_frequency(self, obj):
-        if obj.receiver_details.exists():
-            frequencies = list(obj.receiver_details.values_list('frequency', flat=True))
-            return frequencies
-        return "No ReceiverDetail"
 
-    get_frequency.short_description = _('Frequencies')
+@admin.register(ReceiverProtocolType)
+class ReceiverProtocolTypeAdmin(BaseModelAdminMixin):
+    list_display = ('__str__', 'id')
+    search_fields = ('type',)
