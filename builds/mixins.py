@@ -10,7 +10,7 @@ class BaseDroneMixin(models.Model):
         FREESTYLE = 'freestyle', _('Freestyle')
         ANOTHER = 'another', _('Another')
 
-    manufacturer = models.CharField(max_length=50)
+    manufacturer = models.CharField(max_length=50, blank=True, null=True)
     model = models.CharField(max_length=50, help_text=_("Full name of the Drone"))
     description = RichTextField(blank=True, help_text=_("Long description of the Drone"))
     short_description = models.CharField(max_length=256, help_text=_("Short description of the Drone"),
@@ -35,7 +35,7 @@ class BaseDroneMixin(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.manufacturer} {self.model}"
+        return f"{self.manufacturer} {self.model}" if self.manufacturer else self.model
 
     class Meta:
         abstract = True
