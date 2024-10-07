@@ -3,9 +3,19 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 class BaseDroneMixin(models.Model):
+
+    class TypeChoices(models.TextChoices):
+        PHOTOGRAPHY = 'photography', _('Photography')
+        SPORT = 'sport', _('Sport')
+        FREESTYLE = 'freestyle', _('Freestyle')
+        ANOTHER = 'another', _('Another')
+
     manufacturer = models.CharField(max_length=50)
-    model = models.CharField(max_length=50, help_text=_("Full name of the item"))
-    description = RichTextField(blank=True, help_text=_("Long description of the item"))
+    model = models.CharField(max_length=50, help_text=_("Full name of the Drone"))
+    description = RichTextField(blank=True, help_text=_("Long description of the Drone"))
+    short_description = models.CharField(max_length=256, help_text=_("Short description of the Drone"),
+                                         blank=True, null=True)
+    type = models.CharField(choices=TypeChoices.choices, max_length=50, default=TypeChoices.PHOTOGRAPHY)
 
     antenna = models.ForeignKey('components.Antenna', on_delete=models.SET_NULL, null=True, blank=True)
     battery = models.OneToOneField('components.Battery', on_delete=models.SET_NULL, null=True, blank=True)
@@ -29,4 +39,3 @@ class BaseDroneMixin(models.Model):
 
     class Meta:
         abstract = True
-        unique_together = (('manufacturer', 'model',),)
