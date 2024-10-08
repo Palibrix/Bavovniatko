@@ -1,6 +1,6 @@
 from django.db import models
 
-from gallery.mixins import BaseImageMixin
+from galleries.mixins import BaseImageMixin
 
 
 class AntennaGallery(BaseImageMixin):

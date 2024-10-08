@@ -44,7 +44,8 @@ INSTALLED_APPS = [
 
     'components',
     'builds',
-    'gallery',
+    'galleries',
+    'documents'
 ]
 
 MIDDLEWARE = [

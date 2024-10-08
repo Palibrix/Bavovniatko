@@ -25,7 +25,7 @@ class FlightController(BaseComponentMixin):
 
     voltage = models.ForeignKey('RatedVoltage', on_delete=models.CASCADE, related_name='fc_power_input',
                                 verbose_name=_('Power Input'))
-    firmwares = models.ManyToManyField('FlightControllerFirmware', null=True, blank=True)
+    firmwares = models.ManyToManyField('FlightControllerFirmware')
 
     connector_type = models.CharField(max_length=50, choices=ConnectorTypeChoices.choices,
                                       verbose_name=_("Connector Type"))
