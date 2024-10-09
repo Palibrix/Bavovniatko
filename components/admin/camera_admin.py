@@ -3,6 +3,7 @@ from django.contrib import admin
 from builds.forms import RequiredInlineFormSet
 from components.mixins import BaseModelAdminMixin
 from components.models import Camera, VideoFormat, CameraDetail
+from galleries.admin.components_admin import CameraGalleryInline
 
 
 class CameraDetailInline(admin.StackedInline):
@@ -15,7 +16,7 @@ class CameraDetailInline(admin.StackedInline):
 
 @admin.register(Camera)
 class CameraAdmin(BaseModelAdminMixin):
-    inlines = [CameraDetailInline,]
+    inlines = [CameraDetailInline, CameraGalleryInline]
 
     list_display = ('__str__', 'id', 'output_type', 'tvl', 'get_voltage', 'light_sens', 'ratio', 'fov')
     list_filter = ('manufacturer', 'light_sens', 'output_type', 'ratio')

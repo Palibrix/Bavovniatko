@@ -3,7 +3,7 @@ from django.contrib import admin
 from builds.forms import RequiredInlineFormSet
 from components.mixins import BaseModelAdminMixin
 from components.models import Antenna, AntennaDetail, AntennaType, AntennaConnector
-from galleries.admin import AntennaGalleryInline
+from galleries.admin.components_admin import AntennaGalleryInline
 
 
 class AntennaDetailInline(admin.StackedInline):

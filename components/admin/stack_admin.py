@@ -3,6 +3,7 @@ from django.contrib import admin
 from components.mixins import BaseModelAdminMixin
 from components.models import SpeedControllerProtocol, SpeedControllerFirmware, FlightControllerFirmware, Gyro, Stack, \
     FlightController, SpeedController
+from galleries.admin.components_admin import SpeedControllerGalleryInline, FlightControllerGalleryInline
 
 
 @admin.register(Stack)
@@ -14,6 +15,7 @@ class StackAdmin(BaseModelAdminMixin):
 
 @admin.register(FlightController)
 class FlightControllerAdmin(BaseModelAdminMixin):
+    inlines = [FlightControllerGalleryInline,]
     list_display = ('__str__', 'id', 'voltage', 'connector_type',
                     'get_dimensions', 'get_mount_dimensions',
                     'bluetooth', 'wifi', 'barometer',
@@ -26,6 +28,7 @@ class FlightControllerAdmin(BaseModelAdminMixin):
 
 @admin.register(SpeedController)
 class SpeedControllerAdmin(BaseModelAdminMixin):
+    inlines = [SpeedControllerGalleryInline, ]
     list_display = ('__str__', 'id',
                     'voltage', 'get_burst_current',
                     'get_dimensions', 'get_mount_dimensions',

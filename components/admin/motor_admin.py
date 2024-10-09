@@ -3,6 +3,7 @@ from django.contrib import admin
 from builds.forms import RequiredInlineFormSet
 from components.mixins import BaseModelAdminMixin
 from components.models import MotorDetail, Motor, RatedVoltage
+from galleries.admin.components_admin import MotorGalleryInline
 
 
 class MotorDetailInline(admin.StackedInline):
@@ -15,7 +16,7 @@ class MotorDetailInline(admin.StackedInline):
 
 @admin.register(Motor)
 class MotorAdmin(BaseModelAdminMixin):
-    inlines = [MotorDetailInline, ]
+    inlines = [MotorDetailInline, MotorGalleryInline]
 
     list_display = ('__str__', 'id', 'configuration', 'get_stator_size', 'get_mount_dimensions')
     list_filter = ('manufacturer', 'configuration')
