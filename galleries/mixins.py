@@ -4,30 +4,30 @@ from django.contrib import admin
 from django.db import models
 from imagekit.models import ProcessedImageField
 
+from builds.forms import RequiredInlineFormSet
+
 
 def upload_to_gallery(instance, filename):
     ext = filename.split('.')[-1]
     _object = instance.object
+    _object_type = _object.__class__._meta.app_label
     if _object.pk:
         filename = f'{_object.__class__.__name__}_{instance.object.pk}_{instance.order}.{ext}'
-        filepath = f"images/components/{_object.__class__._meta.verbose_name_plural}/{_object.id}/{filename}"
+        filepath = f"images/{_object_type}/{_object.__class__._meta.verbose_name_plural}/{_object.id}/{filename}"
     else:
         filename = f'{uuid4().hex}.{ext}'
-        filepath = f"images/components/Unknown/{filename}"
+        filepath = f"images/Unknown/{filename}"
     return filepath
 
 
 class BaseImageMixin(models.Model):
     image = ProcessedImageField(upload_to=upload_to_gallery, options={'quality': 75}, format='WEBP')
-    order = models.PositiveIntegerField(default=0)
+    order = models.PositiveIntegerField(default=0, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         abstract = True
         app_label = 'galleries'
-
-        ordering = ['order', '-created_at']
-        unique_together = ('object', 'order')
 
     @classmethod
     def _check_fields(cls, **kwargs):
@@ -36,6 +36,7 @@ class BaseImageMixin(models.Model):
 
 
 class BaseGalleryInlineAdminMixin(admin.StackedInline):
-    extra = 1
+    extra = 0
     max_num = 10
+    formset = RequiredInlineFormSet
     readonly_fields = ('created_at',)

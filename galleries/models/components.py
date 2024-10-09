@@ -11,6 +11,7 @@ class AntennaGallery(BaseImageMixin):
         db_table = 'gallery_antenna'
         verbose_name = _('Antenna Gallery')
         verbose_name_plural = _('Antenna Galleries')
+        ordering = ['object', 'order', '-created_at']
 
 
 class CameraGallery(BaseImageMixin):
@@ -20,6 +21,7 @@ class CameraGallery(BaseImageMixin):
         db_table = 'gallery_camera'
         verbose_name = _('Camera Gallery')
         verbose_name_plural = _('Camera Galleries')
+        ordering = ['object', 'order', '-created_at']
 
 
 class FrameGallery(BaseImageMixin):
@@ -29,6 +31,7 @@ class FrameGallery(BaseImageMixin):
         db_table = 'gallery_frame'
         verbose_name = _('Frame Gallery')
         verbose_name_plural = _('Frame Galleries')
+        ordering = ['object', 'order', '-created_at']
 
 
 class FlightControllerGallery(BaseImageMixin):
@@ -38,6 +41,7 @@ class FlightControllerGallery(BaseImageMixin):
         db_table = 'gallery_flight_controller'
         verbose_name = _('Flight Controller Gallery')
         verbose_name_plural = _('Flight Controller Galleries')
+        ordering = ['object', 'order', '-created_at']
 
 
 class MotorGallery(BaseImageMixin):
@@ -47,6 +51,7 @@ class MotorGallery(BaseImageMixin):
         db_table = 'gallery_motor'
         verbose_name = _('Motor Gallery')
         verbose_name_plural = _('Motor Galleries')
+        ordering = ['object', 'order', '-created_at']
 
 
 class PropellerGallery(BaseImageMixin):
@@ -56,6 +61,7 @@ class PropellerGallery(BaseImageMixin):
         db_table = 'gallery_propeller'
         verbose_name = _('Propeller Gallery')
         verbose_name_plural = _('Propeller Galleries')
+        ordering = ['object', 'order', '-created_at']
 
 
 class ReceiverGallery(BaseImageMixin):
@@ -65,6 +71,7 @@ class ReceiverGallery(BaseImageMixin):
         db_table = 'gallery_receiver'
         verbose_name = _('Receiver Gallery')
         verbose_name_plural = _('Receiver Galleries')
+        ordering = ['object', 'order', '-created_at']
 
 
 class StackGallery(BaseImageMixin):
@@ -74,6 +81,7 @@ class StackGallery(BaseImageMixin):
         db_table = 'gallery_stack'
         verbose_name = _('Stack Gallery')
         verbose_name_plural = _('Stack Galleries')
+        ordering = ['object', 'order', '-created_at']
 
 
 class SpeedControllerGallery(BaseImageMixin):
@@ -83,6 +91,7 @@ class SpeedControllerGallery(BaseImageMixin):
         db_table = 'gallery_speed_controller'
         verbose_name = _('Speed Controller Gallery')
         verbose_name_plural = _('Speed Controller Galleries')
+        ordering = ['object', 'order', '-created_at']
 
 
 class TransmitterGallery(BaseImageMixin):
@@ -92,3 +101,4 @@ class TransmitterGallery(BaseImageMixin):
         db_table = 'gallery_transmitter'
         verbose_name = _('Transmitter Gallery')
         verbose_name_plural = _('Transmitter Galleries')
+        ordering = ['object', 'order', '-created_at']
