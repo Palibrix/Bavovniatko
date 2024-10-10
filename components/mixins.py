@@ -1,4 +1,3 @@
-from ckeditor.fields import RichTextField
 from django.contrib import admin
 from django.db import models
 from django.utils.translation import gettext_lazy as _

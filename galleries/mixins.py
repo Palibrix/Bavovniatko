@@ -16,7 +16,7 @@ def upload_to_gallery(instance, filename):
         filepath = f"images/{_object_type}/{_object.__class__._meta.verbose_name_plural}/{_object.id}/{filename}"
     else:
         filename = f'{uuid4().hex}.{ext}'
-        filepath = f"images/Unknown/{filename}"
+        filepath = f"images/{_object_type}/Unknown/{filename}"
     return filepath
 
 
