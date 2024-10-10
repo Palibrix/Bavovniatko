@@ -3,11 +3,15 @@ from django.contrib import admin
 from components.mixins import BaseModelAdminMixin
 from components.models import SpeedControllerProtocol, SpeedControllerFirmware, FlightControllerFirmware, Gyro, Stack, \
     FlightController, SpeedController
-from galleries.admin.components_admin import SpeedControllerGalleryInline, FlightControllerGalleryInline
+from documents.admin.components_admin import FlightControllerDocumentInline, SpeedControllerDocumentInline, \
+    StackDocumentInline
+from galleries.admin.components_admin import SpeedControllerGalleryInline, FlightControllerGalleryInline, \
+    StackGalleryInline
 
 
 @admin.register(Stack)
 class StackAdmin(BaseModelAdminMixin):
+    inlines = [StackGalleryInline, StackDocumentInline]
     list_display = ('__str__', 'id', 'flight_controller', 'speed_controller',)
     list_filter = ('flight_controller', 'speed_controller')
     search_fields = ('manufacturer', 'model', 'id')
@@ -15,7 +19,7 @@ class StackAdmin(BaseModelAdminMixin):
 
 @admin.register(FlightController)
 class FlightControllerAdmin(BaseModelAdminMixin):
-    inlines = [FlightControllerGalleryInline,]
+    inlines = [FlightControllerGalleryInline, FlightControllerDocumentInline]
     list_display = ('__str__', 'id', 'voltage', 'connector_type',
                     'get_dimensions', 'get_mount_dimensions',
                     'bluetooth', 'wifi', 'barometer',
@@ -28,7 +32,7 @@ class FlightControllerAdmin(BaseModelAdminMixin):
 
 @admin.register(SpeedController)
 class SpeedControllerAdmin(BaseModelAdminMixin):
-    inlines = [SpeedControllerGalleryInline, ]
+    inlines = [SpeedControllerGalleryInline, SpeedControllerDocumentInline]
     list_display = ('__str__', 'id',
                     'voltage', 'get_burst_current',
                     'get_dimensions', 'get_mount_dimensions',

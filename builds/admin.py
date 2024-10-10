@@ -1,12 +1,13 @@
 from django.contrib import admin
 
 from builds.models import Drone
+from documents.admin.builds_admin import DroneDocumentInlineAdmin
 from galleries.admin.builds_admin import DroneGalleryInlineAdmin
 
 
 @admin.register(Drone)
 class DroneAdmin(admin.ModelAdmin):
-    inlines = [DroneGalleryInlineAdmin, ]
+    inlines = [DroneGalleryInlineAdmin, DroneDocumentInlineAdmin]
 
     list_display = ('__str__', 'id', 'created_at', 'updated_at')
 

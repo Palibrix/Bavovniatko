@@ -3,6 +3,7 @@ from django.contrib import admin
 from builds.forms import RequiredInlineFormSet
 from components.mixins import BaseModelAdminMixin
 from components.models import Antenna, AntennaDetail, AntennaType, AntennaConnector
+from documents.admin.components_admin import AntennaDocumentInline
 from galleries.admin.components_admin import AntennaGalleryInline
 
 
@@ -16,7 +17,7 @@ class AntennaDetailInline(admin.StackedInline):
 
 @admin.register(Antenna)
 class AntennaAdmin(BaseModelAdminMixin):
-    inlines = [AntennaDetailInline, AntennaGalleryInline]
+    inlines = [AntennaDetailInline, AntennaGalleryInline, AntennaDocumentInline]
     list_display = ('__str__', 'id', 'type', 'center_frequency', 'get_bandwidth', 'swr', 'radiation')
     sortable_by = ('swr', 'radiation',)
     list_filter = ('manufacturer', 'type', 'center_frequency', 'swr')
