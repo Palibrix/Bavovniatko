@@ -3,6 +3,8 @@ from django.contrib import admin
 from builds.forms import RequiredInlineFormSet
 from components.mixins import BaseModelAdminMixin
 from components.models import Frame, FrameMotorDetail, FrameCameraDetail, FrameVTXDetail
+from documents.admin.components_admin import FrameDocumentInline
+from galleries.admin.components_admin import FrameGalleryInline
 
 
 class FrameMotorDetailInline(admin.StackedInline):
@@ -31,7 +33,7 @@ class FrameVTXDetailInline(admin.StackedInline):
 
 @admin.register(Frame)
 class FrameAdmin(BaseModelAdminMixin):
-    inlines = [FrameMotorDetailInline, FrameCameraDetailInline, FrameVTXDetailInline]
+    inlines = [FrameMotorDetailInline, FrameCameraDetailInline, FrameVTXDetailInline, FrameGalleryInline, FrameDocumentInline]
     list_display = ('__str__', 'id', 'prop_size', 'size',  'material', 'configuration')
     list_filter = ('manufacturer', 'material', 'configuration')
     sortable_by = ('weight', )
