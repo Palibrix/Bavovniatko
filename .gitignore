@@ -218,7 +218,7 @@ cython_debug/
 /.env
 
 # Database for tests
-/tests.db
+/*.db
 
 # Static files
 /static/
