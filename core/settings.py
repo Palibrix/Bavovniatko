@@ -36,6 +36,7 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
     'django_cleanup.apps.CleanupConfig',
     'jazzmin',
 
@@ -47,6 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'drf_yasg',
 
     'components',
     'builds',
