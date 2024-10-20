@@ -67,6 +67,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
+
 if USE_DEBUG_TOOLBAR and DEBUG:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
     INSTALLED_APPS += [
