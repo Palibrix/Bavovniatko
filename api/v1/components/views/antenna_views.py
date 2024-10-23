@@ -10,7 +10,7 @@ class AntennaAPIViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
     permission_classes = ()
     serializer_class = AntennaSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
-    queryset = Antenna.objects.all()
+    queryset = Antenna.objects.all().distinct()
     filterset_fields = ['manufacturer', 'center_frequency', 'bandwidth_min', 'bandwidth_max',
                         'swr', 'gain', 'radiation',
                         'type__type', 'type__direction', 'type__polarization',

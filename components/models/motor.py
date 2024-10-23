@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MinLengthValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -9,9 +9,9 @@ from components.models import Battery
 
 class Motor(BaseComponentMixin):
 
-    stator_diameter = models.CharField(max_length=2, validators=[MinValueValidator(2)],
+    stator_diameter = models.CharField(max_length=2, validators=[MinLengthValidator(2)],
                                        help_text=_("Two first digits of size (e.g. 28 from 2806)"))
-    stator_height = models.CharField(max_length=4, validators=[MinValueValidator(2)],
+    stator_height = models.CharField(max_length=4, validators=[MinLengthValidator(2)],
                                      help_text=_("Two last digits of size (e.g. 06 from 2806 or 06.5 from 2806.5)"))
 
     configuration = models.CharField(max_length=50, help_text=_('Configuration of the motor (e.g. 12N14P)'))
@@ -34,6 +34,10 @@ class Motor(BaseComponentMixin):
     def __str__(self):
         return f'{self.manufacturer} {self.model} {self.get_stator_size}'
 
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     class Meta:
         app_label = 'components'
         db_table = 'components_motor'
@@ -47,8 +51,8 @@ class MotorDetail(BaseModelMixin):
 
     motor = models.ForeignKey('Motor', on_delete=models.CASCADE, related_name='details')
     weight = models.FloatField(validators=[MinValueValidator(0),], help_text=_("Motor weight in grams"))
-    max_power = models.IntegerField(validators=[MinValueValidator(0),], help_text=_("Max power, W"))
-    kv_per_volt = models.IntegerField(validators=[MinValueValidator(0),], help_text=_("KV per volt"),
+    max_power = models.PositiveIntegerField(help_text=_("Max power, W"))
+    kv_per_volt = models.PositiveIntegerField(help_text=_("KV per volt"),
                                       verbose_name='KV per volt')
 
     peak_current = models.FloatField(validators=[MinValueValidator(0),], help_text=_("Peak current of the motor, A"),
@@ -59,7 +63,7 @@ class MotorDetail(BaseModelMixin):
     resistance = models.FloatField(validators=[MinValueValidator(0),], help_text=_("Resistance, in mΩ (mOhm)"),
                                    verbose_name=_('Internal Resistance'), blank=True, null=True)
 
-    voltage = models.ForeignKey('RatedVoltage', on_delete=models.CASCADE, related_name='rated_voltage')
+    voltage = models.ForeignKey('RatedVoltage', on_delete=models.PROTECT, related_name='rated_voltage')
 
     def __str__(self):
         return f'{self.get_kv_per_volt} {self.voltage.max_cells}S'
@@ -108,6 +112,7 @@ class MotorDetail(BaseModelMixin):
 
 
 class RatedVoltage(BaseModelMixin):
+
     min_cells = models.IntegerField(validators=[MinValueValidator(1)], default=1,
                                     verbose_name=_('Min. number of cells'), help_text=_('Number of min. possible quantity of cells in series'))
     max_cells = models.IntegerField(validators=[MinValueValidator(1)], default=1,
@@ -130,10 +135,13 @@ class RatedVoltage(BaseModelMixin):
     def get_cells(self):
         return f'{self.get_min_cells}-{self.get_max_cells}'
 
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     class Meta:
         app_label = 'components'
         db_table = 'components_rated_voltage'
 
         verbose_name = _('Rated Voltage')
         verbose_name_plural = _('Rated Voltages')
-        unique_together = ('min_cells', 'max_cells', 'type')
