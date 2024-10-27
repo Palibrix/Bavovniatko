@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -16,8 +17,8 @@ class Receiver(BaseComponentMixin):
                                     help_text=_('Voltage Range - Maximal Voltage, optional'), verbose_name=_('Maximal Voltage'),
                                     null=True, blank=True)
 
-    antenna_connector = models.ManyToManyField('AntennaConnector')
-    protocol = models.ManyToManyField('ReceiverProtocolType',
+    antenna_connectors = models.ManyToManyField('AntennaConnector')
+    protocols = models.ManyToManyField('ReceiverProtocolType',
                                       verbose_name=_("Output Protocol"), help_text=_("Rx To FC"))
 
     @property
@@ -27,6 +28,14 @@ class Receiver(BaseComponentMixin):
             return f'{self.voltage_min}V'
         else:
             return f'{self.voltage_min}-{self.voltage_max}V'
+
+    def clean(self):
+        if not self.voltage_min <= self.voltage_max:
+            raise ValidationError(_("Max voltage must be higher or equal to min voltage."))
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         app_label = 'components'

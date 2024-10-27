@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_cleanup.apps.CleanupConfig',
     'jazzmin',
+    'crispy_forms',
 
     'django_ckeditor_5',
 

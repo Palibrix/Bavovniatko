@@ -66,11 +66,8 @@ class TestMotorAPIView(BaseAPITest):
                          Motor.objects.filter(details__voltage__min_cells=6).distinct().count())
 
         response = self.client.get(url, {'details__voltage__min_cells': 6,
-                                         'details__peak_current': 40,
+                                         'peak_current_min': 40,
                                          }
                                    )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
-                         Motor.objects.filter(details__voltage__min_cells=6,
-                                               details__peak_current=40,
-                                              ).distinct().count())
+        self.assertEqual(len(response.data), 1)
