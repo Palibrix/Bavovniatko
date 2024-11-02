@@ -1,6 +1,8 @@
 from rest_framework import serializers
 
 from api.v1.components.serializers import AntennaConnectorSerializer
+from api.v1.documents.serializers import ReceiverDocumentSerializer
+from api.v1.galleries.serializers import ReceiverGallerySerializer
 from components.models import Motor, ReceiverProtocolType, ReceiverDetail, Receiver
 
 
@@ -19,9 +21,11 @@ class ReceiverDetailSerializer(serializers.ModelSerializer):
 
 
 class ReceiverSerializer(serializers.ModelSerializer):
-    details = ReceiverDetailSerializer(many=True, read_only=True)
-    protocols = ReceiverProtocolTypeSerializer(many=True, read_only=True)
-    antenna_connectors = AntennaConnectorSerializer(many=True, read_only=True)
+    details = ReceiverDetailSerializer(many=True)
+    protocols = ReceiverProtocolTypeSerializer(many=True)
+    antenna_connectors = AntennaConnectorSerializer(many=True)
+    images = ReceiverGallerySerializer(many=True)
+    documents = ReceiverDocumentSerializer(many=True)
 
     class Meta:
         model = Receiver

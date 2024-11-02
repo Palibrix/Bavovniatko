@@ -5,3 +5,4 @@ from .motor_views import MotorAPIViewSet
 from .propeller_views import PropellerAPIViewSet
 from .receiver_views import ReceiverAPIViewSet
 from .stack_views import StackAPIViewSet, FlightControllerAPIViewSet, SpeedControllerAPIViewSet
+from .transmitter_views import TransmitterAPIViewSet

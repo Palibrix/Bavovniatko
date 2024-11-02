@@ -27,9 +27,9 @@ class AntennaDetailSerializer(serializers.ModelSerializer):
 
 class AntennaSerializer(serializers.ModelSerializer):
     type = AntennaTypeSerializer(read_only=True)
-    gallery = AntennaGallerySerializer(many=True, read_only=True)
-    document = AntennaDocumentSerializer(many=True, read_only=True)
-    details = AntennaDetailSerializer(many=True, read_only=True)
+    images = AntennaGallerySerializer(many=True)
+    documents = AntennaDocumentSerializer(many=True)
+    details = AntennaDetailSerializer(many=True)
 
     class Meta:
         model = Antenna

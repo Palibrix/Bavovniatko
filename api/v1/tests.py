@@ -1,10 +1,9 @@
 from rest_framework.test import APITestCase
 from mixer.backend.django import mixer
 
-from components.models import Stack, FlightController, SpeedController, Antenna
+from components.models import Stack, FlightController, SpeedController, Antenna, Transmitter
 
 
-# Not implemented yet. Will be creating users here
 class BaseAPITest(APITestCase):
     mixer.register(Antenna,
                    description='TestAntenna',
@@ -28,3 +27,10 @@ class BaseAPITest(APITestCase):
                    burst_current=20,
                    )
 
+    mixer.register(Transmitter,
+                   description='TestTransmitter',
+                   output_voltage=1.0,
+                   channels_quantity=2,
+                   input_voltage_min=1.0,
+                   input_voltage_max=2.0,
+                   )
