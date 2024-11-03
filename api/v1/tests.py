@@ -1,6 +1,7 @@
 from rest_framework.test import APITestCase
 from mixer.backend.django import mixer
 
+from builds.models import Drone
 from components.models import Stack, FlightController, SpeedController, Antenna, Transmitter
 
 
@@ -9,6 +10,11 @@ class BaseAPITest(APITestCase):
                    description='TestAntenna',
                    bandwidth_min=1.0,
                    bandwidth_max=20.0,
+                   center_frequency=15
+                   )
+
+    mixer.register(Drone,
+                   description='TestDrone',
                    )
 
     mixer.register(Stack,
