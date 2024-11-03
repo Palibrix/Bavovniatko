@@ -60,9 +60,9 @@ Nothing here (yet)
 * To be continued...
 
 ## What you can do:
-1. [ ] Base: view all available parts and drones
-2. [ ] Search: search any item 
-3. [ ] Filter: filter any Part or Drone by item-specific values
+1. [x] Base: view all available parts and drones
+2. [x] Search: search any item 
+3. [x] Filter: filter any Part or Drone by item-specific values
 4. [ ] Suggest: suggest parts to add them to the database
 5. [ ] Save: select parts and drones for ease access in the future. You also can create item groups (like music playlists)
 6. [ ] Create: create drones from parts and see if parts are compatible with each other
@@ -73,8 +73,8 @@ Nothing here (yet)
 
 | Version     | №  | Features |     State     |
 |:------------|:--:|:--------:|:-------------:|
-| Base        | v1 | 1, 2, 3  | Documentation |
-| Suggestions | v2 |   4, 5   | Documentation |
+| Base        | v1 | 1, 2, 3  |     Done      |
+| Suggestions | v2 |   4, 5   |  Development  |
 | Creations   | v3 |    6     | Documentation |
 | Social      | v4 |   7, 8   | Documentation |
 | Social 2    | v5 |  9, 10   |   Suspended   |

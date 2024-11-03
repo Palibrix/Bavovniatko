@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -43,6 +44,9 @@ class Transmitter(BaseComponentMixin):
     height = models.FloatField(help_text=_('Height of the item, mm'))
     thickness = models.FloatField(help_text=_('Thickness of the item, mm'))
 
+    weight = models.FloatField(help_text=_('Weight oh the transmitter in grams'),
+                               blank=True, null=True)
+
     @property
     @admin.display(description=_('Input Voltage Range'))
     def get_input_voltage(self):
@@ -52,6 +56,10 @@ class Transmitter(BaseComponentMixin):
     @admin.display(description=_('Physical Dimensions'))
     def get_dimensions(self):
         return _(f'L{self.length} x H{self.height} x T{self.thickness}')
+
+    def clean(self):
+        if not self.input_voltage_min <= self.input_voltage_max:
+            raise ValidationError(_("Max. input voltage must be higher or equal to min. input voltage"))
 
     class Meta:
         app_label = 'components'

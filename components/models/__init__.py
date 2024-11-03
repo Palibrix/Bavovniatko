@@ -1,13 +1,14 @@
 # flake8: noqa
-from .antenna import *
-from .battery import *
-from .camera import *
-from .receiver import *
-from .frame import *
-from .motor import *
-from .stack import *
-from .propeller import *
-from .transmitter import *
+from .antenna import Antenna, AntennaType, AntennaDetail, AntennaConnector
+from .battery import Battery
+from .camera import Camera, CameraDetail, VideoFormat
+from .receiver import Receiver, ReceiverDetail, ReceiverProtocolType
+from .frame import Frame, FrameVTXDetail, FrameCameraDetail, FrameMotorDetail
+from .motor import MotorDetail, Motor, RatedVoltage
+from .stack import (Stack, Gyro, SpeedControllerProtocol, SpeedController,
+                    SpeedControllerFirmware, FlightControllerFirmware, FlightController)
+from .propeller import Propeller
+from .transmitter import Transmitter, OutputPower
 
 __all__ = [
     'Antenna',
