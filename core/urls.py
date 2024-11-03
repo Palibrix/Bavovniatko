@@ -15,8 +15,38 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include, re_path
+from django.conf import settings
+from django.conf.urls.static import static
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Bavovniatko API",
+        default_version='v1',
+        description="API for Bavovniatko application",
+
+    ),
+    public=True,
+
+    permission_classes=[permissions.AllowAny,],
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("ckeditor5/", include('django_ckeditor_5.urls')),
+    re_path(r'^api/docs(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0),
+            name='schema-json'),
+    re_path(r'^api/docs$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    re_path(r'^api/redoc$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    re_path(r'^api/', include('api.urls', namespace='api')),
 ]
+
+urlpatterns += [
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.USE_DEBUG_TOOLBAR and settings.DEBUG:
+    from debug_toolbar.toolbar import debug_toolbar_urls
+    urlpatterns += debug_toolbar_urls()

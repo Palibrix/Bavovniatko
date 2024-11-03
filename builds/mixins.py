@@ -1,6 +1,8 @@
-from ckeditor.fields import RichTextField
+# from ckeditor.fields import RichTextField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_ckeditor_5.fields import CKEditor5Field
+
 
 class BaseDroneMixin(models.Model):
 
@@ -12,7 +14,7 @@ class BaseDroneMixin(models.Model):
 
     manufacturer = models.CharField(max_length=50, blank=True, null=True)
     model = models.CharField(max_length=50, help_text=_("Full name of the Drone"))
-    description = RichTextField(blank=True, help_text=_("Long description of the Drone"))
+    description = CKEditor5Field('Text', blank=True, help_text=_("Long description of the Drone"))
     short_description = models.CharField(max_length=256, help_text=_("Short description of the Drone"),
                                          blank=True, null=True)
     type = models.CharField(choices=TypeChoices.choices, max_length=50, default=TypeChoices.PHOTOGRAPHY)

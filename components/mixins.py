@@ -1,7 +1,7 @@
-from ckeditor.fields import RichTextField
 from django.contrib import admin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_ckeditor_5.fields import CKEditor5Field
 
 
 class BaseModelMixin(models.Model):
@@ -19,7 +19,7 @@ class BaseModelMixin(models.Model):
 class BaseComponentMixin(BaseModelMixin):
     manufacturer = models.CharField(max_length=50)
     model = models.CharField(max_length=50, help_text=_("Full name of the item"))
-    description = RichTextField(blank=True, help_text=_("Long description of the item"))
+    description = CKEditor5Field('Text', blank=True, help_text=_("Long description of the item"))
 
     def __str__(self):
         return f"{self.manufacturer} {self.model}"

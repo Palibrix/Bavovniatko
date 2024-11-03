@@ -41,6 +41,9 @@ class FlightController(BaseComponentMixin):
                                null=True, blank=True)
     width = models.FloatField(help_text=_('Width of the FC, mm'))
 
+    def is_in_stack(self):
+        return self.stack_set.exists()
+
     @property
     @admin.display(description=_('Physical Dimensions'))
     def get_dimensions(self):
@@ -56,6 +59,10 @@ class FlightController(BaseComponentMixin):
 
     def __str__(self):
         return f'{self.manufacturer} {self.model} {self.get_mount_dimensions}'
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         app_label = 'components'
@@ -93,6 +100,9 @@ class SpeedController(BaseComponentMixin):
                                null=True, blank=True)
     width = models.FloatField(help_text=_('Width of the ESC, mm'))
 
+    def is_in_stack(self):
+        return self.stack_set.exists()
+
     @property
     @admin.display(description=_('Physical Dimensions'))
     def get_dimensions(self):
@@ -118,6 +128,10 @@ class SpeedController(BaseComponentMixin):
 
     def __str__(self):
         return f'{self.manufacturer} {self.model} {self.get_cont_current} {self.get_mount_dimensions} {self.esc_type}'
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         app_label = 'components'

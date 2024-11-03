@@ -95,8 +95,8 @@ class CameraDetail(BaseModelMixin):
         app_label = 'components'
         db_table = 'components_camera_detail'
 
-        verbose_name = 'Camera Detail'
-        verbose_name_plural = 'Camera Details'
+        verbose_name = _('Camera Detail')
+        verbose_name_plural = _('Camera Details')
         unique_together = ['camera', 'height', 'width']
 
 

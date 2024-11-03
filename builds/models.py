@@ -1,6 +1,7 @@
 from builds.mixins import BaseDroneMixin
 from django.utils.translation import gettext_lazy as _
 
+
 class Drone(BaseDroneMixin):
 
     class Meta:
@@ -11,4 +12,3 @@ class Drone(BaseDroneMixin):
         verbose_name_plural = _('Drones')
         ordering = ('manufacturer', 'model')
         unique_together = (('manufacturer', 'model',),)
-
