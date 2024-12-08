@@ -55,8 +55,11 @@ INSTALLED_APPS = [
     'components',
     'builds',
     'galleries',
-    'documents'
+    'documents',
+    'users.apps.UsersConfig'
 ]
+
+AUTH_USER_MODEL='users.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

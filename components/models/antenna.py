@@ -43,6 +43,10 @@ class Antenna(BaseComponentMixin):
             raise ValidationError(_("Max frequency must be higher or equal to min frequency and "
                                   "center_frequency must be between them."))
 
+    # def get_absolute_url(self):
+    #     from django.urls import reverse
+    #     return reverse('api:v1:components:antenna-detail', kwargs={'pk': self.pk})
+
     class Meta:
         app_label = 'components'
         db_table = 'components_antenna'
