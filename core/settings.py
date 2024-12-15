@@ -27,6 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 load_dotenv()
 
+CONSTANCE_ADDITIONAL_FIELDS = constance_additional_fieldsets
+CONSTANCE_CONFIG = constance_config
+CONSTANCE_CONFIG_FIELDSETS = constance_config_fieldsets
 
 # SECRET_KEY was changed :D
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -63,7 +66,8 @@ INSTALLED_APPS = [
     'builds',
     'galleries',
     'documents',
-    'suggestions'
+    'suggestions',
+    'users'
 ]
 
 AUTH_USER_MODEL = 'users.User'

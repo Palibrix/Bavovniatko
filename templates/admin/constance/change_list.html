@@ -5,13 +5,14 @@
     {{ block.super }}
     {{ media.css }}
     <link rel="stylesheet" type="text/css" href="{% static 'admin/css/constance.css' %}" />
-    <link rel="stylesheet" href="{% static 'constance/css/constance-button.css' %}" />
+    <link rel="stylesheet" href="{% static 'constance/css/constance-jazzmin.css' %}" />
     <link rel="stylesheet" href="{% static 'vendor/select2/css/select2.min.css' %}">
 {% endblock %}
 
 {% block extrahead %}
     {{ block.super }}
     {{ media.js }}
+    <script type="text/javascript" src="{% static 'constance/js/collapse.js' %}"></script>
 {% endblock %}
 
 {% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list{% endblock %}
@@ -44,12 +45,19 @@
                 <div class="card-body">
                     {% if fieldsets %}
                       {% for fieldset in fieldsets %}
-                      <fieldset style="width: 100%" class="module{% if fieldset.collapse %} collapse{% endif %}" id="changelist">
-                          <div class="card card-primary row" style="border-top: 2px solid #007bff;">
-                              <h2 style="margin-left: 20px; margin-top: 10px;">{{ fieldset.title }}</h2>
-                                    {% with config_values=fieldset.config_values %}
-                                    {% include "admin/constance/includes/results_list.html" %}
-                                    {% endwith %}
+                      <fieldset style="width: 100%" id="changelist">
+                          <div class="card card-primary row collapsible-block">
+                              <h2 style="padding: 10px 20px 10px 20px; display: flex; flex-direction: row;" class="collapsible">
+                                  <span>{{ fieldset.title }}</span>
+                                  <span class="toggle-icon" style="margin-left: auto;">
+                                      {% if fieldset.collapse %} + {% else %} - {% endif %}
+                                  </span>
+                              </h2>
+                              <div class="fieldset" style="display: {% if fieldset.collapse %}none{% else %}block{% endif %};">
+                                  {% with config_values=fieldset.config_values %}
+                                      {% include "admin/constance/includes/results_list.html" %}
+                                  {% endwith %}
+                              </div>
                           </div>
                       </fieldset>
                       {% endfor %}
