@@ -42,8 +42,6 @@ class BaseAntennaDetailMixin(models.Model):
         ANGLED = 'angled', _('Angled')
         STRAIGHT = 'straight', _('Straight')
 
-    antenna = models.ForeignKey('components.Antenna', on_delete=models.CASCADE, related_name='details')
-
     connector_type = models.ForeignKey('components.AntennaConnector', on_delete=models.PROTECT)
     weight = models.FloatField(help_text=_('Weight of the antenna in grams'), )
     angle_type = models.CharField(max_length=50, choices=ConnectorChoice.choices,

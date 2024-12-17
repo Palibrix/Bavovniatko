@@ -42,6 +42,8 @@ class AntennaType(BaseModelMixin, BaseAntennaTypeMixin):
 
 class AntennaDetail(BaseModelMixin, BaseAntennaDetailMixin):
 
+    antenna = models.ForeignKey('components.Antenna', on_delete=models.CASCADE, related_name='details')
+
     def delete(self, *args, **kwargs):
         if self.antenna.details.count() > 1:
             super().delete(*args, **kwargs)
