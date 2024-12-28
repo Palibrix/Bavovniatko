@@ -1,12 +1,13 @@
 from django.contrib import admin
 
 from builds.models import Drone
+from components.mixins import BaseModelAdminMixin
 from documents.admin.builds_admin import DroneDocumentInlineAdmin
 from galleries.admin.builds_admin import DroneGalleryInlineAdmin
 
 
 @admin.register(Drone)
-class DroneAdmin(admin.ModelAdmin):
+class DroneAdmin(BaseModelAdminMixin):
     inlines = [DroneGalleryInlineAdmin, DroneDocumentInlineAdmin]
 
     list_display = ('__str__', 'id', 'created_at', 'updated_at')
@@ -15,7 +16,5 @@ class DroneAdmin(admin.ModelAdmin):
                    'propeller', 'receiver', 'transmitter',
                    'flight_controller', 'speed_controller')
 
-    empty_value_display = '???'
     readonly_fields = ('id', 'created_at', 'updated_at')
     search_fields = ('model', 'id', 'manufacturer',)
-    list_display_links = ('__str__',)

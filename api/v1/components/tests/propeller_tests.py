@@ -25,18 +25,18 @@ class TestPropellerAPIView(BaseAPITest):
         url = reverse('api:v1:components:propeller-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), Propeller.objects.all().count())
+        self.assertEqual(response.data.get('count'), Propeller.objects.all().count())
 
     def test_search_propeller(self):
         url = reverse('api:v1:components:propeller-list')
         response = self.client.get(url, {'search': 'Man'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Propeller.objects.filter(manufacturer__contains='Man').count())
 
         response = self.client.get(url, {'search': 'Manufacturer1'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Propeller.objects.filter(manufacturer__contains='Manufacturer1').count())
 
     def test_filter_propeller(self):
@@ -44,5 +44,5 @@ class TestPropellerAPIView(BaseAPITest):
         response = self.client.get(url, {'blade_count': 6})
         self.assertEqual(response.status_code, 200)
 
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Propeller.objects.filter(blade_count=6).distinct().count())

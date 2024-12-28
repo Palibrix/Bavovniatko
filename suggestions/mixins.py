@@ -1,16 +1,38 @@
 from abc import abstractmethod
 
 from django.contrib import admin, messages
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.db import models
+from django.db import models, transaction
 from django.http import HttpResponseRedirect
 
+from components.mixins import BaseModelAdminMixin
+
+User = get_user_model()
+
+class BaseSuggestionFilesDeletionMixin(models.Model):
+
+    @transaction.atomic
+    def delete(self, *args, **kwargs):
+        for image in self.suggested_images.all():
+            if not image.object:
+                image.delete()
+
+        for file in self.suggested_documents.all():
+            if not file.object:
+                file.delete()
+
+        super().delete(*args, **kwargs)
+
+    class Meta:
+        abstract = True
 
 class BaseSuggestionMixin(models.Model):
     reviewed = models.BooleanField(default=False)
     accepted = models.BooleanField(default=False)
     admin_comment = models.TextField(blank=True, null=True)
     request_description = models.TextField(blank=True, null=True)
+    user  = models.ForeignKey(User, on_delete=models.CASCADE)
 
     @abstractmethod
     def accept(self):
@@ -18,6 +40,7 @@ class BaseSuggestionMixin(models.Model):
 
     def deny(self):
         self.reviewed = True
+        self.accepted = False
         self.save()
 
     class Meta:
@@ -38,12 +61,11 @@ def accept_suggestions(modeladmin, request, queryset):
 @admin.action(description="Deny selected suggestions")
 def deny_suggestions(modeladmin, request, queryset):
     for suggestion in queryset:
-        suggestion.reviewed = True
-        suggestion.save()
+        suggestion.deny()
     messages.success(request, "Selected suggestions have been denied.")
 
 
-class BaseSuggestionAdminMixin(admin.ModelAdmin):
+class BaseSuggestionAdminMixin(BaseModelAdminMixin):
     actions = [accept_suggestions, deny_suggestions]
 
     def get_actions(self, request):

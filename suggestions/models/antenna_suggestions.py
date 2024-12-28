@@ -5,10 +5,10 @@ from components.mixins import BaseComponentMixin, BaseModelMixin
 from components.mixins.base_antenna_mixins import BaseAntennaMixin, BaseAntennaTypeMixin, BaseAntennaConnectorMixin, \
     BaseAntennaDetailMixin
 from components.models import Antenna, AntennaDetail, AntennaType, AntennaConnector
-from suggestions.mixins import BaseSuggestionMixin
+from suggestions.mixins import BaseSuggestionMixin, BaseSuggestionFilesDeletionMixin
 
 
-class AntennaSuggestion(BaseComponentMixin, BaseAntennaMixin, BaseSuggestionMixin):
+class AntennaSuggestion(BaseSuggestionFilesDeletionMixin, BaseComponentMixin, BaseAntennaMixin, BaseSuggestionMixin):
     related_instance = models.ForeignKey('components.Antenna', blank=True, null=True, related_name='submitted_suggestions',
                                      on_delete=models.CASCADE)
 
@@ -43,6 +43,16 @@ class AntennaSuggestion(BaseComponentMixin, BaseAntennaMixin, BaseSuggestionMixi
         if created:
             self.related_instance = antenna
             self.save()
+
+        for suggested_image in self.suggested_images.all():
+            if not suggested_image.object:
+                suggested_image.object = antenna
+            suggested_image.save()
+
+        for suggested_document in self.suggested_documents.all():
+            if not suggested_document.object:
+                suggested_document.object = antenna
+            suggested_document.save()
 
         for suggested_detail in self.suggested_details.all():
             antenna_detail, created = AntennaDetail.objects.update_or_create(
@@ -184,3 +194,10 @@ class SuggestedAntennaDetailSuggestion(BaseModelMixin, BaseAntennaDetailMixin):
         verbose_name_plural = _('Suggested Antenna Details')
         ordering = ['related_instance', 'connector_type']
         unique_together = ('related_instance', 'connector_type', 'angle_type')
+
+    @transaction.atomic
+    def delete(self, *args, **kwargs):
+        if self.antenna.suggested_details.count() > 1:
+            super().delete(*args, **kwargs)
+        else:
+            raise models.ProtectedError(_("Cannot delete the only AntennaDetail for this Antenna."), self)

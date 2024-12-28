@@ -5,7 +5,9 @@ from documents.mixins import BaseDocumentMixin
 
 
 class AntennaDocument(BaseDocumentMixin):
-    object = models.ForeignKey('components.Antenna', on_delete=models.CASCADE, related_name='documents')
+    object = models.ForeignKey('components.Antenna', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
+    suggestion = models.ForeignKey('suggestions.AntennaSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_documents')
 
     class Meta:
         db_table = 'documents_antenna'

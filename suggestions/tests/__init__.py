@@ -1,0 +1,2 @@
+from .antenna_suggestions_tests import TestAntennaConnectorSuggestionModel, TestAntennaTypeSuggestionModel, \
+    TestAntennaSuggestionModel, TestSuggestedAntennaDetailSuggestionModel, TestExistingAntennaDetailSuggestionModel

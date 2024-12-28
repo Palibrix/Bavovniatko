@@ -5,7 +5,8 @@ from galleries.mixins import BaseImageMixin
 
 
 class AntennaGallery(BaseImageMixin):
-    object = models.ForeignKey('components.Antenna', on_delete=models.CASCADE, related_name='images')
+    object = models.ForeignKey('components.Antenna', blank=True, null=True,on_delete=models.CASCADE, related_name='images')
+    suggestion = models.ForeignKey('suggestions.AntennaSuggestion', blank=True, null=True, on_delete=models.SET_NULL, related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_antenna'
