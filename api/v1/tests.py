@@ -5,12 +5,20 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from builds.models import Drone
 from components.models import Stack, FlightController, SpeedController, Antenna, Transmitter
+from suggestions.models import AntennaSuggestion
 from users.tests import BaseUserTest
 
 
 class BaseAPITest(APITestCase, BaseUserTest):
     mixer.register(Antenna,
                    description='TestAntenna',
+                   bandwidth_min=1.0,
+                   bandwidth_max=20.0,
+                   center_frequency=15
+                   )
+
+    mixer.register(AntennaSuggestion,
+                   description='TestAntennaSuggestion',
                    bandwidth_min=1.0,
                    bandwidth_max=20.0,
                    center_frequency=15

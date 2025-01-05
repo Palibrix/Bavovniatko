@@ -112,6 +112,7 @@ class AntennaTypeSuggestion(BaseModelMixin, BaseAntennaTypeMixin, BaseSuggestion
         verbose_name_plural = _('Antenna Type Suggestions')
         ordering = ['type']
 
+
 class AntennaConnectorSuggestion(BaseModelMixin, BaseAntennaConnectorMixin, BaseSuggestionMixin):
     related_instance = models.ForeignKey('components.AntennaConnector', blank=True, null=True, related_name='submitted_suggestions',
                                      on_delete=models.CASCADE)
@@ -182,7 +183,7 @@ class ExistingAntennaDetailSuggestion(BaseModelMixin, BaseAntennaDetailMixin, Ba
 
 class SuggestedAntennaDetailSuggestion(BaseModelMixin, BaseAntennaDetailMixin):
     """ Add detail to suggested antenna """
-    antenna = models.ForeignKey('suggestions.AntennaSuggestion', on_delete=models.CASCADE, related_name='suggested_details', verbose_name='details')
+    suggestion = models.ForeignKey('suggestions.AntennaSuggestion', on_delete=models.CASCADE, related_name='suggested_details', verbose_name='details')
     related_instance = models.ForeignKey('components.AntennaDetail', on_delete=models.CASCADE, blank=True, null=True,
                                          related_name='submitted_suggestions', verbose_name='submitted_suggestions')
 
@@ -197,7 +198,7 @@ class SuggestedAntennaDetailSuggestion(BaseModelMixin, BaseAntennaDetailMixin):
 
     @transaction.atomic
     def delete(self, *args, **kwargs):
-        if self.antenna.suggested_details.count() > 1:
+        if self.suggestion.suggested_details.count() > 1:
             super().delete(*args, **kwargs)
         else:
             raise models.ProtectedError(_("Cannot delete the only AntennaDetail for this Antenna."), self)

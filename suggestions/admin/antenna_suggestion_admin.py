@@ -14,7 +14,7 @@ class SuggestedAntennaDetailSuggestionInline(admin.StackedInline):
     min_num = 1
     extra = 0
     formset = RequiredInlineFormSet
-    fk_name = 'antenna'
+    fk_name = 'suggestion'
 
 
 @admin.register(AntennaSuggestion)

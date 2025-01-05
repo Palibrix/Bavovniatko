@@ -1,17 +1,34 @@
+from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
+from api.v1.utils import ReadOnlyModelSerializer
 from galleries.models import (AntennaGallery, CameraGallery, DroneGallery, FrameGallery, MotorGallery, StackGallery,
                               PropellerGallery, ReceiverGallery, TransmitterGallery,
                               SpeedControllerGallery, FlightControllerGallery)
 
 
-class AntennaGallerySerializer(serializers.ModelSerializer):
+class AntennaGalleryReadSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = AntennaGallery
         fields = '__all__'
 
 
-class CameraGallerySerializer(serializers.ModelSerializer):
+class AntennaGalleryWriteSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(
+        queryset=AntennaGallery.objects.values_list('id', flat=True),
+        write_only=True,
+        many=False,
+        required=False,
+    )
+    image = Base64ImageField()
+
+    class Meta:
+        model = AntennaGallery
+        fields = ('id', 'image', 'order')
+        # read_only_fields = ('object', 'suggestion', 'accepted')
+
+
+class CameraGallerySerializer(ReadOnlyModelSerializer):
     class Meta:
         model = CameraGallery
         fields = '__all__'

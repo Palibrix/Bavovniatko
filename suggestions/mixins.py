@@ -38,9 +38,11 @@ class BaseSuggestionMixin(models.Model):
     def accept(self):
         pass
 
-    def deny(self):
+    def deny(self, admin_comment=None):
         self.reviewed = True
         self.accepted = False
+        if admin_comment:
+            self.admin_comment = admin_comment
         self.save()
 
     class Meta:

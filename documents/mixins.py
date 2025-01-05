@@ -1,5 +1,8 @@
+import filetype
 from django.contrib import admin
 from django.db import models
+from drf_extra_fields.fields import Base64FileField
+from rest_framework.exceptions import ValidationError
 
 
 def upload_to_filestorage(instance, filename):
@@ -42,3 +45,12 @@ class BaseDocumentInlineAdminMixin(admin.StackedInline):
     readonly_fields = ('created_at',)
     ### TODO: uncomment row when all suggestion models will be added
     # readonly_fields = ('object', 'suggestion', 'accepted', 'created_at')
+
+
+class Base64FileField(Base64FileField):
+    ALLOWED_TYPES = ['pdf', 'png', 'doc', 'docx']
+
+    def get_file_extension(self, filename, decoded_file):
+        kind = filetype.guess(decoded_file)
+        if kind.extension in self.ALLOWED_TYPES:
+            return kind.extension

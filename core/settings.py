@@ -22,7 +22,6 @@ from core.utils.debug_disable import debug_disable
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 load_dotenv()
@@ -38,7 +37,6 @@ USE_DEBUG_TOOLBAR = config.USE_DEBUG_TOOLBAR
 
 BASE_URL = os.getenv('BASE_URL', 'http://localhost:8000')
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
-
 
 # Application definition
 
@@ -86,9 +84,21 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': config.PAGE_SIZE,
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+    ],
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    'TEST_REQUEST_RENDERER_CLASSES': [
+        'rest_framework.renderers.MultiPartRenderer',
+        'rest_framework.renderers.HTMLFormRenderer',
+        'rest_framework.renderers.JSONRenderer',
+    #     'rest_framework.renderers.TemplateHTMLRenderer'
+    ]
 }
 
 SIMPLE_JWT = {
@@ -129,7 +139,6 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
-
 
 if USE_DEBUG_TOOLBAR and DEBUG:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']

@@ -23,8 +23,8 @@ class TestAntennaSuggestionModel(BaseUserTest):
                                               bandwidth_max=2.0,
                                               center_frequency=1.5)
 
-        self.antenna_detail_1 = mixer.blend(SuggestedAntennaDetailSuggestion, antenna=self.antenna_suggestion)
-        self.antenna_detail_2 = mixer.blend(SuggestedAntennaDetailSuggestion, antenna=self.antenna_suggestion)
+        self.antenna_detail_1 = mixer.blend(SuggestedAntennaDetailSuggestion, suggestion=self.antenna_suggestion)
+        self.antenna_detail_2 = mixer.blend(SuggestedAntennaDetailSuggestion, suggestion=self.antenna_suggestion)
 
     def test_deny(self):
         self.antenna_suggestion.deny()
@@ -251,8 +251,8 @@ class TestSuggestedAntennaDetailSuggestionModel(BaseUserTest):
                                               bandwidth_max=2.0,
                                               center_frequency=1.5)
 
-        self.antenna_detail_1 = mixer.blend(SuggestedAntennaDetailSuggestion, antenna=self.antenna_suggestion)
-        self.antenna_detail_2 = mixer.blend(SuggestedAntennaDetailSuggestion, antenna=self.antenna_suggestion)
+        self.antenna_detail_1 = mixer.blend(SuggestedAntennaDetailSuggestion, suggestion=self.antenna_suggestion)
+        self.antenna_detail_2 = mixer.blend(SuggestedAntennaDetailSuggestion, suggestion=self.antenna_suggestion)
 
     def test_accept_details(self):
         self.antenna_suggestion.accept()
