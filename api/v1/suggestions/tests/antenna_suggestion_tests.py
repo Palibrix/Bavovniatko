@@ -8,7 +8,8 @@ from api.v1.tests import BaseAPITest
 from components.models import AntennaType, Antenna, AntennaConnector
 from galleries.models import AntennaGallery
 from suggestions.models import AntennaSuggestion
-from suggestions.models.antenna_suggestions import SuggestedAntennaDetailSuggestion
+from suggestions.models.antenna_suggestions import SuggestedAntennaDetailSuggestion, AntennaTypeSuggestion, \
+    AntennaConnectorSuggestion
 
 
 class TestAntennaSuggestionAPIView(BaseAPITest):
@@ -134,7 +135,7 @@ class TestAntennaSuggestionAPIView(BaseAPITest):
                                "order": 1
                            }
                        ],
-                       'suggested_documents':[
+                       'suggested_documents': [
                            {
                                'file': self.create_base64_pdf(),
                            }
@@ -158,7 +159,7 @@ class TestAntennaSuggestionAPIView(BaseAPITest):
                                "image": self.create_base64_image('test_test.jpg'),
                                "order": 1
                            },
-]                       }
+                       ]}
         url = reverse("api:v1:suggestions:antenna-detail", args={self.antenna_suggestion_1.id})
         response = self.client.patch(url, data=update_data)
         self.assertEqual(response.status_code, 200)
@@ -169,13 +170,13 @@ class TestAntennaSuggestionAPIView(BaseAPITest):
 
     def test_partial_update_wrong_image(self):
         update_data = {
-                       "suggested_images": [
-                           {
-                               'id': 2,
-                               "image": self.create_base64_image('test_test.jpg'),
-                               "order": 1
-                           },
-                       ]}
+            "suggested_images": [
+                {
+                    'id': 2,
+                    "image": self.create_base64_image('test_test.jpg'),
+                    "order": 1
+                },
+            ]}
         url = reverse("api:v1:suggestions:antenna-detail", args={self.antenna_suggestion_1.id})
         response = self.client.patch(url, data=update_data)
         self.assertEqual(response.status_code, 400)
@@ -239,10 +240,283 @@ class TestAntennaSuggestionAPIView(BaseAPITest):
         superuser = self.create_super_user('test_superuser')
         self.authorize(superuser)
 
+        message = {
+            'admin_comment': 'Denied because of a reason'
+        }
         url = reverse("api:v1:suggestions:antenna-deny", args={self.antenna_suggestion_1.id})
-        response = self.client.post(url)
+        response = self.client.post(url, data=message)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Antenna.objects.count(), 1)
         self.antenna_suggestion_1.refresh_from_db()
         self.assertTrue(self.antenna_suggestion_1.reviewed)
         self.assertFalse(self.antenna_suggestion_1.accepted)
+        self.assertEqual(self.antenna_suggestion_1.admin_comment, message['admin_comment'])
+
+
+class TestAntennaTypeSuggestionAPIView(BaseAPITest):
+    def setUp(self):
+        self.user_1 = self.create_and_login(username="test1",
+                                            email="test1@email.com")
+        self.user_2 = self.create(username="test2",
+                                  email="test2@email.com")
+        self.type_suggestion_1 = mixer.blend(AntennaTypeSuggestion,
+                                             user=self.user_1,
+                                             type='Type 1',
+                                             direction='omni')
+        self.type_suggestion_2 = mixer.blend(AntennaTypeSuggestion,
+                                             user=self.user_2, )
+        self.type = mixer.blend(AntennaType)
+
+        self.create_data = {
+            'type': 'Monopole',
+            'direction': 'omni',
+            'polarization': 'linear'
+        }
+
+    def test_list(self):
+        url = reverse("api:v1:suggestions:antenna_type-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get("count"), AntennaTypeSuggestion.objects.filter(user=self.user_1).count())
+
+    def test_detail(self):
+        url = reverse("api:v1:suggestions:antenna_type-detail", args={self.type_suggestion_1.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_detail_not_owner(self):
+        url = reverse("api:v1:suggestions:antenna_type-detail", args={self.type_suggestion_2.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_create_new(self):
+        url = reverse("api:v1:suggestions:antenna_type-list")
+        response = self.client.post(url, data=self.create_data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(AntennaTypeSuggestion.objects.count(), 3)
+
+    def test_create_existing(self):
+        create_data = self.create_data
+        create_data.update({
+            'related_instance_id': self.type.id,
+            "type": "Dipole",
+        })
+        url = reverse("api:v1:suggestions:antenna_type-list")
+        response = self.client.post(url, data=create_data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(AntennaTypeSuggestion.objects.count(), 3)
+
+    def test_update(self):
+        url = reverse("api:v1:suggestions:antenna_type-detail", args={self.type_suggestion_1.pk})
+        response = self.client.put(url, data=self.create_data)
+        self.assertEqual(response.status_code, 200)
+        self.type_suggestion_1.refresh_from_db()
+        self.assertEqual(self.type_suggestion_1.type, self.create_data["type"])
+
+    def test_partial_update(self):
+        update_data = {
+            'type': self.create_data["type"],
+        }
+        url = reverse("api:v1:suggestions:antenna_type-detail", args={self.type_suggestion_1.pk})
+        response = self.client.patch(url, data=update_data)
+        self.assertEqual(response.status_code, 200)
+        self.type_suggestion_1.refresh_from_db()
+        self.assertEqual(self.type_suggestion_1.type, self.create_data["type"])
+        self.assertEqual(self.type_suggestion_1.direction, 'omni')
+
+    def test_partial_update_after_accept(self):
+        self.type_suggestion_1.accept()
+
+        update_data = {"type": "New Type"}
+        url = reverse("api:v1:suggestions:antenna_type-detail", args={self.type_suggestion_1.id})
+        response = self.client.patch(url, data=update_data)
+        self.assertEqual(response.status_code, 200)
+        self.type_suggestion_1.refresh_from_db()
+
+        self.assertFalse(self.type_suggestion_1.reviewed)
+        self.assertFalse(self.type_suggestion_1.accepted)
+
+    def test_delete(self):
+        url = reverse("api:v1:suggestions:antenna_type-detail", args={self.type_suggestion_1.id})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+
+    def test_accept_not_admin(self):
+        url = reverse("api:v1:suggestions:antenna_type-accept", args={self.type_suggestion_1.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(AntennaType.objects.count(), 1)
+
+    def test_accept(self):
+        self.logout()
+        superuser = self.create_super_user('test_superuser')
+        self.authorize(superuser)
+
+        url = reverse("api:v1:suggestions:antenna_type-accept", args={self.type_suggestion_1.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(AntennaType.objects.count(), 2)
+        self.type_suggestion_1.refresh_from_db()
+        self.assertTrue(self.type_suggestion_1.reviewed)
+        self.assertTrue(self.type_suggestion_1.accepted)
+
+    def test_accept_existing(self):
+        self.logout()
+        superuser = self.create_super_user('test_superuser')
+        self.authorize(superuser)
+
+        existing_type_suggestion = mixer.blend(AntennaTypeSuggestion,
+                                               user=self.user_1,
+                                               related_instance=self.type,
+                                               type='Suggestion to change type')
+
+        url = reverse("api:v1:suggestions:antenna_type-accept", args={existing_type_suggestion.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(AntennaType.objects.count(), 1)
+
+    def test_deny(self):
+        self.logout()
+        superuser = self.create_super_user('test_superuser')
+        self.authorize(superuser)
+
+        url = reverse("api:v1:suggestions:antenna_type-deny", args={self.type_suggestion_1.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(AntennaType.objects.count(), 1)
+        self.type_suggestion_1.refresh_from_db()
+        self.assertTrue(self.type_suggestion_1.reviewed)
+        self.assertFalse(self.type_suggestion_1.accepted)
+
+
+class TestAntennaConnectorSuggestionAPIView(BaseAPITest):
+    def setUp(self):
+        self.user_1 = self.create_and_login(username="test1",
+                                            email="test1@email.com")
+        self.user_2 = self.create(username="test2",
+                                  email="test2@email.com")
+        self.connector_suggestion_1 = mixer.blend(AntennaConnectorSuggestion,
+                                                  user=self.user_1,
+                                                  type='Type 1')
+        self.connector_suggestion_2 = mixer.blend(AntennaConnectorSuggestion,
+                                                  user=self.user_2,
+                                                  type='Type 2')
+        self.connector = mixer.blend(AntennaConnector)
+
+        self.create_data = {
+            'type': 'Type 3',
+        }
+
+    def test_list(self):
+        url = reverse("api:v1:suggestions:antenna_connector-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get("count"), AntennaConnectorSuggestion.objects.filter(user=self.user_1).count())
+
+    def test_detail(self):
+        url = reverse("api:v1:suggestions:antenna_connector-detail", args={self.connector_suggestion_1.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_detail_not_owner(self):
+        url = reverse("api:v1:suggestions:antenna_connector-detail", args={self.connector_suggestion_2.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_create_new(self):
+        url = reverse("api:v1:suggestions:antenna_connector-list")
+        response = self.client.post(url, data=self.create_data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(AntennaConnectorSuggestion.objects.count(), 3)
+
+    def test_create_existing(self):
+        create_data = self.create_data
+        create_data.update({
+            'related_instance_id': self.connector.id,
+            "type": "New Type",
+        })
+        url = reverse("api:v1:suggestions:antenna_connector-list")
+        response = self.client.post(url, data=create_data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(AntennaConnectorSuggestion.objects.count(), 3)
+
+    def test_update(self):
+        url = reverse("api:v1:suggestions:antenna_connector-detail", args={self.connector_suggestion_1.pk})
+        response = self.client.put(url, data=self.create_data)
+        self.assertEqual(response.status_code, 200)
+        self.connector_suggestion_1.refresh_from_db()
+        self.assertEqual(self.connector_suggestion_1.type, self.create_data["type"])
+
+    def test_partial_update(self):
+        update_data = {
+            'type': self.create_data["type"],
+        }
+        url = reverse("api:v1:suggestions:antenna_connector-detail", args={self.connector_suggestion_1.pk})
+        response = self.client.patch(url, data=update_data)
+        self.assertEqual(response.status_code, 200)
+        self.connector_suggestion_1.refresh_from_db()
+        self.assertEqual(self.connector_suggestion_1.type, self.create_data["type"])
+
+    def test_partial_update_after_accept(self):
+        self.connector_suggestion_1.accept()
+
+        update_data = {"type": "New Type"}
+        url = reverse("api:v1:suggestions:antenna_connector-detail", args={self.connector_suggestion_1.id})
+        response = self.client.patch(url, data=update_data)
+        self.assertEqual(response.status_code, 200)
+        self.connector_suggestion_1.refresh_from_db()
+
+        self.assertFalse(self.connector_suggestion_1.reviewed)
+        self.assertFalse(self.connector_suggestion_1.accepted)
+
+    def test_delete(self):
+        url = reverse("api:v1:suggestions:antenna_connector-detail", args={self.connector_suggestion_1.id})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+
+    def test_accept_not_admin(self):
+        url = reverse("api:v1:suggestions:antenna_connector-accept", args={self.connector_suggestion_1.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(AntennaConnector.objects.count(), 1)
+
+    def test_accept(self):
+        self.logout()
+        superuser = self.create_super_user('test_superuser')
+        self.authorize(superuser)
+
+        url = reverse("api:v1:suggestions:antenna_connector-accept", args={self.connector_suggestion_1.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(AntennaConnector.objects.count(), 2)
+        self.connector_suggestion_1.refresh_from_db()
+        self.assertTrue(self.connector_suggestion_1.reviewed)
+        self.assertTrue(self.connector_suggestion_1.accepted)
+
+    def test_accept_existing(self):
+        self.logout()
+        superuser = self.create_super_user('test_superuser')
+        self.authorize(superuser)
+
+        existing_type_suggestion = mixer.blend(AntennaConnectorSuggestion,
+                                               user=self.user_1,
+                                               related_instance=self.connector,
+                                               type='Suggestion to change type')
+
+        url = reverse("api:v1:suggestions:antenna_connector-accept", args={existing_type_suggestion.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(AntennaConnector.objects.count(), 1)
+
+    def test_deny(self):
+        self.logout()
+        superuser = self.create_super_user('test_superuser')
+        self.authorize(superuser)
+
+        url = reverse("api:v1:suggestions:antenna_connector-deny", args={self.connector_suggestion_1.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(AntennaConnector.objects.count(), 1)
+        self.connector_suggestion_1.refresh_from_db()
+        self.assertTrue(self.connector_suggestion_1.reviewed)
+        self.assertFalse(self.connector_suggestion_1.accepted)
