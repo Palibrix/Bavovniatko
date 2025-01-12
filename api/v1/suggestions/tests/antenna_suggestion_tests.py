@@ -1,15 +1,16 @@
 import base64
 import json
 
+from django.db.models import Count
 from mixer.backend.django import mixer
 from rest_framework.reverse import reverse
 
 from api.v1.tests import BaseAPITest
-from components.models import AntennaType, Antenna, AntennaConnector
+from components.models import AntennaType, Antenna, AntennaConnector, AntennaDetail
 from galleries.models import AntennaGallery
 from suggestions.models import AntennaSuggestion
 from suggestions.models.antenna_suggestions import SuggestedAntennaDetailSuggestion, AntennaTypeSuggestion, \
-    AntennaConnectorSuggestion
+    AntennaConnectorSuggestion, ExistingAntennaDetailSuggestion
 
 
 class TestAntennaSuggestionAPIView(BaseAPITest):
@@ -305,6 +306,7 @@ class TestAntennaTypeSuggestionAPIView(BaseAPITest):
         response = self.client.post(url, data=create_data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(AntennaTypeSuggestion.objects.count(), 3)
+        self.assertEqual(AntennaTypeSuggestion.objects.filter(related_instance_id=self.type.id).count(), 1)
 
     def test_update(self):
         url = reverse("api:v1:suggestions:antenna_type-detail", args={self.type_suggestion_1.pk})
@@ -411,7 +413,8 @@ class TestAntennaConnectorSuggestionAPIView(BaseAPITest):
         url = reverse("api:v1:suggestions:antenna_connector-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data.get("count"), AntennaConnectorSuggestion.objects.filter(user=self.user_1).count())
+        self.assertEqual(response.data.get("count"),
+                         AntennaConnectorSuggestion.objects.filter(user=self.user_1).count())
 
     def test_detail(self):
         url = reverse("api:v1:suggestions:antenna_connector-detail", args={self.connector_suggestion_1.id})
@@ -439,6 +442,7 @@ class TestAntennaConnectorSuggestionAPIView(BaseAPITest):
         response = self.client.post(url, data=create_data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(AntennaConnectorSuggestion.objects.count(), 3)
+        self.assertEqual(AntennaConnectorSuggestion.objects.filter(related_instance_id=1).count(), 1)
 
     def test_update(self):
         url = reverse("api:v1:suggestions:antenna_connector-detail", args={self.connector_suggestion_1.pk})
@@ -520,3 +524,145 @@ class TestAntennaConnectorSuggestionAPIView(BaseAPITest):
         self.connector_suggestion_1.refresh_from_db()
         self.assertTrue(self.connector_suggestion_1.reviewed)
         self.assertFalse(self.connector_suggestion_1.accepted)
+
+
+class TestSuggestedAntennaDetailSuggestionAPIView(BaseAPITest):
+    def setUp(self):
+        self.antenna = mixer.blend(Antenna)
+
+        self.detail = mixer.blend(AntennaDetail, antenna=self.antenna)
+
+        self.user_1 = self.create_and_login(username="test1",
+                                            email="test1@email.com")
+        self.user_2 = self.create(username="test2",
+                                  email="test2@email.com")
+        self.detail_suggestion_1 = mixer.blend(ExistingAntennaDetailSuggestion,
+                                               user=self.user_1,
+                                               antenna=self.antenna)
+        self.detail_suggestion_2 = mixer.blend(ExistingAntennaDetailSuggestion,
+                                               user=self.user_2,
+                                               antenna=self.antenna)
+        self.connector = mixer.blend(AntennaConnector)
+
+        self.create_data = {
+            'antenna_id': self.antenna.pk,
+            "connector_type_id": 1,
+            "weight": 123,
+            "angle_type": "straight"
+        }
+
+    def test_list(self):
+        url = reverse("api:v1:suggestions:antenna_detail-list")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data.get("count"),
+                         ExistingAntennaDetailSuggestion.objects.filter(user=self.user_1).count())
+
+    def test_detail(self):
+        url = reverse("api:v1:suggestions:antenna_detail-detail", args={self.detail_suggestion_1.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_detail_not_owner(self):
+        url = reverse("api:v1:suggestions:antenna_detail-detail", args={self.detail_suggestion_2.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_create_new(self):
+        url = reverse("api:v1:suggestions:antenna_detail-list")
+        response = self.client.post(url, data=self.create_data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(ExistingAntennaDetailSuggestion.objects.count(), 3)
+
+    def test_create_existing(self):
+        create_data = self.create_data
+        create_data.update({
+            'related_instance_id': self.detail.id,
+        })
+        url = reverse("api:v1:suggestions:antenna_detail-list")
+        response = self.client.post(url, data=create_data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(ExistingAntennaDetailSuggestion.objects.count(), 3)
+        self.assertEqual(ExistingAntennaDetailSuggestion.objects.filter(related_instance_id=self.detail.id).count(), 1)
+
+    def test_update(self):
+        url = reverse("api:v1:suggestions:antenna_detail-detail", args={self.detail_suggestion_1.pk})
+        response = self.client.put(url, data=self.create_data)
+        self.assertEqual(response.status_code, 200)
+        self.detail_suggestion_1.refresh_from_db()
+        self.assertEqual(self.detail_suggestion_1.weight, self.create_data["weight"])
+
+    def test_partial_update(self):
+        update_data = {
+            'weight': self.create_data["weight"],
+        }
+        url = reverse("api:v1:suggestions:antenna_detail-detail", args={self.detail_suggestion_1.pk})
+        response = self.client.patch(url, data=update_data)
+        self.assertEqual(response.status_code, 200)
+        self.detail_suggestion_1.refresh_from_db()
+        self.assertEqual(self.detail_suggestion_1.weight, self.create_data["weight"])
+
+    def test_partial_update_after_accept(self):
+        self.detail_suggestion_1.accept()
+
+        update_data = {'weight': self.create_data["weight"]}
+        url = reverse("api:v1:suggestions:antenna_detail-detail", args={self.detail_suggestion_1.id})
+        response = self.client.patch(url, data=update_data)
+        self.assertEqual(response.status_code, 200)
+        self.detail_suggestion_1.refresh_from_db()
+
+        self.assertFalse(self.detail_suggestion_1.reviewed)
+        self.assertFalse(self.detail_suggestion_1.accepted)
+
+    def test_delete(self):
+        url = reverse("api:v1:suggestions:antenna_detail-detail", args={self.detail_suggestion_1.id})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+
+    def test_accept_not_admin(self):
+        url = reverse("api:v1:suggestions:antenna_detail-accept", args={self.detail_suggestion_1.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(AntennaDetail.objects.count(), 1)
+
+    def test_accept(self):
+        self.logout()
+        superuser = self.create_super_user('test_superuser')
+        self.authorize(superuser)
+
+        url = reverse("api:v1:suggestions:antenna_detail-accept", args={self.detail_suggestion_1.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(AntennaDetail.objects.count(), 2)
+        self.detail_suggestion_1.refresh_from_db()
+        self.assertTrue(self.detail_suggestion_1.reviewed)
+        self.assertTrue(self.detail_suggestion_1.accepted)
+
+    def test_accept_existing(self):
+        self.logout()
+        superuser = self.create_super_user('test_superuser')
+        self.authorize(superuser)
+
+        existing_detail_suggestion = mixer.blend(ExistingAntennaDetailSuggestion,
+                                                 user=self.user_1,
+                                                 related_instance=self.detail,
+                                                 antenna=self.antenna,
+                                                 weight=self.create_data["weight"])
+
+        url = reverse("api:v1:suggestions:antenna_detail-accept", args={existing_detail_suggestion.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(AntennaDetail.objects.count(), 1)
+
+    def test_deny(self):
+        self.logout()
+        superuser = self.create_super_user('test_superuser')
+        self.authorize(superuser)
+
+        url = reverse("api:v1:suggestions:antenna_detail-deny", args={self.detail_suggestion_1.id})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(AntennaDetail.objects.count(), 1)
+        self.detail_suggestion_1.refresh_from_db()
+        self.assertTrue(self.detail_suggestion_1.reviewed)
+        self.assertFalse(self.detail_suggestion_1.accepted)

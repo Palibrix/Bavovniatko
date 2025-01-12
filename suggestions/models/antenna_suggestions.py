@@ -177,8 +177,8 @@ class ExistingAntennaDetailSuggestion(BaseModelMixin, BaseAntennaDetailMixin, Ba
 
         verbose_name = _('Existing Antenna Detail Suggestion')
         verbose_name_plural = _('Existing Antenna Detail Suggestions')
-        ordering = ['related_instance', 'connector_type']
-        unique_together = ('related_instance', 'connector_type', 'angle_type')
+        ordering = ['antenna', 'connector_type']
+        unique_together = ('antenna', 'connector_type', 'angle_type')
 
 
 class SuggestedAntennaDetailSuggestion(BaseModelMixin, BaseAntennaDetailMixin):

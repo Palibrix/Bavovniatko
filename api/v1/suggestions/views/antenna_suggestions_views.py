@@ -8,12 +8,14 @@ from api.mixins import SuggestionActionsMixin
 # from rest_framework.viewsets import ModelViewSet
 
 from api.v1.suggestions.serializers.antenna_suggestion_serializers import AntennaSuggestionWriteSerializer, \
-    AntennaSuggestionReadSerializer, AntennaTypeSuggestionSerializer, AntennaConnectorSuggestionSerializer
+    AntennaSuggestionReadSerializer, AntennaTypeSuggestionSerializer, AntennaConnectorSuggestionSerializer, \
+    ExistingAntennaDetailSuggestionSerializer
 from components.models import AntennaType
 from suggestions.models import AntennaSuggestion
 from drf_rw_serializers.viewsets import ModelViewSet
 
-from suggestions.models.antenna_suggestions import AntennaTypeSuggestion, AntennaConnectorSuggestion
+from suggestions.models.antenna_suggestions import AntennaTypeSuggestion, AntennaConnectorSuggestion, \
+    ExistingAntennaDetailSuggestion
 from users.permissions import HasAcceptDeny
 
 
@@ -58,6 +60,21 @@ class AntennaConnectorSuggestionAPIViewSet(ModelViewSet, SuggestionActionsMixin)
             return AntennaConnectorSuggestion.objects.distinct()
         else:
             return AntennaConnectorSuggestion.objects.filter(user=self.request.user).distinct()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ExistingAntennaDetailSuggestionAPIViewSet(ModelViewSet, SuggestionActionsMixin):
+    permission_classes = (IsAuthenticated, HasAcceptDeny)
+    model = ExistingAntennaDetailSuggestion
+    serializer_class = ExistingAntennaDetailSuggestionSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return ExistingAntennaDetailSuggestion.objects.distinct()
+        else:
+            return ExistingAntennaDetailSuggestion.objects.filter(user=self.request.user).distinct()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

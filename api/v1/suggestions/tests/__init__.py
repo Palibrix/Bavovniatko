@@ -1,1 +1,2 @@
-from .antenna_suggestion_tests import TestAntennaSuggestionAPIView, TestAntennaTypeSuggestionAPIView, TestAntennaConnectorSuggestionAPIView
+from .antenna_suggestion_tests import TestAntennaSuggestionAPIView, TestAntennaTypeSuggestionAPIView, \
+    TestAntennaConnectorSuggestionAPIView, TestSuggestedAntennaDetailSuggestionAPIView
