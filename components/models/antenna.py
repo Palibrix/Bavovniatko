@@ -10,11 +10,6 @@ from components.mixins.base_antenna_mixins import BaseAntennaMixin, BaseAntennaD
 
 class Antenna(BaseComponentMixin, BaseAntennaMixin):
 
-    def clean(self):
-        if not self.bandwidth_min <= self.center_frequency <= self.bandwidth_max:
-            raise ValidationError(_("Max frequency must be higher or equal to min frequency and "
-                                  "center_frequency must be between them."))
-
     # def get_absolute_url(self):
     #     from django.urls import reverse
     #     return reverse('api:v1:components:antenna-detail', kwargs={'pk': self.pk})

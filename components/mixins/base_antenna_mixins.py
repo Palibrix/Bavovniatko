@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -32,6 +33,11 @@ class BaseAntennaMixin(models.Model):
     @admin.display(description=_('Bandwidth Range'))
     def get_bandwidth(self):
         return f'{self.bandwidth_min} - {self.bandwidth_max}'
+
+    def clean(self):
+        if not self.bandwidth_min <= self.center_frequency <= self.bandwidth_max:
+            raise ValidationError(_("Max frequency must be higher or equal to min frequency and "
+                                  "center_frequency must be between them."))
 
     class Meta:
         abstract = True

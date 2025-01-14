@@ -20,7 +20,7 @@ class TestCameraModel(TestCase):
                                   )
 
     def test_camera_voltage_incorrect(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(ValidationError) as error:
             mixer.blend(Camera,
                         voltage_min=28,
                         voltage_max=10)
