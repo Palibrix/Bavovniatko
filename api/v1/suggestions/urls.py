@@ -1,7 +1,8 @@
 from rest_framework.routers import DefaultRouter
 
-from api.v1.suggestions.views.antenna_suggestions_views import AntennaSuggestionAPIViewSet, \
+from api.v1.suggestions.views.antenna_suggestion_views import AntennaSuggestionAPIViewSet, \
     AntennaTypeSuggestionAPIViewSet, AntennaConnectorSuggestionAPIViewSet, ExistingAntennaDetailSuggestionAPIViewSet
+from api.v1.suggestions.views.camera_suggestion_views import VideoFormatSuggestionAPIViewSet
 
 app_name = 'api-v1-suggestions'
 router = DefaultRouter(trailing_slash=True)
@@ -10,6 +11,7 @@ router.register(r'antenna_types', AntennaTypeSuggestionAPIViewSet, basename="ant
 router.register(r'antenna_connectors', AntennaConnectorSuggestionAPIViewSet, basename="antenna_connector")
 router.register(r'antenna_details', ExistingAntennaDetailSuggestionAPIViewSet, basename="antenna_detail")
 
+router.register(r'video_formats', VideoFormatSuggestionAPIViewSet, basename="video_format")
 
 urlpatterns = [
 

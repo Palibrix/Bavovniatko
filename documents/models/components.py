@@ -17,7 +17,9 @@ class AntennaDocument(BaseDocumentMixin):
 
 
 class CameraDocument(BaseDocumentMixin):
-    object = models.ForeignKey('components.Camera', on_delete=models.CASCADE, related_name='documents')
+    object = models.ForeignKey('components.Camera', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
+    suggestion = models.ForeignKey('suggestions.CameraSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_documents')
 
     class Meta:
         db_table = 'documents_camera'

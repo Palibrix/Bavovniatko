@@ -10,7 +10,7 @@ from components.mixins import BaseModelAdminMixin
 
 User = get_user_model()
 
-class BaseSuggestionFilesDeletionMixin(models.Model):
+class SuggestionFilesDeletionMixin(models.Model):
 
     @transaction.atomic
     def delete(self, *args, **kwargs):

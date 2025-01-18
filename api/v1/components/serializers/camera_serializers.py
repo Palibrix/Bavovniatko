@@ -5,7 +5,7 @@ from api.v1.galleries.serializers import CameraGallerySerializer
 from components.models import Camera, CameraDetail, VideoFormat
 
 
-class VideoFormatSerializers(serializers.ModelSerializer):
+class VideoFormatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = VideoFormat
@@ -20,7 +20,7 @@ class CameraDetailSerializer(serializers.ModelSerializer):
 
 
 class CameraSerializer(serializers.ModelSerializer):
-    video_formats = VideoFormatSerializers(many=True)
+    video_formats = VideoFormatSerializer(many=True)
     details = CameraDetailSerializer(many=True)
     images = CameraGallerySerializer(many=True)
     documents = CameraDocumentSerializer(many=True)

@@ -5,17 +5,12 @@ from components.mixins import BaseComponentMixin, BaseModelMixin
 from components.mixins.base_antenna_mixins import BaseAntennaMixin, BaseAntennaTypeMixin, BaseAntennaConnectorMixin, \
     BaseAntennaDetailMixin
 from components.models import Antenna, AntennaDetail, AntennaType, AntennaConnector
-from suggestions.mixins import BaseSuggestionMixin, BaseSuggestionFilesDeletionMixin
+from suggestions.mixins import BaseSuggestionMixin, SuggestionFilesDeletionMixin
 
 
-class AntennaSuggestion(BaseSuggestionFilesDeletionMixin, BaseComponentMixin, BaseAntennaMixin, BaseSuggestionMixin):
+class AntennaSuggestion(SuggestionFilesDeletionMixin, BaseAntennaMixin, BaseSuggestionMixin):
     related_instance = models.ForeignKey('components.Antenna', blank=True, null=True, related_name='submitted_suggestions',
                                      on_delete=models.CASCADE)
-
-    def clean(self):
-        if not self.bandwidth_min <= self.center_frequency <= self.bandwidth_max:
-            raise ValidationError(_("Max frequency must be higher or equal to min frequency and "
-                                  "center_frequency must be between them."))
 
     @transaction.atomic
     def accept(self):
@@ -78,10 +73,9 @@ class AntennaSuggestion(BaseSuggestionFilesDeletionMixin, BaseComponentMixin, Ba
         verbose_name = _('Antenna Suggestion')
         verbose_name_plural = _('Antenna Suggestions')
         ordering = ['manufacturer', 'model', ]
-        unique_together = (('manufacturer', 'model'),)
 
 
-class AntennaTypeSuggestion(BaseModelMixin, BaseAntennaTypeMixin, BaseSuggestionMixin):
+class AntennaTypeSuggestion(BaseAntennaTypeMixin, BaseSuggestionMixin):
     related_instance = models.ForeignKey('components.AntennaType', blank=True, null=True, related_name='submitted_suggestions',
                                      on_delete=models.CASCADE)
 
@@ -113,7 +107,7 @@ class AntennaTypeSuggestion(BaseModelMixin, BaseAntennaTypeMixin, BaseSuggestion
         ordering = ['type']
 
 
-class AntennaConnectorSuggestion(BaseModelMixin, BaseAntennaConnectorMixin, BaseSuggestionMixin):
+class AntennaConnectorSuggestion(BaseAntennaConnectorMixin, BaseSuggestionMixin):
     related_instance = models.ForeignKey('components.AntennaConnector', blank=True, null=True, related_name='submitted_suggestions',
                                      on_delete=models.CASCADE)
 
@@ -143,7 +137,7 @@ class AntennaConnectorSuggestion(BaseModelMixin, BaseAntennaConnectorMixin, Base
         ordering = ['type']
 
 
-class ExistingAntennaDetailSuggestion(BaseModelMixin, BaseAntennaDetailMixin, BaseSuggestionMixin):
+class ExistingAntennaDetailSuggestion(BaseAntennaDetailMixin, BaseSuggestionMixin):
     """ Suggest new detail to existing antenna """
     antenna = models.ForeignKey('components.Antenna', on_delete=models.CASCADE, related_name='suggested_details',
                                 verbose_name='Antenna')
@@ -178,10 +172,9 @@ class ExistingAntennaDetailSuggestion(BaseModelMixin, BaseAntennaDetailMixin, Ba
         verbose_name = _('Existing Antenna Detail Suggestion')
         verbose_name_plural = _('Existing Antenna Detail Suggestions')
         ordering = ['antenna', 'connector_type']
-        unique_together = ('antenna', 'connector_type', 'angle_type')
 
 
-class SuggestedAntennaDetailSuggestion(BaseModelMixin, BaseAntennaDetailMixin):
+class SuggestedAntennaDetailSuggestion(BaseAntennaDetailMixin):
     """ Add detail to suggested antenna """
     suggestion = models.ForeignKey('suggestions.AntennaSuggestion', on_delete=models.CASCADE, related_name='suggested_details', verbose_name='details')
     related_instance = models.ForeignKey('components.AntennaDetail', on_delete=models.CASCADE, blank=True, null=True,
@@ -194,11 +187,10 @@ class SuggestedAntennaDetailSuggestion(BaseModelMixin, BaseAntennaDetailMixin):
         verbose_name = _('Suggested Antenna Detail')
         verbose_name_plural = _('Suggested Antenna Details')
         ordering = ['related_instance', 'connector_type']
-        unique_together = ('related_instance', 'connector_type', 'angle_type')
 
     @transaction.atomic
     def delete(self, *args, **kwargs):
         if self.suggestion.suggested_details.count() > 1:
             super().delete(*args, **kwargs)
         else:
-            raise models.ProtectedError(_("Cannot delete the only AntennaDetail for this Antenna."), self)
+            raise models.ProtectedError(_("Cannot delete the only Detail for this object."), self)

@@ -34,3 +34,8 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7.4.1
+    ports:
+      - '6379:6379'
+    container_name: redis

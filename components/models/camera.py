@@ -1,10 +1,11 @@
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from components.mixins import BaseComponentMixin, BaseModelMixin
 from components.mixins.base_camera_mixins import BaseCameraMixin, BaseCameraDetailMixin, BaseVideoFormatMixin
 
 
-class Camera(BaseComponentMixin, BaseCameraMixin):
+class Camera(BaseCameraMixin):
 
     class Meta:
         app_label = 'components'
@@ -16,7 +17,9 @@ class Camera(BaseComponentMixin, BaseCameraMixin):
         unique_together = (('manufacturer', 'model'),)
 
 
-class CameraDetail(BaseModelMixin, BaseCameraDetailMixin):
+class CameraDetail(BaseCameraDetailMixin):
+
+    camera = models.ForeignKey('components.Camera', on_delete=models.CASCADE, related_name="details")
 
     class Meta:
         app_label = 'components'
@@ -26,8 +29,14 @@ class CameraDetail(BaseModelMixin, BaseCameraDetailMixin):
         verbose_name_plural = _('Camera Details')
         unique_together = ['camera', 'height', 'width']
 
+    def delete(self, *args, **kwargs):
+        if self.camera.details.count() > 1:
+            super().delete(*args, **kwargs)
+        else:
+            raise models.ProtectedError(_("Cannot delete the only detail for this Camera."), self)
 
-class VideoFormat(BaseModelMixin, BaseVideoFormatMixin):
+
+class VideoFormat(BaseVideoFormatMixin):
 
     class Meta:
         app_label = 'components'

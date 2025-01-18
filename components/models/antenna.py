@@ -8,7 +8,7 @@ from components.mixins.base_antenna_mixins import BaseAntennaMixin, BaseAntennaD
     BaseAntennaTypeMixin
 
 
-class Antenna(BaseComponentMixin, BaseAntennaMixin):
+class Antenna(BaseAntennaMixin):
 
     # def get_absolute_url(self):
     #     from django.urls import reverse
@@ -24,7 +24,7 @@ class Antenna(BaseComponentMixin, BaseAntennaMixin):
         unique_together = (('manufacturer', 'model'),)
 
 
-class AntennaType(BaseModelMixin, BaseAntennaTypeMixin):
+class AntennaType(BaseAntennaTypeMixin):
 
     class Meta:
         app_label = 'components'
@@ -35,7 +35,7 @@ class AntennaType(BaseModelMixin, BaseAntennaTypeMixin):
         ordering = ['type']
 
 
-class AntennaDetail(BaseModelMixin, BaseAntennaDetailMixin):
+class AntennaDetail(BaseAntennaDetailMixin):
 
     antenna = models.ForeignKey('components.Antenna', on_delete=models.CASCADE, related_name='details')
 
@@ -55,7 +55,7 @@ class AntennaDetail(BaseModelMixin, BaseAntennaDetailMixin):
         unique_together = ('antenna', 'connector_type', 'angle_type')
 
 
-class AntennaConnector(BaseModelMixin, BaseAntennaConnectorMixin):
+class AntennaConnector(BaseAntennaConnectorMixin):
 
     class Meta:
         app_label = 'components'

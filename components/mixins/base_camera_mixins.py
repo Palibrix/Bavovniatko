@@ -2,11 +2,13 @@ from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from components.mixins import BaseComponentMixin, BaseModelMixin
 from components.validators import validate_fov_length
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
-class BaseCameraMixin(models.Model):
+class BaseCameraMixin(BaseComponentMixin):
     class RatioChoices(models.TextChoices):
         NORMAL = '4:3', '4:3'
         WIDE = '16:9', '16:9'
@@ -38,7 +40,7 @@ class BaseCameraMixin(models.Model):
     output_type = models.CharField(max_length=10, choices=OutputChoices.choices, verbose_name=_('Output Type'),
                                    default=OutputChoices.ANALOG)
 
-    video_formats = models.ManyToManyField('VideoFormat')
+    video_formats = models.ManyToManyField('components.VideoFormat')
 
     light_sens = models.CharField(max_length=10, choices=SensitivityChoices.choices,
                                   verbose_name=_('Light Sensitivity'),
@@ -60,8 +62,7 @@ class BaseCameraMixin(models.Model):
     class Meta:
         abstract = True
 
-class BaseCameraDetailMixin(models.Model):
-    camera = models.ForeignKey('Camera', on_delete=models.CASCADE, related_name="details")
+class BaseCameraDetailMixin(BaseModelMixin):
 
     height = models.FloatField(max_length=5, help_text=_("Height of the camera in mm"),
                                verbose_name=_("Camera mount size height"))
@@ -76,16 +77,11 @@ class BaseCameraDetailMixin(models.Model):
     def get_dimensions(self):
         return f'{self.height}x{self.width}'
 
-    def delete(self, *args, **kwargs):
-        if self.camera.details.count() > 1:
-            super().delete(*args, **kwargs)
-        else:
-            raise models.ProtectedError(_("Cannot delete the only detail for this Camera."), self)
 
     class Meta:
         abstract = True
 
-class BaseVideoFormatMixin(models.Model):
+class BaseVideoFormatMixin(BaseModelMixin):
     format = models.CharField(max_length=50, unique=True,
                               help_text=_("Format of the video (e.g. NTSC/PAL)"), verbose_name=_("Video Format"))
 

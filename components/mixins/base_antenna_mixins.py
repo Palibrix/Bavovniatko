@@ -4,7 +4,10 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-class BaseAntennaMixin(models.Model):
+from components.mixins import BaseComponentMixin, BaseModelMixin
+
+
+class BaseAntennaMixin(BaseComponentMixin):
     class AxialRatioChoice(models.TextChoices):
         NOT_SPECIFIED = 'not_specified', _('Not Specified (For LP antennas ONLY)')
         IDEAL = 'ideal', _('Ideal (1)')
@@ -43,7 +46,7 @@ class BaseAntennaMixin(models.Model):
         abstract = True
 
 
-class BaseAntennaDetailMixin(models.Model):
+class BaseAntennaDetailMixin(BaseModelMixin):
     class ConnectorChoice(models.TextChoices):
         ANGLED = 'angled', _('Angled')
         STRAIGHT = 'straight', _('Straight')
@@ -61,7 +64,7 @@ class BaseAntennaDetailMixin(models.Model):
         abstract = True
 
 
-class BaseAntennaTypeMixin(models.Model):
+class BaseAntennaTypeMixin(BaseModelMixin):
     class DirectionalityChoice(models.TextChoices):
         DIRECTIONAL = 'directional', _('Directional')
         OMNI_DIRECTIONAL = 'omni', _('Omni-directional')
@@ -86,7 +89,7 @@ class BaseAntennaTypeMixin(models.Model):
         abstract = True
 
 
-class BaseAntennaConnectorMixin(models.Model):
+class BaseAntennaConnectorMixin(BaseModelMixin):
     type = models.CharField(max_length=50, help_text=_("Type of antenna connector"), unique=True)
 
     def __str__(self):
