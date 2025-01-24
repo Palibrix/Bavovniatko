@@ -8,6 +8,12 @@ from components.mixins import BaseComponentMixin, BaseModelMixin
 
 
 class BaseAntennaMixin(BaseComponentMixin):
+    ANTENNA_FIELDS = [
+        'manufacturer', 'model', 'description',
+        'type', 'center_frequency', 'bandwidth_min', 'bandwidth_max',
+        'swr', 'gain', 'radiation'
+    ]
+
     class AxialRatioChoice(models.TextChoices):
         NOT_SPECIFIED = 'not_specified', _('Not Specified (For LP antennas ONLY)')
         IDEAL = 'ideal', _('Ideal (1)')
@@ -47,6 +53,8 @@ class BaseAntennaMixin(BaseComponentMixin):
 
 
 class BaseAntennaDetailMixin(BaseModelMixin):
+    DETAIL_FIELDS = ['connector_type', 'weight', 'angle_type']
+
     class ConnectorChoice(models.TextChoices):
         ANGLED = 'angled', _('Angled')
         STRAIGHT = 'straight', _('Straight')
@@ -65,6 +73,8 @@ class BaseAntennaDetailMixin(BaseModelMixin):
 
 
 class BaseAntennaTypeMixin(BaseModelMixin):
+    TYPE_FIELDS = ['type', 'direction', 'polarization']
+
     class DirectionalityChoice(models.TextChoices):
         DIRECTIONAL = 'directional', _('Directional')
         OMNI_DIRECTIONAL = 'omni', _('Omni-directional')
@@ -90,6 +100,8 @@ class BaseAntennaTypeMixin(BaseModelMixin):
 
 
 class BaseAntennaConnectorMixin(BaseModelMixin):
+    CONNECTOR_FIELDS = ['type']
+
     type = models.CharField(max_length=50, help_text=_("Type of antenna connector"), unique=True)
 
     def __str__(self):

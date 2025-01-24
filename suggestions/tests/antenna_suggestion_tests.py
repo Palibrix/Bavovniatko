@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from mixer.backend.django import mixer
 
 from components.models import Antenna, AntennaConnector, AntennaDetail, AntennaType
@@ -15,13 +16,18 @@ class TestAntennaSuggestionModel(BaseUserTest):
     """
 
     def setUp(self):
+        antenna_type = mixer.blend(AntennaType)
         mixer.register(AntennaSuggestion,
                        description='TestAntenna',
                        )
         self.antenna_suggestion = mixer.blend(AntennaSuggestion,
+                                              model='Test Model',
+                                              manufacturer='Test Manufacturer',
                                               bandwidth_min=1.0,
                                               bandwidth_max=2.0,
-                                              center_frequency=1.5)
+                                              center_frequency=1.5,
+                                              type=antenna_type
+                                              )
 
         self.antenna_detail_1 = mixer.blend(SuggestedAntennaDetailSuggestion, suggestion=self.antenna_suggestion)
         self.antenna_detail_2 = mixer.blend(SuggestedAntennaDetailSuggestion, suggestion=self.antenna_suggestion)
@@ -29,15 +35,12 @@ class TestAntennaSuggestionModel(BaseUserTest):
     def test_deny(self):
         self.antenna_suggestion.deny()
         self.assertEqual(Antenna.objects.count(), 0)
-        self.assertFalse(self.antenna_suggestion.accepted)
-        self.assertTrue(self.antenna_suggestion.reviewed)
+        self.assertTrue(self.antenna_suggestion.status, 'denied')
 
     def test_accept(self):
         self.antenna_suggestion.accept()
         self.assertEqual(Antenna.objects.count(), 1)
-        self.assertTrue(self.antenna_suggestion.accepted)
-        self.assertTrue(self.antenna_suggestion.reviewed)
-
+        self.assertTrue(self.antenna_suggestion.status, 'approved')
 
     def test_accept_suggestion_with_gallery(self):
         """
@@ -122,22 +125,18 @@ class TestAntennaTypeSuggestionModel(BaseUserTest):
     """
 
     def setUp(self):
-        mixer.register(AntennaTypeSuggestion,
-                       description='TestAntennaType',
-                       )
+        mixer.register(AntennaTypeSuggestion)
         self.antenna_type_suggestion = mixer.blend(AntennaTypeSuggestion)
 
     def test_deny(self):
         self.antenna_type_suggestion.deny()
         self.assertEqual(AntennaType.objects.count(), 0)
-        self.assertFalse(self.antenna_type_suggestion.accepted)
-        self.assertTrue(self.antenna_type_suggestion.reviewed)
+        self.assertTrue(self.antenna_type_suggestion.status, 'denied')
 
     def test_accept(self):
         self.antenna_type_suggestion.accept()
         self.assertEqual(AntennaType.objects.count(), 1)
-        self.assertTrue(self.antenna_type_suggestion.accepted)
-        self.assertTrue(self.antenna_type_suggestion.reviewed)
+        self.assertTrue(self.antenna_type_suggestion.status, 'approved')
 
     def test_delete_accepted_suggestion(self):
         self.antenna_type_suggestion.accept()
@@ -148,7 +147,8 @@ class TestAntennaTypeSuggestionModel(BaseUserTest):
     def test_accept_multiple_times(self):
         self.antenna_type_suggestion.accept()
         self.assertEqual(AntennaType.objects.count(), 1)
-        self.antenna_type_suggestion.accept()
+        with self.assertRaises(ValidationError):
+            self.antenna_type_suggestion.accept()
         self.assertEqual(AntennaType.objects.count(), 1)
 
 
@@ -158,22 +158,18 @@ class TestAntennaConnectorSuggestionModel(BaseUserTest):
     """
 
     def setUp(self):
-        mixer.register(AntennaConnectorSuggestion,
-                       description='TestAntennaConnector',
-                       )
+        mixer.register(AntennaConnectorSuggestion)
         self.antenna_connector_suggestion = mixer.blend(AntennaConnectorSuggestion)
 
     def test_deny(self):
         self.antenna_connector_suggestion.deny()
         self.assertEqual(AntennaConnector.objects.count(), 0)
-        self.assertFalse(self.antenna_connector_suggestion.accepted)
-        self.assertTrue(self.antenna_connector_suggestion.reviewed)
+        self.assertTrue(self.antenna_connector_suggestion.status, 'denied')
 
     def test_accept(self):
         self.antenna_connector_suggestion.accept()
         self.assertEqual(AntennaConnector.objects.count(), 1)
-        self.assertTrue(self.antenna_connector_suggestion.accepted)
-        self.assertTrue(self.antenna_connector_suggestion.reviewed)
+        self.assertTrue(self.antenna_connector_suggestion.status, 'approved')
 
     def test_delete_accepted_suggestion(self):
         self.antenna_connector_suggestion.accept()
@@ -184,7 +180,8 @@ class TestAntennaConnectorSuggestionModel(BaseUserTest):
     def test_accept_multiple_times(self):
         self.antenna_connector_suggestion.accept()
         self.assertEqual(AntennaConnector.objects.count(), 1)
-        self.antenna_connector_suggestion.accept()
+        with self.assertRaises(ValidationError):
+            self.antenna_connector_suggestion.accept()
         self.assertEqual(AntennaConnector.objects.count(), 1)
 
 
@@ -215,15 +212,13 @@ class TestExistingAntennaDetailSuggestionModel(BaseUserTest):
     def test_deny(self):
         self.antenna_detail_suggestion.deny()
         self.assertEqual(AntennaDetail.objects.count(), 2)
-        self.assertFalse(self.antenna_detail_suggestion.accepted)
-        self.assertTrue(self.antenna_detail_suggestion.reviewed)
+        self.assertTrue(self.antenna_detail_suggestion.status, 'denied')
 
     def test_accept(self):
         self.antenna_detail_suggestion.accept()
         self.assertEqual(self.antenna.details.count(), 3)
 
-        self.assertTrue(self.antenna_detail_suggestion.accepted)
-        self.assertTrue(self.antenna_detail_suggestion.reviewed)
+        self.assertTrue(self.antenna_detail_suggestion.status, 'approved')
 
     def test_delete_accepted_suggestion(self):
         self.antenna_detail_suggestion.accept()
@@ -233,7 +228,8 @@ class TestExistingAntennaDetailSuggestionModel(BaseUserTest):
     def test_accept_multiple_times(self):
         self.antenna_detail_suggestion.accept()
         self.assertEqual(self.antenna.details.count(), 3)
-        self.antenna_detail_suggestion.accept()
+        with self.assertRaises(ValidationError):
+            self.antenna_detail_suggestion.accept()
         self.assertEqual(self.antenna.details.count(), 3)
 
 
@@ -244,9 +240,11 @@ class TestSuggestedAntennaDetailSuggestionModel(BaseUserTest):
 
     def setUp(self):
         mixer.register(SuggestedAntennaDetailSuggestion,
-                       description='TestAntenna',
                        )
         self.antenna_suggestion = mixer.blend(AntennaSuggestion,
+                                              description='',
+                                              model='Test Model',
+                                              type=mixer.blend(AntennaType),
                                               bandwidth_min=1.0,
                                               bandwidth_max=2.0,
                                               center_frequency=1.5)
@@ -264,7 +262,8 @@ class TestSuggestedAntennaDetailSuggestionModel(BaseUserTest):
         Accept suggestion with the created details must update details, not create new one
         """
         self.antenna_suggestion.accept()
-        self.antenna_suggestion.accept()
+        with self.assertRaises(ValidationError):
+            self.antenna_suggestion.accept()
         self.assertEqual(AntennaDetail.objects.filter(antenna=self.antenna_suggestion.related_instance).count(),
                          2)
 

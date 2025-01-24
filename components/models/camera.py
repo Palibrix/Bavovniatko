@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from components.mixins import BaseComponentMixin, BaseModelMixin
 from components.mixins.base_camera_mixins import BaseCameraMixin, BaseCameraDetailMixin, BaseVideoFormatMixin
 
 

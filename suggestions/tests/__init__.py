@@ -1,2 +1,5 @@
 from .antenna_suggestion_tests import TestAntennaConnectorSuggestionModel, TestAntennaTypeSuggestionModel, \
     TestAntennaSuggestionModel, TestSuggestedAntennaDetailSuggestionModel, TestExistingAntennaDetailSuggestionModel
+
+from .camera_suggestion_tests import TestCameraSuggestionModel, TestSuggestedCameraDetailSuggestionModel, \
+    TestExistingCameraDetailSuggestionModel, TestVideoFormatSuggestionModel

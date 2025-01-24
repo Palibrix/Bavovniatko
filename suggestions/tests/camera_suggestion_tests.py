@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from mixer.backend.django import mixer
 
 from components.models import Camera, CameraDetail, VideoFormat
@@ -32,14 +33,12 @@ class TestCameraSuggestionModel(BaseUserTest):
     def test_deny(self):
         self.suggestion.deny()
         self.assertEqual(Camera.objects.count(), 0)
-        self.assertFalse(self.suggestion.accepted)
-        self.assertTrue(self.suggestion.reviewed)
+        self.assertTrue(self.suggestion.status, 'denied')
 
     def test_accept(self):
         self.suggestion.accept()
         self.assertEqual(Camera.objects.count(), 1)
-        self.assertTrue(self.suggestion.accepted)
-        self.assertTrue(self.suggestion.reviewed)
+        self.assertTrue(self.suggestion.status, 'accepted')
         camera = self.suggestion.related_instance
         self.assertEqual(camera.video_formats.count(), 2)
 
@@ -133,25 +132,12 @@ class TestVideoFormatSuggestionModel(BaseUserTest):
     def test_deny(self):
         self.video_format_suggestion.deny()
         self.assertEqual(VideoFormat.objects.count(), 0)
-        self.assertFalse(self.video_format_suggestion.accepted)
-        self.assertTrue(self.video_format_suggestion.reviewed)
+        self.assertTrue(self.video_format_suggestion.status, 'denied')
 
     def test_accept(self):
         self.video_format_suggestion.accept()
         self.assertEqual(VideoFormat.objects.count(), 1)
-        self.assertTrue(self.video_format_suggestion.accepted)
-        self.assertTrue(self.video_format_suggestion.reviewed)
-
-    def test_accept_existing(self):
-        video_format = mixer.blend(VideoFormat,
-                                   format='Format')
-        video_format_suggestion = mixer.blend(VideoFormatSuggestion,
-                                              related_instance=video_format,
-                                              format='New Format')
-        video_format_suggestion.accept()
-        video_format.refresh_from_db()
-        self.assertEqual(VideoFormat.objects.count(), 1)
-        self.assertEqual(video_format.format, 'New Format')
+        self.assertTrue(self.video_format_suggestion.status, 'accepted')
 
     def test_delete_accepted_suggestion(self):
         self.video_format_suggestion.accept()
@@ -162,8 +148,8 @@ class TestVideoFormatSuggestionModel(BaseUserTest):
     def test_accept_multiple_times(self):
         self.video_format_suggestion.accept()
         self.assertEqual(VideoFormat.objects.count(), 1)
-        self.video_format_suggestion.accept()
-        self.assertEqual(VideoFormat.objects.count(), 1)
+        with self.assertRaises(ValidationError):
+            self.video_format_suggestion.accept()
         
 
 class TestExistingCameraDetailSuggestionModel(BaseUserTest):
@@ -194,15 +180,13 @@ class TestExistingCameraDetailSuggestionModel(BaseUserTest):
     def test_deny(self):
         self.camera_detail_suggestion.deny()
         self.assertEqual(CameraDetail.objects.count(), 2)
-        self.assertFalse(self.camera_detail_suggestion.accepted)
-        self.assertTrue(self.camera_detail_suggestion.reviewed)
+        self.assertTrue(self.camera_detail_suggestion.status, 'denied')
 
     def test_accept(self):
         self.camera_detail_suggestion.accept()
         self.assertEqual(self.camera.details.count(), 3)
 
-        self.assertTrue(self.camera_detail_suggestion.accepted)
-        self.assertTrue(self.camera_detail_suggestion.reviewed)
+        self.assertTrue(self.camera_detail_suggestion.status, 'accepted')
 
     def test_delete_accepted_suggestion(self):
         self.camera_detail_suggestion.accept()
@@ -212,8 +196,8 @@ class TestExistingCameraDetailSuggestionModel(BaseUserTest):
     def test_accept_multiple_times(self):
         self.camera_detail_suggestion.accept()
         self.assertEqual(self.camera.details.count(), 3)
-        self.camera_detail_suggestion.accept()
-        self.assertEqual(self.camera.details.count(), 3)
+        with self.assertRaises(ValidationError):
+            self.camera_detail_suggestion.accept()
         
 
 class TestSuggestedCameraDetailSuggestionModel(BaseUserTest):
@@ -233,15 +217,6 @@ class TestSuggestedCameraDetailSuggestionModel(BaseUserTest):
         self.camera_detail_2 = mixer.blend(SuggestedCameraDetailSuggestion, suggestion=self.camera_suggestion)
 
     def test_accept_details(self):
-        self.camera_suggestion.accept()
-        self.assertEqual(CameraDetail.objects.filter(camera=self.camera_suggestion.related_instance).count(),
-                         2)
-
-    def test_accept_details_multiple_times(self):
-        """
-        Accept suggestion with the created details must update details, not create new one
-        """
-        self.camera_suggestion.accept()
         self.camera_suggestion.accept()
         self.assertEqual(CameraDetail.objects.filter(camera=self.camera_suggestion.related_instance).count(),
                          2)

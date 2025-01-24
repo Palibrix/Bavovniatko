@@ -1,12 +1,14 @@
 from rest_framework import serializers
 
+from api.v1.users.serializers import UserSerializer
 
-class SuggestionUpdateMixin:
 
-    def update(self, instance, validated_data):
-        validated_data['accepted'] = False
-        validated_data['reviewed'] = False
-        return super().update(instance, validated_data)
+class BaseSuggestionSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        abstract = True
+        read_only_fields = ['id', 'user', 'status', 'admin_comment']
 
 
 class ValidateSuggestionNestedFieldsMixin:

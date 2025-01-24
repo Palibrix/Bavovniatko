@@ -20,10 +20,10 @@ class SuggestedAntennaDetailSuggestionInline(admin.StackedInline):
 @admin.register(AntennaSuggestion)
 class AntennaSuggestionAdmin(BaseSuggestionAdminMixin, AntennaAdminMixin):
     inlines = [SuggestedAntennaDetailSuggestionInline, AntennaGalleryInline, AntennaDocumentInline]
-    list_display = AntennaAdminMixin.list_display + ('reviewed', 'accepted', 'user')
-    sortable_by = AntennaAdminMixin.sortable_by + ('reviewed', 'accepted', 'user')
-    list_filter = AntennaAdminMixin.list_filter + ('reviewed', 'accepted', 'user')
-    readonly_fields = AntennaAdminMixin.readonly_fields + ('related_instance', "reviewed", 'accepted')
+    list_display = AntennaAdminMixin.list_display + ('status', 'user')
+    sortable_by = AntennaAdminMixin.sortable_by + ('status', 'user')
+    list_filter = AntennaAdminMixin.list_filter + ('status', 'user')
+    readonly_fields = AntennaAdminMixin.readonly_fields + ('related_instance', 'status')
 
     def save_model(self, request, obj, form, change):
         obj.user = request.user
@@ -32,7 +32,7 @@ class AntennaSuggestionAdmin(BaseSuggestionAdminMixin, AntennaAdminMixin):
 
 @admin.register(ExistingAntennaDetailSuggestion)
 class ExistingAntennaDetailSuggestionAdmin(BaseSuggestionAdminMixin):
-    list_display = ('__str__', 'id', 'reviewed', 'accepted', 'user')
-    sortable_by = ('antenna', 'reviewed', 'accepted', 'user')
-    list_filter = ('reviewed', 'accepted', 'user')
-    readonly_fields = ('related_instance', "reviewed", 'accepted')
+    list_display = ('__str__', 'id', 'status', 'user')
+    sortable_by = ('antenna', 'status', 'user')
+    list_filter = ('status', 'user')
+    readonly_fields = ('related_instance', 'status')

@@ -1,72 +1,69 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 
 from components.mixins.base_camera_mixins import BaseCameraMixin, BaseVideoFormatMixin, BaseCameraDetailMixin
 from components.models import Camera, CameraDetail, VideoFormat
+from components.validators import validate_fov_length
 from suggestions.mixins import BaseSuggestionMixin, SuggestionFilesDeletionMixin
 
 
 class CameraSuggestion(SuggestionFilesDeletionMixin, BaseCameraMixin, BaseSuggestionMixin):
+
     related_instance = models.ForeignKey('components.Camera', blank=True, null=True,
                                          related_name='submitted_suggestions',
                                          on_delete=models.CASCADE)
 
-    @transaction.atomic
-    def accept(self):
-        self.reviewed = True
-        self.accepted = True
-        self.save()
-        camera, created = Camera.objects.update_or_create(
-            id=self.related_instance_id,
-            defaults={
-                'manufacturer': self.manufacturer,
-                'model': self.model,
-                'description': self.description,
-                'tvl': self.tvl,
-                'voltage_min': self.voltage_min,
-                'voltage_max': self.voltage_max,
-                'ratio': self.ratio,
-                'fov': self.fov,
-                'output_type': self.output_type,
-                'light_sens': self.light_sens,
-                'weight': self.weight,
-            }
-        )
+    def _handle_post_accept(self, instance):
+        self._handle_media(instance)
+        self._handle_details(instance)
 
-        camera.full_clean()
-        camera.save()
-        camera.video_formats.set(self.video_formats.all())
-
-        if created:
-            self.related_instance = camera
-            self.save()
-
-
+    def _handle_media(self, instance):
         for suggested_image in self.suggested_images.all():
             if not suggested_image.object:
-                suggested_image.object = camera
+                suggested_image.object = instance
             suggested_image.save()
 
         for suggested_document in self.suggested_documents.all():
             if not suggested_document.object:
-                suggested_document.object = camera
+                suggested_document.object = instance
             suggested_document.save()
 
+    def _handle_details(self, instance):
         for suggested_detail in self.suggested_details.all():
-            camera_detail, created = CameraDetail.objects.update_or_create(
-                id=suggested_detail.related_instance_id,
-                camera=camera,
-                defaults={
-                    'height': suggested_detail.height,
-                    'width': suggested_detail.width
-                }
+            defaults = {
+                field: getattr(suggested_detail, field)
+                for field in BaseCameraDetailMixin.DETAIL_FIELDS
+                if getattr(suggested_detail, field) is not None
+            }
+
+            camera_detail = CameraDetail.objects.create(
+                camera=instance,
+                **defaults
             )
             camera_detail.full_clean()
             camera_detail.save()
 
-            if created:
-                suggested_detail.related_instance = camera_detail
-                suggested_detail.save()
+            suggested_detail.related_instance = camera_detail
+            suggested_detail.save()
+
+    def _create_instance(self):
+        # Create new instance with all fields
+        instance = Camera.objects.create(
+            **{field: getattr(self, field)
+               for field in self.CAMERA_FIELDS}
+        )
+
+        instance.full_clean()
+        instance.save()
+
+        self.related_instance = instance
+        self.save()
+
+        if hasattr(self, 'video_formats') and self.video_formats.exists():
+            instance.video_formats.set(self.video_formats.all())
+
+        return instance
 
     class Meta:
         app_label = 'suggestions'
@@ -78,31 +75,28 @@ class CameraSuggestion(SuggestionFilesDeletionMixin, BaseCameraMixin, BaseSugges
 
 
 class VideoFormatSuggestion(BaseVideoFormatMixin, BaseSuggestionMixin):
+    VIDEO_FORMAT_FIELDS = ['format']
+
     related_instance = models.ForeignKey('components.VideoFormat', blank=True, null=True,
                                          related_name='submitted_suggestions',
                                          on_delete=models.CASCADE)
 
-    @transaction.atomic
-    def accept(self):
-        self.reviewed = True
-        self.accepted = True
-        self.save()
-
-        video_format, created = VideoFormat.objects.update_or_create(
-            id=self.related_instance_id,
-            defaults={
-                'format': self.format,
-            }
+    def _create_instance(self):
+        instance = VideoFormat.objects.create(
+            **{field: getattr(self, field)
+               for field in self.VIDEO_FORMAT_FIELDS}
         )
-        video_format.save()
-        if created:
-            self.related_instance = video_format
-            self.save()
+
+        instance.full_clean()
+        instance.save()
+
+        self.related_instance = instance
+        self.save()
+        return instance
 
     class Meta:
         app_label = 'suggestions'
         db_table = 'suggestions_video_format'
-
         verbose_name = _('Video Format Suggestion')
         verbose_name_plural = _('Video Format Suggestions')
         ordering = ['format']
@@ -115,48 +109,37 @@ class ExistingCameraDetailSuggestion(BaseCameraDetailMixin, BaseSuggestionMixin)
     related_instance = models.ForeignKey('components.CameraDetail', on_delete=models.CASCADE, blank=True, null=True,
                                          related_name='suggested_details')
 
-    @transaction.atomic
-    def accept(self):
-        self.reviewed = True
-        self.accepted = True
-        self.save()
-
-        camera_detail, created = CameraDetail.objects.update_or_create(
-            camera = self.camera,
-            id = self.related_instance_id,
-            defaults={
-                'height': self.height,
-                'width': self.width
-            }
+    def _create_instance(self):
+        instance = CameraDetail.objects.create(
+            camera=self.camera,
+            **{field: getattr(self, field)
+               for field in BaseCameraDetailMixin.DETAIL_FIELDS}
         )
-        camera_detail.save()
 
-        if created:
-            self.related_instance = camera_detail
-            self.save()
+        instance.full_clean()
+        instance.save()
+
+        self.related_instance = instance
+        self.save()
+        return instance
 
     class Meta:
         app_label = 'suggestions'
         db_table = 'suggestions_existing_camera_detail'
-
         verbose_name = _('Existing Camera Detail Suggestion')
         verbose_name_plural = _('Existing Camera Detail Suggestions')
-        ordering = ['camera',]
+        ordering = ['camera']
 
 
 class SuggestedCameraDetailSuggestion(BaseCameraDetailMixin):
     """ Add detail to suggested camera """
-    suggestion = models.ForeignKey('suggestions.CameraSuggestion', on_delete=models.CASCADE, related_name='suggested_details', verbose_name='details')
-    related_instance = models.ForeignKey('components.CameraDetail', on_delete=models.CASCADE, blank=True, null=True,
-                                         related_name='submitted_suggestions', verbose_name='submitted_suggestions')
-
-    class Meta:
-        app_label = 'suggestions'
-        db_table = 'suggestions_suggested_camera_detail'
-
-        verbose_name = _('Suggested Camera Detail')
-        verbose_name_plural = _('Suggested Camera Details')
-        ordering = ['related_instance',]
+    suggestion = models.ForeignKey('suggestions.CameraSuggestion', on_delete=models.CASCADE,
+                                   related_name='suggested_details',
+                                   verbose_name='details')
+    related_instance = models.ForeignKey('components.CameraDetail', on_delete=models.CASCADE,
+                                         blank=True, null=True,
+                                         related_name='submitted_suggestions',
+                                         verbose_name='submitted_suggestions')
 
     @transaction.atomic
     def delete(self, *args, **kwargs):
@@ -164,3 +147,10 @@ class SuggestedCameraDetailSuggestion(BaseCameraDetailMixin):
             super().delete(*args, **kwargs)
         else:
             raise models.ProtectedError(_("Cannot delete the only Detail for this object."), self)
+
+    class Meta:
+        app_label = 'suggestions'
+        db_table = 'suggestions_suggested_camera_detail'
+        verbose_name = _('Suggested Camera Detail')
+        verbose_name_plural = _('Suggested Camera Details')
+        ordering = ['related_instance']

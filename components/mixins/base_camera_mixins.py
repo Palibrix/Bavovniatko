@@ -9,6 +9,12 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class BaseCameraMixin(BaseComponentMixin):
+    CAMERA_FIELDS = [
+        'manufacturer', 'model', 'description',
+        'tvl', 'voltage_min', 'voltage_max', 'ratio',
+        'fov', 'output_type', 'light_sens', 'weight'
+    ]
+
     class RatioChoices(models.TextChoices):
         NORMAL = '4:3', '4:3'
         WIDE = '16:9', '16:9'
@@ -63,6 +69,7 @@ class BaseCameraMixin(BaseComponentMixin):
         abstract = True
 
 class BaseCameraDetailMixin(BaseModelMixin):
+    DETAIL_FIELDS = ['height', 'width']
 
     height = models.FloatField(max_length=5, help_text=_("Height of the camera in mm"),
                                verbose_name=_("Camera mount size height"))
@@ -82,6 +89,8 @@ class BaseCameraDetailMixin(BaseModelMixin):
         abstract = True
 
 class BaseVideoFormatMixin(BaseModelMixin):
+    VIDEO_FORMAT_FIELDS = ['format']
+
     format = models.CharField(max_length=50, unique=True,
                               help_text=_("Format of the video (e.g. NTSC/PAL)"), verbose_name=_("Video Format"))
 

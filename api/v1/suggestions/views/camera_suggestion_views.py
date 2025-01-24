@@ -7,7 +7,7 @@ from suggestions.models import VideoFormatSuggestion
 from users.permissions import HasAcceptDeny
 
 
-class VideoFormatSuggestionAPIViewSet(ModelViewSet, SuggestionActionsMixin):
+class VideoFormatSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
     permission_classes = (IsAuthenticated, HasAcceptDeny)
     model = VideoFormatSuggestion
     serializer_class = VideoFormatSuggestionSerializer
@@ -17,6 +17,3 @@ class VideoFormatSuggestionAPIViewSet(ModelViewSet, SuggestionActionsMixin):
             return VideoFormatSuggestion.objects.distinct()
         else:
             return VideoFormatSuggestion.objects.filter(user=self.request.user).distinct()
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)

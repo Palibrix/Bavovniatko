@@ -5,8 +5,10 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.http import HttpResponseRedirect
+from django_ckeditor_5.fields import CKEditor5Field
+from django.utils.translation import gettext_lazy as _
 
-from components.mixins import BaseModelAdminMixin
+from components.mixins import BaseModelAdminMixin, BaseModelMixin
 
 User = get_user_model()
 
@@ -28,19 +30,37 @@ class SuggestionFilesDeletionMixin(models.Model):
         abstract = True
 
 class BaseSuggestionMixin(models.Model):
-    reviewed = models.BooleanField(default=False)
-    accepted = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('pending', _('Pending')),
+            ('approved', _('Approved')),
+            ('denied', _('Denied'))
+        ],
+        default='pending'
+    )
     admin_comment = models.TextField(blank=True, null=True)
     request_description = models.TextField(blank=True, null=True)
-    user  = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    @abstractmethod
+    @transaction.atomic
     def accept(self):
-        pass
+        if self.status != 'approved':
+            instance = self._create_instance()
+            self._handle_post_accept(instance)
+            self.status = 'approved'
+            self.save()
+            return instance
+        raise ValidationError("This suggestion has already been approved")
+
+    def _create_instance(self):
+        raise NotImplementedError()
+
+    def _handle_post_accept(self, instance):
+        pass  # Optional hook for subclasses
 
     def deny(self, admin_comment=None):
-        self.reviewed = True
-        self.accepted = False
+        self.status = 'denied'
         if admin_comment:
             self.admin_comment = admin_comment
         self.save()

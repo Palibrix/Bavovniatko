@@ -53,8 +53,8 @@ class BaseAPITest(APITestCase, BaseUserTest):
                    )
 
 
-    def create_and_login(self, username="test", email='test@mail.com', password='test_password'):
-        user = self.create(username=username, email=email, password=password)
+    def create_and_login(self, username="test", email='test@mail.com', password='test_password', is_super=False):
+        user = self.create(username=username, email=email, password=password, is_super=is_super)
         self.authorize(user)
         return user
 

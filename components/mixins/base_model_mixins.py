@@ -17,6 +17,7 @@ class BaseModelMixin(models.Model):
 
 
 class BaseComponentMixin(BaseModelMixin):
+    COMPONENT_FIELDS = ['manufacturer', 'model', 'description']
     manufacturer = models.CharField(max_length=50)
     model = models.CharField(max_length=50, help_text=_("Full name of the item"))
     description = CKEditor5Field('Text', blank=True, help_text=_("Long description of the item"))

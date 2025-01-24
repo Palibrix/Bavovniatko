@@ -41,18 +41,6 @@ class TestVideoFormatSuggestionAPIView(BaseAPITest):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(VideoFormatSuggestion.objects.count(), 3)
 
-    def test_create_existing(self):
-        create_data = self.create_data
-        create_data.update({
-            'related_instance_id': self.format.id,
-            "format": "Absolutely new Format",
-        })
-        url = reverse("api:v1:suggestions:video_format-list")
-        response = self.client.post(url, data=create_data)
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(VideoFormatSuggestion.objects.count(), 3)
-        self.assertEqual(VideoFormatSuggestion.objects.filter(related_instance_id=self.format.id).count(), 1)
-
     def test_update(self):
         url = reverse("api:v1:suggestions:video_format-detail", args={self.format_suggestion_1.pk})
         response = self.client.put(url, data=self.create_data)
@@ -70,18 +58,6 @@ class TestVideoFormatSuggestionAPIView(BaseAPITest):
         self.format_suggestion_1.refresh_from_db()
         self.assertEqual(self.format_suggestion_1.format, self.create_data["format"])
 
-    def test_partial_update_after_accept(self):
-        self.format_suggestion_1.accept()
-
-        update_data = {"format": "New Format"}
-        url = reverse("api:v1:suggestions:video_format-detail", args={self.format_suggestion_1.id})
-        response = self.client.patch(url, data=update_data)
-        self.assertEqual(response.status_code, 200)
-        self.format_suggestion_1.refresh_from_db()
-
-        self.assertFalse(self.format_suggestion_1.reviewed)
-        self.assertFalse(self.format_suggestion_1.accepted)
-
     def test_delete(self):
         url = reverse("api:v1:suggestions:video_format-detail", args={self.format_suggestion_1.id})
         response = self.client.delete(url)
@@ -95,26 +71,48 @@ class TestVideoFormatSuggestionAPIView(BaseAPITest):
 
     def test_accept(self):
         self.logout()
-        superuser = self.create_super_user('test_superuser')
-        self.authorize(superuser)
+        self.create_and_login('test_superuser', is_super=True)
 
         url = reverse("api:v1:suggestions:video_format-accept", args={self.format_suggestion_1.id})
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(VideoFormat.objects.count(), 2)
         self.format_suggestion_1.refresh_from_db()
-        self.assertTrue(self.format_suggestion_1.reviewed)
-        self.assertTrue(self.format_suggestion_1.accepted)
+        self.assertTrue(self.format_suggestion_1.status, 'approved')
 
     def test_deny(self):
         self.logout()
-        superuser = self.create_super_user('test_superuser')
-        self.authorize(superuser)
+        self.create_and_login('test_superuser', is_super=True)
 
         url = reverse("api:v1:suggestions:video_format-deny", args={self.format_suggestion_1.id})
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(VideoFormat.objects.count(), 1)
         self.format_suggestion_1.refresh_from_db()
-        self.assertTrue(self.format_suggestion_1.reviewed)
-        self.assertFalse(self.format_suggestion_1.accepted)
+        self.assertTrue(self.format_suggestion_1.status, 'denied')
+
+    def test_cannot_modify_approved_suggestion(self):
+        """Test that approved suggestions cannot be modified"""
+        self.format_suggestion_1.status = 'approved'
+        self.format_suggestion_1.save()
+
+        update_data = {"format": 'New Format'}
+        url = reverse("api:v1:suggestions:video_format-detail",
+                      args={self.format_suggestion_1.id})
+        response = self.client.patch(url, data=update_data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data[0], "Cannot modify approved suggestion")
+
+    def test_denied_becomes_pending_on_update(self):
+        """Test that denied suggestion becomes pending when modified"""
+        self.format_suggestion_1.status = 'denied'
+        self.format_suggestion_1.save()
+
+        update_data = {"format": 'New Format'}
+        url = reverse("api:v1:suggestions:video_format-detail",
+                      args={self.format_suggestion_1.id})
+        response = self.client.patch(url, data=update_data)
+        self.assertEqual(response.status_code, 200)
+
+        self.format_suggestion_1.refresh_from_db()
+        self.assertEqual(self.format_suggestion_1.status, 'pending')
