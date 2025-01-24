@@ -1,3 +1,3 @@
 from .antenna_suggestion_tests import TestAntennaSuggestionAPIView, TestAntennaTypeSuggestionAPIView, \
-    TestAntennaConnectorSuggestionAPIView, TestSuggestedAntennaDetailSuggestionAPIView
-from .camera_suggestion_tests import TestVideoFormatSuggestionAPIView
+    TestAntennaConnectorSuggestionAPIView, TestExistingAntennaDetailSuggestionAPIView
+from .camera_suggestion_tests import TestVideoFormatSuggestionAPIView, TestExistingCameraDetailSuggestionAPIView, TestCameraSuggestionAPIView

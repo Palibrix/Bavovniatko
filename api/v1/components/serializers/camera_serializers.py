@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from api.v1.documents.serializers import CameraDocumentSerializer
-from api.v1.galleries.serializers import CameraGallerySerializer
+from api.v1.documents.serializers import CameraDocumentReadSerializer
+from api.v1.galleries.serializers import CameraGalleryReadSerializer
 from components.models import Camera, CameraDetail, VideoFormat
 
 
@@ -22,8 +22,8 @@ class CameraDetailSerializer(serializers.ModelSerializer):
 class CameraSerializer(serializers.ModelSerializer):
     video_formats = VideoFormatSerializer(many=True)
     details = CameraDetailSerializer(many=True)
-    images = CameraGallerySerializer(many=True)
-    documents = CameraDocumentSerializer(many=True)
+    images = CameraGalleryReadSerializer(many=True)
+    documents = CameraDocumentReadSerializer(many=True)
 
     class Meta:
         model = Camera

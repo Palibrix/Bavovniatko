@@ -1,6 +1,7 @@
 
 from rest_framework import serializers
 
+from api.v1.documents.mixins import BaseDocumentWriteSerializer
 from documents.mixins import Base64FileField
 from documents.models import (AntennaDocument, CameraDocument, DroneDocument, FrameDocument, MotorDocument, StackDocument,
                               PropellerDocument, ReceiverDocument, TransmitterDocument,
@@ -13,18 +14,24 @@ class AntennaDocumentReadSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AntennaDocumentWriteSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(required=False)
-    file = Base64FileField()
+class AntennaDocumentWriteSerializer(BaseDocumentWriteSerializer):
 
     class Meta:
         model = AntennaDocument
         fields = ('id', 'file',)
 
-class CameraDocumentSerializer(serializers.ModelSerializer):
+
+class CameraDocumentReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = CameraDocument
         fields = '__all__'
+
+
+class CameraDocumentWriteSerializer(BaseDocumentWriteSerializer):
+
+    class Meta:
+        model = CameraDocument
+        fields = ('id', 'file',)
 
 
 class DroneDocumentSerializer(serializers.ModelSerializer):

@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from api.mixins import SuggestionActionsMixin
 from rest_framework.viewsets import ModelViewSet
 
+from api.v1.galleries.mixins import GalleryContextMixin
 from api.v1.suggestions.serializers.antenna_suggestion_serializers import AntennaTypeSuggestionSerializer, \
     AntennaConnectorSuggestionSerializer, \
     ExistingAntennaDetailSuggestionSerializer, AntennaSuggestionSerializer
@@ -19,7 +20,7 @@ from suggestions.models.antenna_suggestions import AntennaTypeSuggestion, Antenn
 from users.permissions import HasAcceptDeny
 
 
-class AntennaSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
+class AntennaSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixin, ModelViewSet):
     permission_classes = (IsAuthenticated, HasAcceptDeny)
     model = AntennaSuggestion
     serializer_class = AntennaSuggestionSerializer

@@ -42,7 +42,6 @@ class TestCameraSuggestionModel(BaseUserTest):
         camera = self.suggestion.related_instance
         self.assertEqual(camera.video_formats.count(), 2)
 
-
     def test_accept_suggestion_with_gallery(self):
         """
         Gallery creates connection to new object after suggestion is accepted
@@ -220,6 +219,12 @@ class TestSuggestedCameraDetailSuggestionModel(BaseUserTest):
         self.camera_suggestion.accept()
         self.assertEqual(CameraDetail.objects.filter(camera=self.camera_suggestion.related_instance).count(),
                          2)
+
+    def test_accept_details_multiple_times(self):
+        self.camera_suggestion.accept()
+        with self.assertRaises(ValidationError):
+            self.camera_suggestion.accept()
+        self.assertEqual(CameraDetail.objects.filter(camera=self.camera_suggestion.related_instance).count(), 2)
 
     def test_deny(self):
         self.camera_suggestion.deny()

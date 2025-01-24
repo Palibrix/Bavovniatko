@@ -47,7 +47,7 @@ class BaseDocumentInlineAdminMixin(admin.StackedInline):
     # readonly_fields = ('object', 'suggestion', 'accepted', 'created_at')
 
 
-class Base64FileField(Base64FileField):
+class Base64ValidatedFileField(Base64FileField):
     ALLOWED_TYPES = ['pdf', 'png', 'doc', 'docx']
 
     def get_file_extension(self, filename, decoded_file):

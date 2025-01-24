@@ -67,7 +67,7 @@ class TestAntennaSuggestionAPIView(BaseAPITest):
                                 },
                                 {
                                     "image": self.create_base64_image('test_test2.jpg'),
-                                    "order": 1
+                                    "order": 2
                                 }
                             ],
                             'suggested_documents': [
@@ -97,8 +97,8 @@ class TestAntennaSuggestionAPIView(BaseAPITest):
 
     def test_create_new(self):
         response = self.client.post(reverse("api:v1:suggestions:antenna-list"), data=self.create_data)
-        suggestion = AntennaSuggestion.objects.get(id=response.data['id'])
         self.assertEqual(response.status_code, 201)
+        suggestion = AntennaSuggestion.objects.get(id=response.data['id'])
         self.assertEqual(AntennaGallery.objects.filter(suggestion=response.data['id']).count(), 2)
         self.assertEqual(suggestion.status, 'pending')
 
@@ -165,6 +165,21 @@ class TestAntennaSuggestionAPIView(BaseAPITest):
         self.antenna_suggestion_1.refresh_from_db()
         self.assertEqual(self.antenna_suggestion_1.status, 'approved')
         self.assertEqual(Antenna.objects.filter(id=self.antenna_suggestion_1.related_instance.id).get().images.count(), 1)
+        self.assertEqual(AntennaGallery.objects.get(id=1).accepted, True)
+
+    def test_images_become_accepted_after_suggestion_accepted(self):
+        """
+        Gallery images should become accepted after suggestion is accepted
+        """
+        gallery = mixer.blend(AntennaGallery,
+                              image=self.create_image(),
+                              suggestion=self.antenna_suggestion_1,
+                              accepted=False,
+                              odrder=3)
+        self.antenna_suggestion_1.accept()
+        gallery.refresh_from_db()
+        self.assertTrue(gallery.accepted)
+        self.assertEqual(gallery.object, self.antenna_suggestion_1.related_instance)
 
     def test_deny(self):
         """Test denying with admin comment"""
@@ -440,7 +455,7 @@ class TestAntennaConnectorSuggestionAPIView(BaseAPITest):
         self.assertEqual(self.connector_suggestion_1.status, 'pending')
 
 
-class TestSuggestedAntennaDetailSuggestionAPIView(BaseAPITest):
+class TestExistingAntennaDetailSuggestionAPIView(BaseAPITest):
     def setUp(self):
         self.antenna = mixer.blend(Antenna)
 
