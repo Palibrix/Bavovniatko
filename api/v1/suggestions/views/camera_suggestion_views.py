@@ -1,5 +1,5 @@
-from drf_rw_serializers.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
 
 from api.mixins import SuggestionActionsMixin
 from api.v1.galleries.mixins import GalleryContextMixin

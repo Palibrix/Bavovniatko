@@ -8,8 +8,7 @@ from rest_framework.reverse import reverse
 from api.v1.tests import BaseAPITest
 from components.models import AntennaType, Antenna, AntennaConnector, AntennaDetail
 from galleries.models import AntennaGallery
-from suggestions.models import AntennaSuggestion
-from suggestions.models.antenna_suggestions import SuggestedAntennaDetailSuggestion, AntennaTypeSuggestion, \
+from suggestions.models import AntennaSuggestion, SuggestedAntennaDetailSuggestion, AntennaTypeSuggestion, \
     AntennaConnectorSuggestion, ExistingAntennaDetailSuggestion
 
 

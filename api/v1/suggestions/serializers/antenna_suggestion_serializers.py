@@ -1,13 +1,11 @@
-from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
+from rest_framework import serializers
 
 from api.v1.components.serializers import AntennaTypeSerializer, AntennaSerializer, AntennaConnectorSerializer, \
     AntennaDetailSerializer
-from api.v1.documents.serializers import AntennaDocumentReadSerializer, AntennaDocumentWriteSerializer
-from api.v1.galleries.serializers import AntennaGalleryReadSerializer, AntennaGalleryWriteSerializer
+from api.v1.documents.serializers import AntennaDocumentWriteSerializer
+from api.v1.galleries.serializers import AntennaGalleryWriteSerializer
 from api.v1.suggestions.mixins import BaseSuggestionSerializer
-from api.v1.users.serializers import UserSerializer
-from api.v1.utils import ReadOnlyModelSerializer
 from components.models import AntennaConnector, AntennaType, Antenna
 from suggestions.models import SuggestedAntennaDetailSuggestion, AntennaSuggestion, AntennaTypeSuggestion, \
     AntennaConnectorSuggestion, ExistingAntennaDetailSuggestion

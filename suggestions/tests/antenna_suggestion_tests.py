@@ -5,7 +5,7 @@ from components.models import Antenna, AntennaConnector, AntennaDetail, AntennaT
 from documents.models import AntennaDocument
 from galleries.models import AntennaGallery
 from suggestions.models import AntennaSuggestion
-from suggestions.models.antenna_suggestions import SuggestedAntennaDetailSuggestion, AntennaTypeSuggestion, \
+from suggestions.models.antenna_suggestion import SuggestedAntennaDetailSuggestion, AntennaTypeSuggestion, \
     AntennaConnectorSuggestion, ExistingAntennaDetailSuggestion
 from users.tests import BaseUserTest
 

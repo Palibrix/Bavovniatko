@@ -29,7 +29,9 @@ class CameraDocument(BaseDocumentMixin):
 
 
 class FrameDocument(BaseDocumentMixin):
-    object = models.ForeignKey('components.Frame', on_delete=models.CASCADE, related_name='documents')
+    object = models.ForeignKey('components.Frame', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
+    suggestion = models.ForeignKey('suggestions.FrameSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_documents')
 
     class Meta:
         db_table = 'documents_frame'
@@ -39,7 +41,9 @@ class FrameDocument(BaseDocumentMixin):
 
 
 class FlightControllerDocument(BaseDocumentMixin):
-    object = models.ForeignKey('components.FlightController', on_delete=models.CASCADE, related_name='documents')
+    object = models.ForeignKey('components.FlightController', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
+    # suggestion = models.ForeignKey('suggestions.FlightControllerSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+    #                                related_name='suggested_documents')
 
     class Meta:
         db_table = 'documents_flight_controller'
@@ -49,7 +53,9 @@ class FlightControllerDocument(BaseDocumentMixin):
 
 
 class MotorDocument(BaseDocumentMixin):
-    object = models.ForeignKey('components.Motor', on_delete=models.CASCADE, related_name='documents')
+    object = models.ForeignKey('components.Motor', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
+    # suggestion = models.ForeignKey('suggestions.MotorSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+    #                                related_name='suggested_documents')
 
     class Meta:
         db_table = 'documents_motor'
@@ -59,7 +65,7 @@ class MotorDocument(BaseDocumentMixin):
 
 
 class PropellerDocument(BaseDocumentMixin):
-    object = models.ForeignKey('components.Propeller', on_delete=models.CASCADE, related_name='documents')
+    object = models.ForeignKey('components.Propeller', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
 
     class Meta:
         db_table = 'documents_propeller'
@@ -69,7 +75,7 @@ class PropellerDocument(BaseDocumentMixin):
 
 
 class ReceiverDocument(BaseDocumentMixin):
-    object = models.ForeignKey('components.Receiver', on_delete=models.CASCADE, related_name='documents')
+    object = models.ForeignKey('components.Receiver', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
 
     class Meta:
         db_table = 'documents_receiver'
@@ -79,7 +85,7 @@ class ReceiverDocument(BaseDocumentMixin):
 
 
 class StackDocument(BaseDocumentMixin):
-    object = models.ForeignKey('components.Stack', on_delete=models.CASCADE, related_name='documents')
+    object = models.ForeignKey('components.Stack', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
 
     class Meta:
         db_table = 'documents_stack'
@@ -89,7 +95,7 @@ class StackDocument(BaseDocumentMixin):
 
 
 class SpeedControllerDocument(BaseDocumentMixin):
-    object = models.ForeignKey('components.SpeedController', on_delete=models.CASCADE, related_name='documents')
+    object = models.ForeignKey('components.SpeedController', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
 
     class Meta:
         db_table = 'documents_speed_controller'
@@ -99,7 +105,7 @@ class SpeedControllerDocument(BaseDocumentMixin):
 
 
 class TransmitterDocument(BaseDocumentMixin):
-    object = models.ForeignKey('components.Transmitter', on_delete=models.CASCADE, related_name='documents')
+    object = models.ForeignKey('components.Transmitter', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
 
     class Meta:
         db_table = 'documents_transmitter'

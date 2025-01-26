@@ -2,13 +2,14 @@
 from rest_framework import serializers
 
 from api.v1.documents.mixins import BaseDocumentWriteSerializer
-from documents.mixins import Base64FileField
-from documents.models import (AntennaDocument, CameraDocument, DroneDocument, FrameDocument, MotorDocument, StackDocument,
+from api.v1.utils import ReadOnlyModelSerializer
+from documents.models import (AntennaDocument, CameraDocument, DroneDocument, FrameDocument, MotorDocument,
+                              StackDocument,
                               PropellerDocument, ReceiverDocument, TransmitterDocument,
                               SpeedControllerDocument, FlightControllerDocument)
 
 
-class AntennaDocumentReadSerializer(serializers.ModelSerializer):
+class AntennaDocumentReadSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = AntennaDocument
         fields = '__all__'
@@ -21,7 +22,7 @@ class AntennaDocumentWriteSerializer(BaseDocumentWriteSerializer):
         fields = ('id', 'file',)
 
 
-class CameraDocumentReadSerializer(serializers.ModelSerializer):
+class CameraDocumentReadSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = CameraDocument
         fields = '__all__'
@@ -34,22 +35,41 @@ class CameraDocumentWriteSerializer(BaseDocumentWriteSerializer):
         fields = ('id', 'file',)
 
 
-class DroneDocumentSerializer(serializers.ModelSerializer):
+class DroneDocumentReadSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = DroneDocument
         fields = '__all__'
 
 
-class FrameDocumentSerializer(serializers.ModelSerializer):
+class DroneDocumentWriteSerializer(BaseDocumentWriteSerializer):
+
+    class Meta:
+        model = CameraDocument
+        fields = ('id', 'file',)
+
+
+class FrameDocumentReadSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = FrameDocument
         fields = '__all__'
 
 
-class MotorDocumentSerializer(serializers.ModelSerializer):
+class FrameDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = FrameDocument
+        fields = ('id', 'file',)
+
+
+class MotorDocumentReadSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = MotorDocument
         fields = '__all__'
+
+
+class MotorDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = MotorDocument
+        fields = ('id', 'file',)
 
 
 class StackDocumentSerializer(serializers.ModelSerializer):

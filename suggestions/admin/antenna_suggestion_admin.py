@@ -6,7 +6,7 @@ from documents.admin.components_admin import AntennaDocumentInline
 from galleries.admin.components_admin import AntennaGalleryInline
 from suggestions.mixins import BaseSuggestionAdminMixin
 from suggestions.models import AntennaSuggestion
-from suggestions.models.antenna_suggestions import ExistingAntennaDetailSuggestion, SuggestedAntennaDetailSuggestion
+from suggestions.models.antenna_suggestion import ExistingAntennaDetailSuggestion, SuggestedAntennaDetailSuggestion
 
 
 class SuggestedAntennaDetailSuggestionInline(admin.StackedInline):

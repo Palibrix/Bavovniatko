@@ -4,8 +4,8 @@ from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import AccessToken
 
 from builds.models import Drone
-from components.models import Stack, FlightController, SpeedController, Antenna, Transmitter, Camera
-from suggestions.models import AntennaSuggestion, CameraSuggestion
+from components.models import Stack, FlightController, SpeedController, Antenna, Transmitter, Camera, Frame
+from suggestions.models import AntennaSuggestion, CameraSuggestion, FrameSuggestion
 from users.tests import BaseUserTest
 
 
@@ -30,6 +30,7 @@ class BaseAPITest(APITestCase, BaseUserTest):
                    voltage_max=10,
                    fov=180)
 
+
     mixer.register(CameraSuggestion,
                    description='TestCamera',
                    voltage_min=2,
@@ -38,6 +39,14 @@ class BaseAPITest(APITestCase, BaseUserTest):
 
     mixer.register(Drone,
                    description='TestDrone',
+                   )
+
+    mixer.register(Frame,
+                   description='TestFrame',
+                   )
+
+    mixer.register(FrameSuggestion,
+                   description='TestFrameSuggestion',
                    )
 
     mixer.register(Stack,

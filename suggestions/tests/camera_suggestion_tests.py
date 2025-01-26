@@ -5,7 +5,7 @@ from components.models import Camera, CameraDetail, VideoFormat
 from documents.models import CameraDocument
 from galleries.models import CameraGallery
 from suggestions.models import CameraSuggestion
-from suggestions.models.camera_suggestions import SuggestedCameraDetailSuggestion, ExistingCameraDetailSuggestion, VideoFormatSuggestion
+from suggestions.models.camera_suggestion import SuggestedCameraDetailSuggestion, ExistingCameraDetailSuggestion, VideoFormatSuggestion
 from users.tests import BaseUserTest
 
 

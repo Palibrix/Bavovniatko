@@ -34,22 +34,40 @@ class CameraGalleryWriteSerializer(BaseGalleryWriteSerializer):
         fields = ('id', 'image', 'order')
 
 
-class DroneGallerySerializer(serializers.ModelSerializer):
+class DroneGalleryReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = DroneGallery
         fields = '__all__'
 
 
-class FrameGallerySerializer(serializers.ModelSerializer):
+class DroneGalleryWriteSerializer(BaseGalleryWriteSerializer):
+    class Meta:
+        model = DroneGallery
+        fields = ('id', 'image', 'order')
+
+
+class FrameGalleryReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = FrameGallery
         fields = '__all__'
 
 
-class MotorGallerySerializer(serializers.ModelSerializer):
+class FrameGalleryWriteSerializer(BaseGalleryWriteSerializer):
+    class Meta:
+        model = FrameGallery
+        fields = ('id', 'image', 'order')
+
+
+class MotorGalleryReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = MotorGallery
         fields = '__all__'
+
+
+class MotorGalleryWriteSerializer(BaseGalleryWriteSerializer):
+    class Meta:
+        model = MotorGallery
+        fields = ('id', 'image', 'order')
 
 
 class StackGallerySerializer(serializers.ModelSerializer):

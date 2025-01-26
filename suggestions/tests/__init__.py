@@ -1,5 +1,5 @@
-from .antenna_suggestion_tests import TestAntennaConnectorSuggestionModel, TestAntennaTypeSuggestionModel, \
-    TestAntennaSuggestionModel, TestSuggestedAntennaDetailSuggestionModel, TestExistingAntennaDetailSuggestionModel
+from .antenna_suggestion_tests import *
 
-from .camera_suggestion_tests import TestCameraSuggestionModel, TestSuggestedCameraDetailSuggestionModel, \
-    TestExistingCameraDetailSuggestionModel, TestVideoFormatSuggestionModel
+from .camera_suggestion_tests import *
+
+from .frame_suggestion_tests import *

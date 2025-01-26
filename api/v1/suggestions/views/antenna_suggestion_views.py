@@ -15,7 +15,7 @@ from components.models import AntennaType
 from suggestions.models import AntennaSuggestion
 # from drf_rw_serializers.viewsets import ModelViewSet
 
-from suggestions.models.antenna_suggestions import AntennaTypeSuggestion, AntennaConnectorSuggestion, \
+from suggestions.models.antenna_suggestion import AntennaTypeSuggestion, AntennaConnectorSuggestion, \
     ExistingAntennaDetailSuggestion
 from users.permissions import HasAcceptDeny
 
