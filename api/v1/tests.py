@@ -4,8 +4,10 @@ from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import AccessToken
 
 from builds.models import Drone
-from components.models import Stack, FlightController, SpeedController, Antenna, Transmitter, Camera, Frame
-from suggestions.models import AntennaSuggestion, CameraSuggestion, FrameSuggestion
+from components.models import Stack, FlightController, SpeedController, Antenna, Transmitter, Camera, Frame, Motor, \
+    MotorDetail
+from suggestions.models import AntennaSuggestion, CameraSuggestion, FrameSuggestion, MotorSuggestion, \
+    SuggestedMotorDetailSuggestion, ExistingMotorDetailSuggestion
 from users.tests import BaseUserTest
 
 
@@ -48,6 +50,23 @@ class BaseAPITest(APITestCase, BaseUserTest):
     mixer.register(FrameSuggestion,
                    description='TestFrameSuggestion',
                    )
+
+    mixer.register(Motor,
+                   description='TestMotor',
+                   )
+
+    mixer.register(MotorDetail,
+                   weight=1)
+
+    mixer.register(MotorSuggestion,
+                   description='TestMotor',
+                   )
+
+    mixer.register(SuggestedMotorDetailSuggestion,
+                   weight=1)
+
+    mixer.register(ExistingMotorDetailSuggestion,
+                   weight=1)
 
     mixer.register(Stack,
                    description='TestStack',

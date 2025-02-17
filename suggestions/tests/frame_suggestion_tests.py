@@ -133,6 +133,20 @@ class TestFrameSuggestionModel(BaseUserTest):
             self.frame_suggestion.accept()
         self.assertEqual(Frame.objects.count(), 1)
 
+    def test_images_become_accepted_after_suggestion_accepted(self):
+        """
+        Gallery images should become accepted after suggestion is accepted
+        """
+        gallery = mixer.blend(FrameGallery,
+                              image=self.create_image(),
+                              suggestion=self.frame_suggestion,
+                              accepted=False,
+                              order=3)
+        self.frame_suggestion.accept()
+        gallery.refresh_from_db()
+        self.assertTrue(gallery.accepted)
+        self.assertEqual(gallery.object, self.frame_suggestion.related_instance)
+
 
 class TestExistingFrameCameraDetailSuggestionModel(BaseUserTest):
     def setUp(self):

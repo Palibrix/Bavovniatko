@@ -166,20 +166,6 @@ class TestAntennaSuggestionAPIView(BaseAPITest):
         self.assertEqual(Antenna.objects.filter(id=self.antenna_suggestion_1.related_instance.id).get().images.count(), 1)
         self.assertEqual(AntennaGallery.objects.get(id=1).accepted, True)
 
-    def test_images_become_accepted_after_suggestion_accepted(self):
-        """
-        Gallery images should become accepted after suggestion is accepted
-        """
-        gallery = mixer.blend(AntennaGallery,
-                              image=self.create_image(),
-                              suggestion=self.antenna_suggestion_1,
-                              accepted=False,
-                              odrder=3)
-        self.antenna_suggestion_1.accept()
-        gallery.refresh_from_db()
-        self.assertTrue(gallery.accepted)
-        self.assertEqual(gallery.object, self.antenna_suggestion_1.related_instance)
-
     def test_deny(self):
         """Test denying with admin comment"""
         self.logout()

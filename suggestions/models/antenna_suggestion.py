@@ -4,10 +4,10 @@ from django.utils.translation import gettext_lazy as _
 from components.mixins.base_antenna_mixins import BaseAntennaMixin, BaseAntennaTypeMixin, BaseAntennaConnectorMixin, \
     BaseAntennaDetailMixin
 from components.models import Antenna, AntennaDetail, AntennaType, AntennaConnector
-from suggestions.mixins import BaseSuggestionMixin, SuggestionFilesDeletionMixin
+from suggestions.mixins import BaseSuggestionMixin, SuggestionFilesDeletionMixin, MediaHandlerMixin
 
 
-class AntennaSuggestion(SuggestionFilesDeletionMixin, BaseAntennaMixin, BaseSuggestionMixin):
+class AntennaSuggestion(SuggestionFilesDeletionMixin, MediaHandlerMixin, BaseAntennaMixin, BaseSuggestionMixin):
     related_instance = models.ForeignKey('components.Antenna', blank=True, null=True,
                                          related_name='submitted_suggestions',
                                          on_delete=models.CASCADE)
@@ -15,17 +15,6 @@ class AntennaSuggestion(SuggestionFilesDeletionMixin, BaseAntennaMixin, BaseSugg
     def _handle_post_accept(self, instance):
         self._handle_media(instance)
         self._handle_details(instance)
-
-    def _handle_media(self, antenna):
-        for suggested_image in self.suggested_images.all():
-            if not suggested_image.object:
-                suggested_image.object = antenna
-            suggested_image.save()
-
-        for suggested_document in self.suggested_documents.all():
-            if not suggested_document.object:
-                suggested_document.object = antenna
-            suggested_document.save()
 
     def _handle_details(self, antenna):
         for suggested_detail in self.suggested_details.all():

@@ -12,6 +12,20 @@ from components.mixins import BaseModelAdminMixin, BaseModelMixin
 
 User = get_user_model()
 
+
+class MediaHandlerMixin:
+    def _handle_media(self, instance):
+        for suggested_image in self.suggested_images.all():
+            if not suggested_image.object:
+                suggested_image.object = instance
+            suggested_image.save()
+
+        for suggested_document in self.suggested_documents.all():
+            if not suggested_document.object:
+                suggested_document.object = instance
+            suggested_document.save()
+
+
 class SuggestionFilesDeletionMixin(models.Model):
 
     @transaction.atomic

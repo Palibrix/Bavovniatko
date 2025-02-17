@@ -2,3 +2,5 @@ from .antenna_suggestion_tests import TestAntennaSuggestionAPIView, TestAntennaT
     TestAntennaConnectorSuggestionAPIView, TestExistingAntennaDetailSuggestionAPIView
 from .camera_suggestion_tests import TestVideoFormatSuggestionAPIView, TestExistingCameraDetailSuggestionAPIView, TestCameraSuggestionAPIView
 from .frame_suggestion_tests import *
+from .motor_suggestion_tests import *
+

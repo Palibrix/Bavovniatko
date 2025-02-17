@@ -7,6 +7,8 @@ from api.v1.suggestions.views.camera_suggestion_views import VideoFormatSuggesti
 from api.v1.suggestions.views.frame_suggestion_views import FrameSuggestionAPIViewSet, \
     ExistingFrameCameraDetailSuggestionAPIViewSet, ExistingFrameMotorDetailSuggestionAPIViewSet, \
     ExistingFrameVTXDetailSuggestionAPIViewSet
+from api.v1.suggestions.views.motor_suggestion_views import MotorSuggestionAPIViewSet, \
+    ExistingMotorDetailSuggestionAPIViewSet, RatedVoltageSuggestionAPIViewSet
 
 app_name = 'api-v1-suggestions'
 router = DefaultRouter(trailing_slash=True)
@@ -23,6 +25,10 @@ router.register(r'frames', FrameSuggestionAPIViewSet, basename="frame")
 router.register(r'frame_camera_details', ExistingFrameCameraDetailSuggestionAPIViewSet, basename="frame_camera_detail")
 router.register(r'frame_motor_details', ExistingFrameMotorDetailSuggestionAPIViewSet, basename="frame_motor_detail")
 router.register(r'frame_vtx_details', ExistingFrameVTXDetailSuggestionAPIViewSet, basename="frame_vtx_detail")
+
+router.register(r'motors', MotorSuggestionAPIViewSet, basename="motor")
+router.register(r'motor_details', ExistingMotorDetailSuggestionAPIViewSet, basename="motor_detail")
+router.register(r'voltages', RatedVoltageSuggestionAPIViewSet, basename="rated_voltage")
 
 urlpatterns = [
 

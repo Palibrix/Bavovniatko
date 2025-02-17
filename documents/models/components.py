@@ -54,8 +54,8 @@ class FlightControllerDocument(BaseDocumentMixin):
 
 class MotorDocument(BaseDocumentMixin):
     object = models.ForeignKey('components.Motor', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
-    # suggestion = models.ForeignKey('suggestions.MotorSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
-    #                                related_name='suggested_documents')
+    suggestion = models.ForeignKey('suggestions.MotorSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_documents')
 
     class Meta:
         db_table = 'documents_motor'

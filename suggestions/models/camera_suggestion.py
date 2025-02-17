@@ -5,10 +5,10 @@ from django.utils.translation import gettext_lazy as _
 from components.mixins.base_camera_mixins import BaseCameraMixin, BaseVideoFormatMixin, BaseCameraDetailMixin
 from components.models import Camera, CameraDetail, VideoFormat
 from components.validators import validate_fov_length
-from suggestions.mixins import BaseSuggestionMixin, SuggestionFilesDeletionMixin
+from suggestions.mixins import BaseSuggestionMixin, SuggestionFilesDeletionMixin, MediaHandlerMixin
 
 
-class CameraSuggestion(SuggestionFilesDeletionMixin, BaseCameraMixin, BaseSuggestionMixin):
+class CameraSuggestion(SuggestionFilesDeletionMixin, MediaHandlerMixin, BaseCameraMixin, BaseSuggestionMixin):
 
     related_instance = models.ForeignKey('components.Camera', blank=True, null=True,
                                          related_name='submitted_suggestions',
@@ -17,17 +17,6 @@ class CameraSuggestion(SuggestionFilesDeletionMixin, BaseCameraMixin, BaseSugges
     def _handle_post_accept(self, instance):
         self._handle_media(instance)
         self._handle_details(instance)
-
-    def _handle_media(self, instance):
-        for suggested_image in self.suggested_images.all():
-            if not suggested_image.object:
-                suggested_image.object = instance
-            suggested_image.save()
-
-        for suggested_document in self.suggested_documents.all():
-            if not suggested_document.object:
-                suggested_document.object = instance
-            suggested_document.save()
 
     def _handle_details(self, instance):
         for suggested_detail in self.suggested_details.all():

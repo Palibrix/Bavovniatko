@@ -226,6 +226,19 @@ class TestCameraSuggestionAPIView(BaseAPITest):
         self.camera_suggestion_1.refresh_from_db()
         self.assertEqual(self.camera_suggestion_1.model, update_data["model"])
 
+    def test_partial_update_wrong_image(self):
+        update_data = {
+            "suggested_images": [
+                {
+                    'id': 3,
+                    "image": self.create_base64_image('test_test.jpg'),
+                    "order": 1
+                },
+            ]}
+        url = reverse("api:v1:suggestions:camera-detail", args={self.camera_suggestion_1.id})
+        response = self.client.patch(url, data=update_data)
+        self.assertEqual(response.status_code, 400)
+
     def test_delete(self):
         url = reverse("api:v1:suggestions:camera-detail", args={self.camera_suggestion_1.id})
         response = self.client.delete(url)
@@ -278,33 +291,20 @@ class TestCameraSuggestionAPIView(BaseAPITest):
         self.camera_suggestion_1.refresh_from_db()
         self.assertEqual(self.camera_suggestion_1.status, 'pending')
 
-    def test_partial_update_wrong_image(self):
-        update_data = {
-            "suggested_images": [
-                {
-                    'id': 3,
-                    "image": self.create_base64_image('test_test.jpg'),
-                    "order": 1
-                },
-            ]}
-        url = reverse("api:v1:suggestions:camera-detail", args={self.camera_suggestion_1.id})
-        response = self.client.patch(url, data=update_data)
-        self.assertEqual(response.status_code, 400)
-
     def test_images_become_accepted_after_suggestion_accepted(self):
-        """
-        Gallery images should become accepted after suggestion is accepted
-        """
+        """Test that gallery images are marked as accepted after suggestion acceptance"""
         gallery = mixer.blend(CameraGallery,
-                              image=self.create_image(),
-                              suggestion=self.camera_suggestion_1,
-                              accepted=False,
-                              odrder=1)
-        self.camera_suggestion_1.accept()
+                            image=self.create_image(),
+                            suggestion=self.camera_suggestion_1,
+                            accepted=False,
+                            order=3)
+        url = reverse("api:v1:suggestions:camera-accept", args={self.camera_suggestion_1.id})
+        self.logout()
+        self.create_and_login('test_superuser', is_super=True)
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
         gallery.refresh_from_db()
         self.assertTrue(gallery.accepted)
-        self.assertEqual(gallery.object, self.camera_suggestion_1.related_instance)
-
 
 class TestExistingCameraDetailSuggestionAPIView(BaseAPITest):
     def setUp(self):

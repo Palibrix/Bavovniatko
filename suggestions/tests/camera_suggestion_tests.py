@@ -118,6 +118,20 @@ class TestCameraSuggestionModel(BaseUserTest):
         self.assertEqual(CameraDocument.objects.count(), 1)
         self.assertEqual(CameraSuggestion.objects.count(), 0)
 
+    def test_images_become_accepted_after_suggestion_accepted(self):
+        """
+        Gallery images should become accepted after suggestion is accepted
+        """
+        gallery = mixer.blend(CameraGallery,
+                              image=self.create_image(),
+                              suggestion=self.suggestion,
+                              accepted=False,
+                              odrder=1)
+        self.suggestion.accept()
+        gallery.refresh_from_db()
+        self.assertTrue(gallery.accepted)
+        self.assertEqual(gallery.object, self.suggestion.related_instance)
+
 
 class TestVideoFormatSuggestionModel(BaseUserTest):
     """

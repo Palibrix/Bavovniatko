@@ -8,10 +8,10 @@ from components.mixins.base_frame_mixins import (
     BaseFrameVTXDetailMixin
 )
 from components.models import Frame, FrameCameraDetail, FrameMotorDetail, FrameVTXDetail
-from suggestions.mixins import BaseSuggestionMixin, SuggestionFilesDeletionMixin
+from suggestions.mixins import BaseSuggestionMixin, SuggestionFilesDeletionMixin, MediaHandlerMixin
 
 
-class FrameSuggestion(SuggestionFilesDeletionMixin, BaseFrameMixin, BaseSuggestionMixin):
+class FrameSuggestion(SuggestionFilesDeletionMixin, MediaHandlerMixin, BaseFrameMixin, BaseSuggestionMixin):
     related_instance = models.ForeignKey('components.Frame', blank=True, null=True,
                                        related_name='submitted_suggestions',
                                        on_delete=models.CASCADE)
@@ -19,17 +19,6 @@ class FrameSuggestion(SuggestionFilesDeletionMixin, BaseFrameMixin, BaseSuggesti
     def _handle_post_accept(self, instance):
         self._handle_media(instance)
         self._handle_details(instance)
-
-    def _handle_media(self, frame):
-        for suggested_image in self.suggested_images.all():
-            if not suggested_image.object:
-                suggested_image.object = frame
-            suggested_image.save()
-
-        for suggested_document in self.suggested_documents.all():
-            if not suggested_document.object:
-                suggested_document.object = frame
-            suggested_document.save()
 
     def _handle_details(self, frame):
         # Handle camera mount details

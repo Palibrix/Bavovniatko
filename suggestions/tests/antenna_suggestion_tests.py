@@ -119,6 +119,29 @@ class TestAntennaSuggestionModel(BaseUserTest):
         self.assertEqual(AntennaSuggestion.objects.count(), 0)
 
 
+    def test_images_become_accepted_after_suggestion_accepted(self):
+        """
+        Gallery images should become accepted after suggestion is accepted
+        """
+        gallery = mixer.blend(AntennaGallery,
+                              image=self.create_image(),
+                              suggestion=self.antenna_suggestion,
+                              accepted=False,
+                              odrder=3)
+        self.antenna_suggestion.accept()
+        gallery.refresh_from_db()
+        self.assertTrue(gallery.accepted)
+        self.assertEqual(gallery.object, self.antenna_suggestion.related_instance)
+
+
+    def test_accept_multiple_times(self):
+        self.antenna_suggestion.accept()
+        self.assertEqual(AntennaType.objects.count(), 1)
+        with self.assertRaises(ValidationError):
+            self.antenna_suggestion.accept()
+        self.assertEqual(AntennaType.objects.count(), 1)
+
+
 class TestAntennaTypeSuggestionModel(BaseUserTest):
     """
     Tests for AntennaTypeSuggestion
