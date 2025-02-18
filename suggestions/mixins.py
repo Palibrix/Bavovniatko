@@ -67,6 +67,7 @@ class BaseSuggestionMixin(models.Model):
             return instance
         raise ValidationError("This suggestion has already been approved")
 
+    @abstractmethod
     def _create_instance(self):
         raise NotImplementedError()
 

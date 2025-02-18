@@ -6,6 +6,7 @@ from api.v1.components.serializers import AntennaTypeSerializer, AntennaSerializ
 from api.v1.documents.serializers import AntennaDocumentWriteSerializer
 from api.v1.galleries.serializers import AntennaGalleryWriteSerializer
 from api.v1.suggestions.mixins import BaseSuggestionSerializer
+from api.v1.users.serializers import UserSerializer
 from components.models import AntennaConnector, AntennaType, Antenna
 from suggestions.models import SuggestedAntennaDetailSuggestion, AntennaSuggestion, AntennaTypeSuggestion, \
     AntennaConnectorSuggestion, ExistingAntennaDetailSuggestion
@@ -24,7 +25,6 @@ class AntennaDetailSuggestionSerializer(serializers.ModelSerializer):
 
 
 class AntennaSuggestionSerializer(WritableNestedModelSerializer, BaseSuggestionSerializer):
-    """Write serializer for antenna suggestions with nested data handling"""
     type = serializers.PrimaryKeyRelatedField(
         queryset=AntennaType.objects.all(),
         required=True
@@ -41,6 +41,7 @@ class AntennaSuggestionSerializer(WritableNestedModelSerializer, BaseSuggestionS
 
 class AntennaTypeSuggestionSerializer(BaseSuggestionSerializer):
     related_instance = AntennaTypeSerializer(read_only=True)
+
     class Meta(BaseSuggestionSerializer.Meta):
         model = AntennaTypeSuggestion
         fields = '__all__'
@@ -48,6 +49,7 @@ class AntennaTypeSuggestionSerializer(BaseSuggestionSerializer):
 
 class AntennaConnectorSuggestionSerializer(BaseSuggestionSerializer):
     related_instance = AntennaConnectorSerializer(read_only=True)
+
     class Meta(BaseSuggestionSerializer.Meta):
         model = AntennaConnectorSuggestion
         fields = '__all__'

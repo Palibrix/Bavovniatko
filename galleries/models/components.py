@@ -65,6 +65,8 @@ class MotorGallery(BaseImageMixin):
 
 class PropellerGallery(BaseImageMixin):
     object = models.ForeignKey('components.Propeller', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    suggestion = models.ForeignKey('suggestions.PropellerSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_propeller'
@@ -75,6 +77,8 @@ class PropellerGallery(BaseImageMixin):
 
 class ReceiverGallery(BaseImageMixin):
     object = models.ForeignKey('components.Receiver', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    # suggestion = models.ForeignKey('suggestions.ReceiverSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+    #                                related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_receiver'
@@ -85,6 +89,8 @@ class ReceiverGallery(BaseImageMixin):
 
 class StackGallery(BaseImageMixin):
     object = models.ForeignKey('components.Stack', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    # suggestion = models.ForeignKey('suggestions.StackSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+    #                                related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_stack'
@@ -95,6 +101,8 @@ class StackGallery(BaseImageMixin):
 
 class SpeedControllerGallery(BaseImageMixin):
     object = models.ForeignKey('components.SpeedController', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    # suggestion = models.ForeignKey('suggestions.SpeedControllerSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+    #                                related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_speed_controller'
@@ -105,6 +113,8 @@ class SpeedControllerGallery(BaseImageMixin):
 
 class TransmitterGallery(BaseImageMixin):
     object = models.ForeignKey('components.Transmitter', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    # suggestion = models.ForeignKey('suggestions.TransmitterSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+    #                                related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_transmitter'

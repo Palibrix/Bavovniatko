@@ -9,6 +9,7 @@ from api.v1.suggestions.views.frame_suggestion_views import FrameSuggestionAPIVi
     ExistingFrameVTXDetailSuggestionAPIViewSet
 from api.v1.suggestions.views.motor_suggestion_views import MotorSuggestionAPIViewSet, \
     ExistingMotorDetailSuggestionAPIViewSet, RatedVoltageSuggestionAPIViewSet
+from api.v1.suggestions.views.propeller_suggestion_views import PropellerSuggestionAPIViewSet
 
 app_name = 'api-v1-suggestions'
 router = DefaultRouter(trailing_slash=True)
@@ -29,6 +30,8 @@ router.register(r'frame_vtx_details', ExistingFrameVTXDetailSuggestionAPIViewSet
 router.register(r'motors', MotorSuggestionAPIViewSet, basename="motor")
 router.register(r'motor_details', ExistingMotorDetailSuggestionAPIViewSet, basename="motor_detail")
 router.register(r'voltages', RatedVoltageSuggestionAPIViewSet, basename="rated_voltage")
+
+router.register(r'propellers', PropellerSuggestionAPIViewSet, basename="propeller")
 
 urlpatterns = [
 

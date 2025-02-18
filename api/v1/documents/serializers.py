@@ -78,10 +78,16 @@ class StackDocumentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PropellerDocumentSerializer(serializers.ModelSerializer):
+class PropellerDocumentReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropellerDocument
         fields = '__all__'
+
+
+class PropellerDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = PropellerDocument
+        fields = ('id', 'file',)
 
 
 class ReceiverDocumentSerializer(serializers.ModelSerializer):

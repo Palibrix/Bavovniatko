@@ -29,7 +29,6 @@ class MotorDetailSuggestionSerializer(serializers.ModelSerializer):
 
 
 class MotorSuggestionSerializer(WritableNestedModelSerializer, BaseSuggestionSerializer):
-    """Write serializer for motor suggestions with nested data handling"""
     suggested_images = MotorGalleryWriteSerializer(many=True)
     suggested_documents = MotorDocumentWriteSerializer(many=True, required=False)
     suggested_details = MotorDetailSuggestionSerializer(many=True)
