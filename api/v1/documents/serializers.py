@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from api.v1.documents.mixins import BaseDocumentWriteSerializer
 from api.v1.utils import ReadOnlyModelSerializer
+from components.models import Receiver
 from documents.models import (AntennaDocument, CameraDocument, DroneDocument, FrameDocument, MotorDocument,
                               StackDocument,
                               PropellerDocument, ReceiverDocument, TransmitterDocument,
@@ -90,10 +91,16 @@ class PropellerDocumentWriteSerializer(BaseDocumentWriteSerializer):
         fields = ('id', 'file',)
 
 
-class ReceiverDocumentSerializer(serializers.ModelSerializer):
+class ReceiverDocumentReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReceiverDocument
         fields = '__all__'
+
+
+class ReceiverDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = ReceiverDocument
+        fields = ('id', 'file',)
 
 
 class TransmitterDocumentSerializer(serializers.ModelSerializer):

@@ -5,9 +5,9 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from builds.models import Drone
 from components.models import Stack, FlightController, SpeedController, Antenna, Transmitter, Camera, Frame, Motor, \
-    MotorDetail
+    MotorDetail, Receiver
 from suggestions.models import AntennaSuggestion, CameraSuggestion, FrameSuggestion, MotorSuggestion, \
-    SuggestedMotorDetailSuggestion, ExistingMotorDetailSuggestion
+    SuggestedMotorDetailSuggestion, ExistingMotorDetailSuggestion, ReceiverSuggestion
 from users.tests import BaseUserTest
 
 
@@ -31,7 +31,6 @@ class BaseAPITest(APITestCase, BaseUserTest):
                    voltage_min=2,
                    voltage_max=10,
                    fov=180)
-
 
     mixer.register(CameraSuggestion,
                    description='TestCamera',
@@ -68,6 +67,16 @@ class BaseAPITest(APITestCase, BaseUserTest):
     mixer.register(ExistingMotorDetailSuggestion,
                    weight=1)
 
+    mixer.register(Receiver,
+                   description='TestReceiver',
+                   voltage_min=5
+                   )
+
+    mixer.register(ReceiverSuggestion,
+                   description='TestReceiverSuggestion',
+                   voltage_min=5
+                   )
+
     mixer.register(Stack,
                    description='TestStack',
                    )
@@ -91,7 +100,6 @@ class BaseAPITest(APITestCase, BaseUserTest):
                    input_voltage_min=1.0,
                    input_voltage_max=2.0,
                    )
-
 
     def create_and_login(self, username="test", email='test@mail.com', password='test_password', is_super=False):
         user = self.create(username=username, email=email, password=password, is_super=is_super)

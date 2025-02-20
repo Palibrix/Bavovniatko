@@ -10,6 +10,8 @@ from api.v1.suggestions.views.frame_suggestion_views import FrameSuggestionAPIVi
 from api.v1.suggestions.views.motor_suggestion_views import MotorSuggestionAPIViewSet, \
     ExistingMotorDetailSuggestionAPIViewSet, RatedVoltageSuggestionAPIViewSet
 from api.v1.suggestions.views.propeller_suggestion_views import PropellerSuggestionAPIViewSet
+from api.v1.suggestions.views.receiver_suggestion_views import ReceiverProtocolTypeSuggestionAPIViewSet, \
+    ReceiverSuggestionAPIViewSet, ExistingReceiverDetailSuggestionAPIViewSet
 
 app_name = 'api-v1-suggestions'
 router = DefaultRouter(trailing_slash=True)
@@ -32,6 +34,10 @@ router.register(r'motor_details', ExistingMotorDetailSuggestionAPIViewSet, basen
 router.register(r'voltages', RatedVoltageSuggestionAPIViewSet, basename="rated_voltage")
 
 router.register(r'propellers', PropellerSuggestionAPIViewSet, basename="propeller")
+
+router.register(r'protocols', ReceiverProtocolTypeSuggestionAPIViewSet, basename="receiver_protocol_type")
+router.register(r'receivers', ReceiverSuggestionAPIViewSet, basename="receiver")
+router.register(r'receiver_details', ExistingReceiverDetailSuggestionAPIViewSet, basename="receiver_detail")
 
 urlpatterns = [
 

@@ -4,6 +4,7 @@ from .camera_suggestion import CameraSuggestion, SuggestedCameraDetailSuggestion
 from .frame_suggestion import FrameSuggestion, SuggestedFrameVTXDetailSuggestion, SuggestedFrameMotorDetailSuggestion, SuggestedFrameCameraDetailSuggestion, SuggestionFilesDeletionMixin, ExistingFrameVTXDetailSuggestion, ExistingFrameCameraDetailSuggestion, ExistingFrameMotorDetailSuggestion
 from .motor_suggestion import MotorSuggestion, SuggestedMotorDetailSuggestion, ExistingMotorDetailSuggestion, RatedVoltageSuggestion
 from .propeller_suggestion import PropellerSuggestion
+from .receiver_suggestion import ReceiverSuggestion, ReceiverProtocolTypeSuggestion, SuggestedReceiverDetailSuggestion, ExistingReceiverDetailSuggestion
 
 __all__ = [
     'AntennaSuggestion',
@@ -31,5 +32,10 @@ __all__ = [
     'ExistingMotorDetailSuggestion',
     'RatedVoltageSuggestion',
 
-    'PropellerSuggestion'
+    'PropellerSuggestion',
+
+    'ReceiverSuggestion',
+    'SuggestedReceiverDetailSuggestion',
+    'ExistingReceiverDetailSuggestion',
+    'ReceiverProtocolTypeSuggestion'
 ]

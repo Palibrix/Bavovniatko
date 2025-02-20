@@ -89,10 +89,17 @@ class PropellerGalleryWriteSerializer(BaseGalleryWriteSerializer):
         fields = ('id', 'image', 'order')
 
 
-class ReceiverGallerySerializer(serializers.ModelSerializer):
+class ReceiverGalleryReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReceiverGallery
         fields = '__all__'
+
+
+class ReceiverGalleryWriteSerializer(BaseGalleryWriteSerializer):
+
+    class Meta:
+        model = ReceiverGallery
+        fields = ('id', 'image', 'order')
 
 
 class TransmitterGallerySerializer(serializers.ModelSerializer):

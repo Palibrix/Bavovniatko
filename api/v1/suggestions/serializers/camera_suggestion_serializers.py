@@ -13,7 +13,6 @@ from suggestions.models import VideoFormatSuggestion, SuggestedCameraDetailSugge
 
 
 class VideoFormatSuggestionSerializer(BaseSuggestionSerializer):
-    user = UserSerializer(read_only=True)
     related_instance = VideoFormatSerializer(read_only=True)
 
     class Meta(BaseSuggestionSerializer.Meta):
@@ -32,8 +31,7 @@ class CameraSuggestionSerializer(WritableNestedModelSerializer, BaseSuggestionSe
     """Write serializer for camera suggestions with nested data handling"""
     video_formats = serializers.PrimaryKeyRelatedField(
         queryset=VideoFormat.objects.all(),
-        many=True,
-        required=True
+        many=True
     )
     suggested_images = CameraGalleryWriteSerializer(many=True)
     suggested_documents = CameraDocumentWriteSerializer(many=True, required=False)
