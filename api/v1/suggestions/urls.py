@@ -1,17 +1,20 @@
 from rest_framework.routers import DefaultRouter
 
-from api.v1.suggestions.views.antenna_suggestion_views import AntennaSuggestionAPIViewSet, \
-    AntennaTypeSuggestionAPIViewSet, AntennaConnectorSuggestionAPIViewSet, ExistingAntennaDetailSuggestionAPIViewSet
-from api.v1.suggestions.views.camera_suggestion_views import VideoFormatSuggestionAPIViewSet, \
-    CameraSuggestionAPIViewSet, ExistingCameraDetailSuggestionAPIViewSet
-from api.v1.suggestions.views.frame_suggestion_views import FrameSuggestionAPIViewSet, \
-    ExistingFrameCameraDetailSuggestionAPIViewSet, ExistingFrameMotorDetailSuggestionAPIViewSet, \
-    ExistingFrameVTXDetailSuggestionAPIViewSet
-from api.v1.suggestions.views.motor_suggestion_views import MotorSuggestionAPIViewSet, \
-    ExistingMotorDetailSuggestionAPIViewSet, RatedVoltageSuggestionAPIViewSet
-from api.v1.suggestions.views.propeller_suggestion_views import PropellerSuggestionAPIViewSet
-from api.v1.suggestions.views.receiver_suggestion_views import ReceiverProtocolTypeSuggestionAPIViewSet, \
-    ReceiverSuggestionAPIViewSet, ExistingReceiverDetailSuggestionAPIViewSet
+from .views.antenna_suggestion_views import AntennaSuggestionAPIViewSet, AntennaTypeSuggestionAPIViewSet, \
+    AntennaConnectorSuggestionAPIViewSet, ExistingAntennaDetailSuggestionAPIViewSet
+from .views.camera_suggestion_views import VideoFormatSuggestionAPIViewSet, CameraSuggestionAPIViewSet, \
+    ExistingCameraDetailSuggestionAPIViewSet
+from .views.frame_suggestion_views import FrameSuggestionAPIViewSet, ExistingFrameCameraDetailSuggestionAPIViewSet, \
+    ExistingFrameMotorDetailSuggestionAPIViewSet, ExistingFrameVTXDetailSuggestionAPIViewSet
+from .views.motor_suggestion_views import MotorSuggestionAPIViewSet, ExistingMotorDetailSuggestionAPIViewSet, \
+    RatedVoltageSuggestionAPIViewSet
+from .views.propeller_suggestion_views import PropellerSuggestionAPIViewSet
+from .views.receiver_suggestion_views import ReceiverProtocolTypeSuggestionAPIViewSet, ReceiverSuggestionAPIViewSet, \
+    ExistingReceiverDetailSuggestionAPIViewSet
+from .views.stack_suggestion_views import StackSuggestionAPIViewSet, GyroSuggestionAPIViewSet, \
+    FlightControllerSuggestionAPIViewSet, SpeedControllerSuggestionAPIViewSet, \
+    FlightControllerFirmwareSuggestionAPIViewSet, SpeedControllerProtocolSuggestionAPIViewSet, \
+    SpeedControllerFirmwareSuggestionAPIViewSet
 
 app_name = 'api-v1-suggestions'
 router = DefaultRouter(trailing_slash=True)
@@ -38,6 +41,15 @@ router.register(r'propellers', PropellerSuggestionAPIViewSet, basename="propelle
 router.register(r'protocols', ReceiverProtocolTypeSuggestionAPIViewSet, basename="receiver_protocol_type")
 router.register(r'receivers', ReceiverSuggestionAPIViewSet, basename="receiver")
 router.register(r'receiver_details', ExistingReceiverDetailSuggestionAPIViewSet, basename="receiver_detail")
+
+router.register('stacks', StackSuggestionAPIViewSet, basename="stack")
+router.register('flight_controllers', FlightControllerSuggestionAPIViewSet, basename="flight_controller")
+router.register('speed_controllers', SpeedControllerSuggestionAPIViewSet, basename="speed_controller")
+router.register('gyros', GyroSuggestionAPIViewSet, basename="gyro")
+router.register('fc_firmwares', FlightControllerFirmwareSuggestionAPIViewSet, basename="fc_firmware")
+router.register('sc_firmwares', SpeedControllerFirmwareSuggestionAPIViewSet, basename="sc_firmware")
+router.register('sc_protocols', SpeedControllerProtocolSuggestionAPIViewSet, basename="sc_protocol")
+
 
 urlpatterns = [
 

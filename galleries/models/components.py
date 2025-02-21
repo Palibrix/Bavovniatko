@@ -41,8 +41,8 @@ class FrameGallery(BaseImageMixin):
 
 class FlightControllerGallery(BaseImageMixin):
     object = models.ForeignKey('components.FlightController', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
-    # suggestion = models.ForeignKey('suggestions.FlightControllerSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
-    #                                related_name='suggested_images')
+    suggestion = models.ForeignKey('suggestions.FlightControllerSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_flight_controller'
@@ -89,8 +89,8 @@ class ReceiverGallery(BaseImageMixin):
 
 class StackGallery(BaseImageMixin):
     object = models.ForeignKey('components.Stack', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
-    # suggestion = models.ForeignKey('suggestions.StackSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
-    #                                related_name='suggested_images')
+    suggestion = models.ForeignKey('suggestions.StackSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_stack'
@@ -101,8 +101,8 @@ class StackGallery(BaseImageMixin):
 
 class SpeedControllerGallery(BaseImageMixin):
     object = models.ForeignKey('components.SpeedController', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
-    # suggestion = models.ForeignKey('suggestions.SpeedControllerSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
-    #                                related_name='suggested_images')
+    suggestion = models.ForeignKey('suggestions.SpeedControllerSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_speed_controller'

@@ -73,10 +73,16 @@ class MotorDocumentWriteSerializer(BaseDocumentWriteSerializer):
         fields = ('id', 'file',)
 
 
-class StackDocumentSerializer(serializers.ModelSerializer):
+class StackDocumentReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = StackDocument
         fields = '__all__'
+
+
+class StackDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = StackDocument
+        fields = ('id', 'file',)
 
 
 class PropellerDocumentReadSerializer(serializers.ModelSerializer):
@@ -109,13 +115,24 @@ class TransmitterDocumentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SpeedControllerDocumentSerializer(serializers.ModelSerializer):
+class SpeedControllerReadDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = SpeedControllerDocument
         fields = '__all__'
 
+class SpeedControllerDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = SpeedControllerDocument
+        fields = ('id', 'file',)
 
-class FlightControllerDocumentSerializer(serializers.ModelSerializer):
+
+class FlightControllerReadDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = FlightControllerDocument
         fields = '__all__'
+
+
+class FlightControllerDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = FlightControllerDocument
+        fields = ('id', 'file',)

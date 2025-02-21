@@ -42,8 +42,8 @@ class FrameDocument(BaseDocumentMixin):
 
 class FlightControllerDocument(BaseDocumentMixin):
     object = models.ForeignKey('components.FlightController', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
-    # suggestion = models.ForeignKey('suggestions.FlightControllerSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
-    #                                related_name='suggested_documents')
+    suggestion = models.ForeignKey('suggestions.FlightControllerSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_documents')
 
     class Meta:
         db_table = 'documents_flight_controller'
@@ -90,6 +90,8 @@ class ReceiverDocument(BaseDocumentMixin):
 
 class StackDocument(BaseDocumentMixin):
     object = models.ForeignKey('components.Stack', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
+    suggestion = models.ForeignKey('suggestions.StackSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_documents')
 
     class Meta:
         db_table = 'documents_stack'
@@ -100,6 +102,8 @@ class StackDocument(BaseDocumentMixin):
 
 class SpeedControllerDocument(BaseDocumentMixin):
     object = models.ForeignKey('components.SpeedController', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
+    suggestion = models.ForeignKey('suggestions.SpeedControllerSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_documents')
 
     class Meta:
         db_table = 'documents_speed_controller'

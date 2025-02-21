@@ -70,10 +70,16 @@ class MotorGalleryWriteSerializer(BaseGalleryWriteSerializer):
         fields = ('id', 'image', 'order')
 
 
-class StackGallerySerializer(serializers.ModelSerializer):
+class StackGalleryReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = StackGallery
         fields = '__all__'
+
+
+class StackGalleryWriteSerializer(BaseGalleryWriteSerializer):
+    class Meta:
+        model = StackGallery
+        fields = ('id', 'image', 'order')
 
 
 class PropellerGalleryReadSerializer(serializers.ModelSerializer):
@@ -108,13 +114,24 @@ class TransmitterGallerySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SpeedControllerGallerySerializer(serializers.ModelSerializer):
+class SpeedControllerReadGallerySerializer(serializers.ModelSerializer):
     class Meta:
         model = SpeedControllerGallery
         fields = '__all__'
 
 
-class FlightControllerGallerySerializer(serializers.ModelSerializer):
+class SpeedControllerGalleryWriteSerializer(BaseGalleryWriteSerializer):
+
+    class Meta:
+        model = SpeedControllerGallery
+        fields = ('id', 'image', 'order')
+
+class FlightControllerReadGallerySerializer(serializers.ModelSerializer):
     class Meta:
         model = FlightControllerGallery
         fields = '__all__'
+
+class FlightControllerGalleryWriteSerializer(BaseGalleryWriteSerializer):
+    class Meta:
+        model = FlightControllerGallery
+        fields = ('id', 'image', 'order')

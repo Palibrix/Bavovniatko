@@ -5,7 +5,7 @@ from .frame_suggestion import FrameSuggestion, SuggestedFrameVTXDetailSuggestion
 from .motor_suggestion import MotorSuggestion, SuggestedMotorDetailSuggestion, ExistingMotorDetailSuggestion, RatedVoltageSuggestion
 from .propeller_suggestion import PropellerSuggestion
 from .receiver_suggestion import ReceiverSuggestion, ReceiverProtocolTypeSuggestion, SuggestedReceiverDetailSuggestion, ExistingReceiverDetailSuggestion
-
+from .stack_suggestion import StackSuggestion, GyroSuggestion, SpeedControllerSuggestion, FlightControllerSuggestion, FlightControllerFirmwareSuggestion, SpeedControllerFirmwareSuggestion, SpeedControllerProtocolSuggestion
 __all__ = [
     'AntennaSuggestion',
     'AntennaConnectorSuggestion',
@@ -37,5 +37,14 @@ __all__ = [
     'ReceiverSuggestion',
     'SuggestedReceiverDetailSuggestion',
     'ExistingReceiverDetailSuggestion',
-    'ReceiverProtocolTypeSuggestion'
+    'ReceiverProtocolTypeSuggestion',
+
+    'StackSuggestion',
+    'SpeedControllerProtocolSuggestion',
+    'SpeedControllerSuggestion',
+    'SpeedControllerFirmwareSuggestion',
+    'GyroSuggestion',
+    'FlightControllerSuggestion',
+    'FlightControllerFirmwareSuggestion'
+
 ]
