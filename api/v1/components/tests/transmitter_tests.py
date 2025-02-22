@@ -24,7 +24,7 @@ class TestTransmitterAPIView(BaseAPITest):
         url = reverse('api:v1:components:transmitter-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), Transmitter.objects.all().count())
+        self.assertEqual(response.data.get('count'), Transmitter.objects.all().count())
 
     def test_detail_transmitter(self):
         url = reverse('api:v1:components:transmitter-detail', args={self.transmitter1.id})
@@ -35,19 +35,19 @@ class TestTransmitterAPIView(BaseAPITest):
         url = reverse('api:v1:components:transmitter-list')
         response = self.client.get(url, {'search': 'Man'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data.get('count'), 2)
 
         response = self.client.get(url, {'search': 'Manufacturer1'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data.get('count'), 1)
 
     def test_filter_transmitter(self):
         url = reverse('api:v1:components:transmitter-list')
         response = self.client.get(url, {'output': 'A'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data.get('count'), 1)
 
         response = self.client.get(url, {'output_powers': [self.output_power1.output_power, self.output_power2.output_power]})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['id'], self.transmitter2.id)
+        self.assertEqual(response.data.get('count'), 1)
+        self.assertEqual(response.data['results'][0]['id'], self.transmitter2.id)

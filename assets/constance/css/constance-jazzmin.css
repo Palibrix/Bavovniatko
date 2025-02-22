@@ -1,0 +1,43 @@
+.save_button {
+    position: fixed;
+    width: 5em;
+    height: 2.5em;
+    bottom: 40px;
+    right: 50px;
+    background-color: #fff;
+    border-radius: 9px;
+    border: 2px solid #007bff;
+    color: #121212;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.save_button:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.collapsible {
+    margin: 0;
+}
+
+.collapsible-block{
+    border-top: 2px solid #007bff;
+    border-bottom: 2px solid rgba(0, 0, 0, 0);
+    transition: border-top 0.25s ease-out, border-bottom 0.25s ease-out;
+    transform-origin: left;
+}
+
+.collapsible-block:hover {
+    border-top: 2px solid #db0202;
+    border-bottom: 2px solid #db0202;
+}
+
+.fieldset {
+    width: 100%;
+    overflow: hidden;
+}
+
+h2:hover{
+    background-color: #f2f2f2;
+}

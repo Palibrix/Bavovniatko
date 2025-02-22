@@ -42,7 +42,7 @@ class TestReceiverAPIView(BaseAPITest):
         url = reverse('api:v1:components:receiver-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), Receiver.objects.all().count())
+        self.assertEqual(response.data.get('count'), Receiver.objects.all().count())
 
     def test_detail_receiver(self):
         url = reverse('api:v1:components:receiver-detail', args={self.receiver1.id})
@@ -54,16 +54,16 @@ class TestReceiverAPIView(BaseAPITest):
         url = reverse('api:v1:components:receiver-list')
         response = self.client.get(url, {'search': 'Man'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Receiver.objects.filter(manufacturer__contains='Man').distinct().count())
 
         response = self.client.get(url, {'search': 'Manufacturer1'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Receiver.objects.filter(manufacturer__contains='Manufacturer1').distinct().count())
 
     def test_filter_receiver(self):
         url = reverse('api:v1:components:receiver-list')
         response = self.client.get(url, {'antenna_connectors': ['Type A']})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data.get('count'), 1)

@@ -30,7 +30,7 @@ class TestFrameAPIView(BaseAPITest):
         url = reverse('api:v1:components:frame-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), Frame.objects.all().count())
+        self.assertEqual(response.data.get('count'), Frame.objects.all().count())
 
     def test_detail_frame(self):
         url = reverse('api:v1:components:frame-detail', args={self.frame1.id})
@@ -42,19 +42,19 @@ class TestFrameAPIView(BaseAPITest):
         url = reverse('api:v1:components:frame-list')
         response = self.client.get(url, {'search': 'Man'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Frame.objects.filter(manufacturer__contains='Man').count())
 
         response = self.client.get(url, {'search': 'Manufacturer1'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Frame.objects.filter(manufacturer__contains='Manufacturer1').count())
 
     def test_filter_frame(self):
         url = reverse('api:v1:components:frame-list')
         response = self.client.get(url, {'configuration': 'box'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Frame.objects.filter(configuration='box').count())
 
         response = self.client.get(url, {'configuration': 'box',
@@ -63,7 +63,7 @@ class TestFrameAPIView(BaseAPITest):
                                    )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Frame.objects.filter(configuration='box',
                                               material='aluminum',
                                               ).count())

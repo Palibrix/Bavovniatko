@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
 from api.v1.components.serializers import RatedVoltageSerializer
-from api.v1.documents.serializers import StackDocumentSerializer, FlightControllerDocumentSerializer, \
-    SpeedControllerDocumentSerializer
-from api.v1.galleries.serializers import StackGallerySerializer, FlightControllerGallerySerializer, \
-    SpeedControllerGallerySerializer
+from api.v1.documents.serializers import StackDocumentReadSerializer, FlightControllerReadDocumentSerializer, \
+    SpeedControllerReadDocumentSerializer
+from api.v1.galleries.serializers import StackGalleryReadSerializer, FlightControllerReadGallerySerializer, \
+    SpeedControllerReadGallerySerializer
 from components.models import (Stack,
                                SpeedController, SpeedControllerProtocol, SpeedControllerFirmware,
                                FlightController, FlightControllerFirmware, Gyro)
@@ -40,8 +40,8 @@ class FlightControllerSerializer(serializers.ModelSerializer):
     firmwares = FlightControllerFirmwareSerializer(many=True, read_only=True)
     stacks = serializers.SerializerMethodField()
 
-    images = FlightControllerGallerySerializer(many=True)
-    documents = FlightControllerDocumentSerializer(many=True)
+    images = FlightControllerReadGallerySerializer(many=True)
+    documents = FlightControllerReadDocumentSerializer(many=True)
 
     def get_stacks(self, obj):
         stacks = obj.stack_set.all()
@@ -57,8 +57,8 @@ class SingleFlightControllerSerializer(serializers.ModelSerializer):
     voltage = RatedVoltageSerializer(read_only=True)
     firmwares = FlightControllerFirmwareSerializer(many=True, read_only=True)
 
-    images = FlightControllerGallerySerializer(many=True)
-    documents = FlightControllerDocumentSerializer(many=True)
+    images = FlightControllerReadGallerySerializer(many=True)
+    documents = FlightControllerReadDocumentSerializer(many=True)
 
     class Meta:
         model = FlightController
@@ -71,8 +71,8 @@ class SpeedControllerSerializer(serializers.ModelSerializer):
     voltage = RatedVoltageSerializer(read_only=True)
     stacks = serializers.SerializerMethodField()
 
-    images = SpeedControllerGallerySerializer(many=True)
-    documents = SpeedControllerDocumentSerializer(many=True)
+    images = SpeedControllerReadGallerySerializer(many=True)
+    documents = SpeedControllerReadDocumentSerializer(many=True)
 
     def get_stacks(self, obj):
         stacks = obj.stack_set.all()
@@ -87,8 +87,8 @@ class SingleSpeedControllerSerializer(serializers.ModelSerializer):
     firmwares = SpeedControllerFirmwareSerializer(many=True, read_only=True)
     protocols = SpeedControllerProtocolSerializer(many=True, read_only=True)
     voltage = RatedVoltageSerializer(read_only=True)
-    images = SpeedControllerGallerySerializer(many=True)
-    documents = SpeedControllerDocumentSerializer(many=True)
+    images = SpeedControllerReadGallerySerializer(many=True)
+    documents = SpeedControllerReadDocumentSerializer(many=True)
 
     class Meta:
         model = SpeedController
@@ -98,8 +98,8 @@ class SingleSpeedControllerSerializer(serializers.ModelSerializer):
 class StackSerializer(serializers.ModelSerializer):
     flight_controller = SingleFlightControllerSerializer(read_only=True)
     speed_controller = SingleSpeedControllerSerializer(read_only=True)
-    images = StackGallerySerializer(many=True)
-    documents = StackDocumentSerializer(many=True)
+    images = StackGalleryReadSerializer(many=True)
+    documents = StackDocumentReadSerializer(many=True)
 
     class Meta:
         model = Stack

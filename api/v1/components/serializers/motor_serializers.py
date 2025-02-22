@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from api.v1.documents.serializers import MotorDocumentSerializer
-from api.v1.galleries.serializers import MotorGallerySerializer
+from api.v1.documents.serializers import MotorDocumentReadSerializer
+from api.v1.galleries.serializers import MotorGalleryReadSerializer
 from components.models import RatedVoltage, MotorDetail, Motor
 
 
@@ -22,8 +22,8 @@ class MotorDetailSerializer(serializers.ModelSerializer):
 
 class MotorSerializer(serializers.ModelSerializer):
     details = MotorDetailSerializer(many=True)
-    images = MotorGallerySerializer(many=True)
-    documents = MotorDocumentSerializer(many=True)
+    images = MotorGalleryReadSerializer(many=True)
+    documents = MotorDocumentReadSerializer(many=True)
 
     class Meta:
         model = Motor

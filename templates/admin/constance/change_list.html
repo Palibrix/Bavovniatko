@@ -1,0 +1,85 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_list jazzmin %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    {{ media.css }}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/constance.css' %}" />
+    <link rel="stylesheet" href="{% static 'constance/css/constance-jazzmin.css' %}" />
+    <link rel="stylesheet" href="{% static 'vendor/select2/css/select2.min.css' %}">
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    {{ media.js }}
+    <script type="text/javascript" src="{% static 'constance/js/collapse.js' %}"></script>
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list{% endblock %}
+
+{% block content %}
+    <div class="col-12">
+        <div>
+            <div>
+                <form id="changelist-form" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <ul class="errorlist">
+                            {% for error in form.non_field_errors %}
+                              <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if form.errors %}
+                    <ul class="errorlist">
+                    {% endif %}
+                    {% for field in form.hidden_fields %}
+                        {% for error in field.errors %}
+                          <li>{{ error }}</li>
+                        {% endfor %}
+                        {{ field }}
+                    {% endfor %}
+                    {% if form.errors %}
+                    </ul>
+                    {% endif %}
+
+                <div class="card-body">
+                    {% if fieldsets %}
+                      {% for fieldset in fieldsets %}
+                      <fieldset style="width: 100%" id="changelist">
+                          <div class="card card-primary row collapsible-block">
+                              <h2 style="padding: 10px 20px 10px 20px; display: flex; flex-direction: row;" class="collapsible">
+                                  <span>{{ fieldset.title }}</span>
+                                  <span class="toggle-icon" style="margin-left: auto;">
+                                      {% if fieldset.collapse %} + {% else %} - {% endif %}
+                                  </span>
+                              </h2>
+                              <div class="fieldset" style="display: {% if fieldset.collapse %}none{% else %}block{% endif %};">
+                                  {% with config_values=fieldset.config_values %}
+                                      {% include "admin/constance/includes/results_list.html" %}
+                                  {% endwith %}
+                              </div>
+                          </div>
+                      </fieldset>
+                      {% endfor %}
+                    {% else %}
+                      {% include "admin/constance/includes/results_list.html" %}
+                    {% endif %}
+                </div>
+                    <p class="paginator sticky-footer">
+                      <input type="submit" class="save_button" name="_save" value="{% trans 'Save' %}"/>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block breadcrumbs %}
+<ol class="breadcrumb float-sm-right">
+        <li class="breadcrumb-item"><a href="{% url 'admin:index' %}"><i class="fa fa-tachometer-alt"></i> {% trans 'Home' %}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a></li>
+        <li class="breadcrumb-item active">{{ cl.opts.verbose_name_plural|capfirst }}</li>
+    </ol>
+{% endblock %}
+<!-- HTML !-->
+<button class="button-35" role="button">Button 35</button>

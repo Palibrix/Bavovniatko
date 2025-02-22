@@ -27,7 +27,7 @@ class TestAntennaAPIView(BaseAPITest):
         url = reverse('api:v1:components:antenna-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), Antenna.objects.all().count())
+        self.assertEqual(response.data.get('count'), Antenna.objects.all().count())
 
     def test_detail_antenna(self):
         url = reverse('api:v1:components:antenna-detail', args={self.antenna1.id})
@@ -39,22 +39,22 @@ class TestAntennaAPIView(BaseAPITest):
         url = reverse('api:v1:components:antenna-list')
         response = self.client.get(url, {'search': 'Man'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Antenna.objects.filter(manufacturer__contains='Man').count())
 
         response = self.client.get(url, {'search': 'Manufacturer1'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Antenna.objects.filter(manufacturer__contains='Manufacturer1').count())
 
     def test_filter_antenna(self):
         url = reverse('api:v1:components:antenna-list')
         response = self.client.get(url, {'swr': '2'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data.get('count'), 2)
 
         response = self.client.get(url, {'bandwidth_min': 1.0,
                                          'bandwidth_max': 20.0,
                                          'center_frequency_min': 10})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data.get('count'), 1)

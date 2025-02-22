@@ -5,6 +5,7 @@ from documents.models import *
 
 class AntennaDocumentInline(BaseDocumentInlineAdminMixin):
     model = AntennaDocument
+    readonly_fields = ('object', 'suggestion', 'accepted', 'created_at')
 
 
 class CameraDocumentInline(BaseDocumentInlineAdminMixin):

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.db import models
+from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.fields import CKEditor5Field
 
@@ -17,6 +17,7 @@ class BaseModelMixin(models.Model):
 
 
 class BaseComponentMixin(BaseModelMixin):
+    COMPONENT_FIELDS = ['manufacturer', 'model', 'description']
     manufacturer = models.CharField(max_length=50)
     model = models.CharField(max_length=50, help_text=_("Full name of the item"))
     description = CKEditor5Field('Text', blank=True, help_text=_("Long description of the item"))
@@ -33,3 +34,8 @@ class BaseModelAdminMixin(admin.ModelAdmin):
     empty_value_display = '???'
     readonly_fields = ('id', 'created_at', 'updated_at')
     list_display_links = ('__str__', )
+
+    @transaction.atomic
+    def delete_queryset(self, request, queryset):
+        for obj in queryset:
+            obj.delete()
