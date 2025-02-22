@@ -7,7 +7,7 @@ from builds.models import Drone
 from components.models import Stack, FlightController, SpeedController, Antenna, Transmitter, Camera, Frame, Motor, \
     MotorDetail, Receiver
 from suggestions.models import AntennaSuggestion, CameraSuggestion, FrameSuggestion, MotorSuggestion, \
-    SuggestedMotorDetailSuggestion, ExistingMotorDetailSuggestion, ReceiverSuggestion
+    SuggestedMotorDetailSuggestion, ExistingMotorDetailSuggestion, ReceiverSuggestion, TransmitterSuggestion
 from users.tests import BaseUserTest
 
 
@@ -100,6 +100,9 @@ class BaseAPITest(APITestCase, BaseUserTest):
                    input_voltage_min=1.0,
                    input_voltage_max=2.0,
                    )
+
+    mixer.register(TransmitterSuggestion,
+                   description='Transmitter Suggestion Description')
 
     def create_and_login(self, username="test", email='test@mail.com', password='test_password', is_super=False):
         user = self.create(username=username, email=email, password=password, is_super=is_super)

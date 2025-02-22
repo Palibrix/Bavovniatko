@@ -15,6 +15,7 @@ from .views.stack_suggestion_views import StackSuggestionAPIViewSet, GyroSuggest
     FlightControllerSuggestionAPIViewSet, SpeedControllerSuggestionAPIViewSet, \
     FlightControllerFirmwareSuggestionAPIViewSet, SpeedControllerProtocolSuggestionAPIViewSet, \
     SpeedControllerFirmwareSuggestionAPIViewSet
+from .views.transmitter_suggestion_views import TransmitterSuggestionAPIViewSet, OutputPowerSuggestionAPIViewSet
 
 app_name = 'api-v1-suggestions'
 router = DefaultRouter(trailing_slash=True)
@@ -49,6 +50,10 @@ router.register('gyros', GyroSuggestionAPIViewSet, basename="gyro")
 router.register('fc_firmwares', FlightControllerFirmwareSuggestionAPIViewSet, basename="fc_firmware")
 router.register('sc_firmwares', SpeedControllerFirmwareSuggestionAPIViewSet, basename="sc_firmware")
 router.register('sc_protocols', SpeedControllerProtocolSuggestionAPIViewSet, basename="sc_protocol")
+
+
+router.register('transmitters', TransmitterSuggestionAPIViewSet, basename="transmitter")
+router.register('output_powers', OutputPowerSuggestionAPIViewSet, basename="output_power")
 
 
 urlpatterns = [

@@ -16,4 +16,4 @@ from .stack_serializers import (SpeedControllerFirmwareSerializer, StackSerializ
                                 FlightControllerSerializer, GyroSerializer, SpeedControllerProtocolSerializer,
                                 FlightControllerFirmwareSerializer)
 
-from .transmitter_serializers import OutputPowerSerializers, TransmitterSerializer
+from .transmitter_serializers import OutputPowerSerializer, TransmitterSerializer

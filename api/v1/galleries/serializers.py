@@ -108,10 +108,17 @@ class ReceiverGalleryWriteSerializer(BaseGalleryWriteSerializer):
         fields = ('id', 'image', 'order')
 
 
-class TransmitterGallerySerializer(serializers.ModelSerializer):
+class TransmitterGalleryReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransmitterGallery
         fields = '__all__'
+
+
+class TransmitterGalleryWriteSerializer(BaseGalleryWriteSerializer):
+
+    class Meta:
+        model = TransmitterGallery
+        fields = ('id', 'image', 'order')
 
 
 class SpeedControllerReadGallerySerializer(serializers.ModelSerializer):
@@ -126,10 +133,12 @@ class SpeedControllerGalleryWriteSerializer(BaseGalleryWriteSerializer):
         model = SpeedControllerGallery
         fields = ('id', 'image', 'order')
 
+
 class FlightControllerReadGallerySerializer(serializers.ModelSerializer):
     class Meta:
         model = FlightControllerGallery
         fields = '__all__'
+
 
 class FlightControllerGalleryWriteSerializer(BaseGalleryWriteSerializer):
     class Meta:

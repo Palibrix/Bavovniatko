@@ -109,16 +109,23 @@ class ReceiverDocumentWriteSerializer(BaseDocumentWriteSerializer):
         fields = ('id', 'file',)
 
 
-class TransmitterDocumentSerializer(serializers.ModelSerializer):
+class TransmitterDocumentReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransmitterDocument
         fields = '__all__'
+
+
+class TransmitterDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = TransmitterDocument
+        fields = ('id', 'file',)
 
 
 class SpeedControllerReadDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = SpeedControllerDocument
         fields = '__all__'
+
 
 class SpeedControllerDocumentWriteSerializer(BaseDocumentWriteSerializer):
     class Meta:

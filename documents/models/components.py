@@ -114,6 +114,8 @@ class SpeedControllerDocument(BaseDocumentMixin):
 
 class TransmitterDocument(BaseDocumentMixin):
     object = models.ForeignKey('components.Transmitter', blank=True, null=True, on_delete=models.CASCADE, related_name='documents')
+    suggestion = models.ForeignKey('suggestions.TransmitterSuggestion', blank=True, null=True,
+                                   on_delete=models.SET_NULL, related_name='suggested_documents')
 
     class Meta:
         db_table = 'documents_transmitter'

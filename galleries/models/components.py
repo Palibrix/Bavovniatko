@@ -113,8 +113,8 @@ class SpeedControllerGallery(BaseImageMixin):
 
 class TransmitterGallery(BaseImageMixin):
     object = models.ForeignKey('components.Transmitter', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
-    # suggestion = models.ForeignKey('suggestions.TransmitterSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
-    #                                related_name='suggested_images')
+    suggestion = models.ForeignKey('suggestions.TransmitterSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_transmitter'

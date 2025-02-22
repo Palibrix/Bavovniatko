@@ -6,6 +6,8 @@ from .motor_suggestion import MotorSuggestion, SuggestedMotorDetailSuggestion, E
 from .propeller_suggestion import PropellerSuggestion
 from .receiver_suggestion import ReceiverSuggestion, ReceiverProtocolTypeSuggestion, SuggestedReceiverDetailSuggestion, ExistingReceiverDetailSuggestion
 from .stack_suggestion import StackSuggestion, GyroSuggestion, SpeedControllerSuggestion, FlightControllerSuggestion, FlightControllerFirmwareSuggestion, SpeedControllerFirmwareSuggestion, SpeedControllerProtocolSuggestion
+from .transmitter_suggestion import TransmitterSuggestion, OutputPowerSuggestion
+
 __all__ = [
     'AntennaSuggestion',
     'AntennaConnectorSuggestion',
@@ -45,6 +47,9 @@ __all__ = [
     'SpeedControllerFirmwareSuggestion',
     'GyroSuggestion',
     'FlightControllerSuggestion',
-    'FlightControllerFirmwareSuggestion'
+    'FlightControllerFirmwareSuggestion',
+
+    'TransmitterSuggestion',
+    'OutputPowerSuggestion'
 
 ]
