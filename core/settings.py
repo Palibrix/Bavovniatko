@@ -65,7 +65,8 @@ INSTALLED_APPS = [
     'galleries',
     'documents',
     'suggestions',
-    'users'
+    'users',
+    'favorites.apps.FavoritesConfig'
 ]
 
 AUTH_USER_MODEL = 'users.User'
