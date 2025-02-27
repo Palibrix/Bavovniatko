@@ -7,7 +7,7 @@ from datetime import timedelta
 from mixer.backend.django import mixer
 
 from components.models import Antenna, Camera
-from favorites.models import List, AntennaListItem, CameraListItem
+from lists.models import List, AntennaListItem, CameraListItem
 
 User = get_user_model()
 

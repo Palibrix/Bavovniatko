@@ -42,7 +42,7 @@ class BaseListItemMixin(models.Model):
     items were added, providing a foundation for list item functionality.
     """
     list = models.ForeignKey(
-        'favorites.List',
+        'lists.List',
         on_delete=models.CASCADE,
         related_name='+'  # Will become 'antenna_items' for AntennaListItem
     )

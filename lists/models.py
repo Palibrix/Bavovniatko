@@ -80,7 +80,7 @@ class List(BaseListMixin, BaseModelMixin):
 
 class AntennaListItem(BaseListItemMixin):
     list = models.ForeignKey(
-        'favorites.List',
+        'lists.List',
         on_delete=models.CASCADE,
         related_name='antenna_items'
     )
@@ -99,7 +99,7 @@ class AntennaListItem(BaseListItemMixin):
 
 class CameraListItem(BaseListItemMixin):
     list = models.ForeignKey(
-        'favorites.List',
+        'lists.List',
         on_delete=models.CASCADE,
         related_name='camera_items'
     )
@@ -117,7 +117,7 @@ class CameraListItem(BaseListItemMixin):
 
 class FrameListItem(BaseListItemMixin):
     list = models.ForeignKey(
-        'favorites.List',
+        'lists.List',
         on_delete=models.CASCADE,
         related_name='frame_items'
     )
@@ -135,7 +135,7 @@ class FrameListItem(BaseListItemMixin):
 
 class FlightControllerListItem(BaseListItemMixin):
     list = models.ForeignKey(
-        'favorites.List',
+        'lists.List',
         on_delete=models.CASCADE,
         related_name='flight_controller_items'
     )
@@ -153,7 +153,7 @@ class FlightControllerListItem(BaseListItemMixin):
 
 class SpeedControllerListItem(BaseListItemMixin):
     list = models.ForeignKey(
-        'favorites.List',
+        'lists.List',
         on_delete=models.CASCADE,
         related_name='speed_controller_items'
     )
@@ -171,7 +171,7 @@ class SpeedControllerListItem(BaseListItemMixin):
 
 class MotorListItem(BaseListItemMixin):
     list = models.ForeignKey(
-        'favorites.List',
+        'lists.List',
         on_delete=models.CASCADE,
         related_name='motor_items'
     )
@@ -188,7 +188,7 @@ class MotorListItem(BaseListItemMixin):
 
 class PropellerListItem(BaseListItemMixin):
     list = models.ForeignKey(
-        'favorites.List',
+        'lists.List',
         on_delete=models.CASCADE,
         related_name='propeller_items'
     )
@@ -205,7 +205,7 @@ class PropellerListItem(BaseListItemMixin):
 
 class ReceiverListItem(BaseListItemMixin):
     list = models.ForeignKey(
-        'favorites.List',
+        'lists.List',
         on_delete=models.CASCADE,
         related_name='receiver_items'
     )
@@ -224,7 +224,7 @@ class ReceiverListItem(BaseListItemMixin):
 
 class StackListItem(BaseListItemMixin):
     list = models.ForeignKey(
-        'favorites.List',
+        'lists.List',
         on_delete=models.CASCADE,
         related_name='stack_items'
     )
@@ -242,7 +242,7 @@ class StackListItem(BaseListItemMixin):
 
 class TransmitterListItem(BaseListItemMixin):
     list = models.ForeignKey(
-        'favorites.List',
+        'lists.List',
         on_delete=models.CASCADE,
         related_name='transmitter_items'
     )
