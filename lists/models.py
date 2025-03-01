@@ -15,18 +15,6 @@ class List(BaseListMixin, BaseModelMixin):
     Users can create multiple lists to organize their components.
     """
 
-    # COMPONENT_TYPES = [
-    #     'antenna',
-    #     'camera',
-    #     'flight_controller',
-    #     'speed_controller',
-    #     'motor',
-    #     'propeller',
-    #     'receiver',
-    #     'stack',
-    #     'transmitter'
-    # ]
-
     def get_all_items(self):
         """
         Returns all items in the list, sorted by when they were added.

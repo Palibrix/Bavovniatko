@@ -40,8 +40,6 @@ class BaseImageMixin(models.Model):
     @classmethod
     def _check_fields(cls, **kwargs):
         cls._meta.get_field('object')
-        ### TODO: uncomment row when all suggestion models will be added
-        # cls._meta.get_field('suggestion')
         return super()._check_fields(**kwargs)
 
 
@@ -50,5 +48,4 @@ class BaseGalleryInlineAdminMixin(admin.StackedInline):
     min_num = 1
     max_num = 10
     formset = RequiredInlineFormSet
-    ### TODO: uncomment row when all suggestion models will be added
-    # readonly_fields = ('object', 'suggestion', 'accepted', 'created_at')
+    readonly_fields = ('object', 'suggestion', 'accepted', 'created_at')

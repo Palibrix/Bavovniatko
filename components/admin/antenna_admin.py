@@ -1,8 +1,7 @@
 from django.contrib import admin
 
 from builds.forms import RequiredInlineFormSet
-from components.mixins import BaseModelAdminMixin
-from components.mixins.base_antenna_admin_mixins import AntennaAdminMixin, AntennaTypeAdminMixin, \
+from components.mixins.admin.base_antenna_admin_mixins import AntennaAdminMixin, AntennaTypeAdminMixin, \
     AntennaConnectorAdminMixin
 from components.models import Antenna, AntennaDetail, AntennaType, AntennaConnector
 from documents.admin.components_admin import AntennaDocumentInline

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from builds.forms import RequiredInlineFormSet
-from components.mixins.base_antenna_admin_mixins import AntennaAdminMixin
+from components.mixins.admin.base_antenna_admin_mixins import AntennaAdminMixin
 from documents.admin.components_admin import AntennaDocumentInline
 from galleries.admin.components_admin import AntennaGalleryInline
 from suggestions.mixins import BaseSuggestionAdminMixin

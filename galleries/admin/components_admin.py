@@ -6,9 +6,7 @@ from galleries.models import *
 
 class AntennaGalleryInline(BaseGalleryInlineAdminMixin):
     model = AntennaGallery
-    readonly_fields = ('object', 'suggestion', 'accepted', 'created_at')
 
-admin.site.register(AntennaGallery)
 
 class CameraGalleryInline(BaseGalleryInlineAdminMixin):
     model = CameraGallery

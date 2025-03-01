@@ -34,17 +34,13 @@ class BaseDocumentMixin(models.Model):
     @classmethod
     def _check_fields(cls, **kwargs):
         cls._meta.get_field('object')
-        ### TODO: uncomment row when all suggestion models will be added
-        # cls._meta.get_field('suggestion')
         return super()._check_fields(**kwargs)
 
 
 class BaseDocumentInlineAdminMixin(admin.StackedInline):
     extra = 0
     max_num = 10
-    readonly_fields = ('created_at',)
-    ### TODO: uncomment row when all suggestion models will be added
-    # readonly_fields = ('object', 'suggestion', 'accepted', 'created_at')
+    readonly_fields = ('object', 'suggestion', 'accepted', 'created_at')
 
 
 class Base64ValidatedFileField(Base64FileField):
