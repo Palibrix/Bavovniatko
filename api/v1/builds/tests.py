@@ -25,7 +25,7 @@ class TestDroneAPIView(BaseAPITest):
         url = reverse('api:v1:builds:drone-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), Drone.objects.all().count())
+        self.assertEqual(response.data.get('count'), Drone.objects.all().count())
 
     def test_detail_drone(self):
         url = reverse('api:v1:builds:drone-detail', args={self.drone1.id})
@@ -36,20 +36,20 @@ class TestDroneAPIView(BaseAPITest):
         url = reverse('api:v1:builds:drone-list')
         response = self.client.get(url, {'search': 'Man'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data.get('count'), 2)
 
         response = self.client.get(url, {'search': 'Manufacturer1'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data.get('count'), 1)
 
     def test_filter_drone(self):
         url = reverse('api:v1:builds:drone-list')
         response = self.client.get(url, {'antenna': self.antenna1.id})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data.get('count'), 1)
 
         response = self.client.get(url, {'antenna__center_frequency': 15})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data.get('count'), 2)
 
 

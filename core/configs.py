@@ -40,24 +40,24 @@ constance_config = {
 constance_config_fieldsets = {
     'Debug': {
         'fields': ('DEBUG', 'USE_DEBUG_TOOLBAR'),
-        'collapse': False,
+        'collapse': True,
     },
 
     'SimpleJWT': {
         'fields': ('ACCESS_TOKEN_LIFETIME', 'REFRESH_TOKEN_LIFETIME',
                    'SLIDING_TOKEN_LIFETIME', 'SLIDING_TOKEN_REFRESH_LIFETIME'),
-        'collapse': False,
+        'collapse': True,
     },
     'REST': {
         'fields': ('PAGE_SIZE',),
-        'collapse': False,
+        'collapse': True,
     },
     'Django': {
         'fields': ('DJANGO_STATICFILES_DIRS', 'DJANGO_DATABASE'),
-        'collapse': False,
+        'collapse': True,
     },
     'Redis': {
         'fields': ('CHANNEL_BACKEND', 'CHANNEL_HOST', 'CHANNEL_PORT'),
-        'collapse': False,
+        'collapse': True,
     },
 }

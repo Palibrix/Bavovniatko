@@ -1,71 +1,145 @@
+
 from rest_framework import serializers
 
-from documents.models import (AntennaDocument, CameraDocument, DroneDocument, FrameDocument, MotorDocument, StackDocument,
+from api.v1.documents.mixins import BaseDocumentWriteSerializer
+from api.v1.utils import ReadOnlyModelSerializer
+from components.models import Receiver
+from documents.models import (AntennaDocument, CameraDocument, DroneDocument, FrameDocument, MotorDocument,
+                              StackDocument,
                               PropellerDocument, ReceiverDocument, TransmitterDocument,
                               SpeedControllerDocument, FlightControllerDocument)
 
 
-class AntennaDocumentSerializer(serializers.ModelSerializer):
+class AntennaDocumentReadSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = AntennaDocument
         fields = '__all__'
 
 
-class CameraDocumentSerializer(serializers.ModelSerializer):
+class AntennaDocumentWriteSerializer(BaseDocumentWriteSerializer):
+
+    class Meta:
+        model = AntennaDocument
+        fields = ('id', 'file',)
+
+
+class CameraDocumentReadSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = CameraDocument
         fields = '__all__'
 
 
-class DroneDocumentSerializer(serializers.ModelSerializer):
+class CameraDocumentWriteSerializer(BaseDocumentWriteSerializer):
+
+    class Meta:
+        model = CameraDocument
+        fields = ('id', 'file',)
+
+
+class DroneDocumentReadSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = DroneDocument
         fields = '__all__'
 
 
-class FrameDocumentSerializer(serializers.ModelSerializer):
+class DroneDocumentWriteSerializer(BaseDocumentWriteSerializer):
+
+    class Meta:
+        model = CameraDocument
+        fields = ('id', 'file',)
+
+
+class FrameDocumentReadSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = FrameDocument
         fields = '__all__'
 
 
-class MotorDocumentSerializer(serializers.ModelSerializer):
+class FrameDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = FrameDocument
+        fields = ('id', 'file',)
+
+
+class MotorDocumentReadSerializer(ReadOnlyModelSerializer):
     class Meta:
         model = MotorDocument
         fields = '__all__'
 
 
-class StackDocumentSerializer(serializers.ModelSerializer):
+class MotorDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = MotorDocument
+        fields = ('id', 'file',)
+
+
+class StackDocumentReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = StackDocument
         fields = '__all__'
 
 
-class PropellerDocumentSerializer(serializers.ModelSerializer):
+class StackDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = StackDocument
+        fields = ('id', 'file',)
+
+
+class PropellerDocumentReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropellerDocument
         fields = '__all__'
 
 
-class ReceiverDocumentSerializer(serializers.ModelSerializer):
+class PropellerDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = PropellerDocument
+        fields = ('id', 'file',)
+
+
+class ReceiverDocumentReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReceiverDocument
         fields = '__all__'
 
 
-class TransmitterDocumentSerializer(serializers.ModelSerializer):
+class ReceiverDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = ReceiverDocument
+        fields = ('id', 'file',)
+
+
+class TransmitterDocumentReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransmitterDocument
         fields = '__all__'
 
 
-class SpeedControllerDocumentSerializer(serializers.ModelSerializer):
+class TransmitterDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = TransmitterDocument
+        fields = ('id', 'file',)
+
+
+class SpeedControllerReadDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = SpeedControllerDocument
         fields = '__all__'
 
 
-class FlightControllerDocumentSerializer(serializers.ModelSerializer):
+class SpeedControllerDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = SpeedControllerDocument
+        fields = ('id', 'file',)
+
+
+class FlightControllerReadDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = FlightControllerDocument
         fields = '__all__'
+
+
+class FlightControllerDocumentWriteSerializer(BaseDocumentWriteSerializer):
+    class Meta:
+        model = FlightControllerDocument
+        fields = ('id', 'file',)

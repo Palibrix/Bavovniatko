@@ -63,8 +63,8 @@ Nothing here (yet)
 1. [x] Base: view all available parts and drones
 2. [x] Search: search any item 
 3. [x] Filter: filter any Part or Drone by item-specific values
-4. [ ] Suggest: suggest parts to add them to the database
-5. [ ] Save: select parts and drones for ease access in the future. You also can create item groups (like music playlists)
+4. [x] Suggest: suggest parts to add them to the database
+5. [x] Save: select parts and drones for ease access in the future. You also can create item groups (like music playlists)
 6. [ ] Create: create drones from parts and see if parts are compatible with each other
 7. [ ] Review: comment any Part or Drone
 8. [ ] Compare: compare parts of the same type: motors, frames, and so on
@@ -131,14 +131,12 @@ ____
 7. As a `User`, I can edit any of my unapproved **Suggestion request**
 8. As a `User`, I can reopen any of my _denied_ **Suggestion request** with updated information
 9. As a `User`, I can delete any of my **Suggestion request**, regardless of _status_
-10. As a `User`, I can make **Change request** to any part that is if you spot a mistake or information is not completed
 
-11. As a `User`, I can add Part to the list of favorites. This list will be displayed as `Favorite`, will be default for each `User` and couldn't be deleted or renamed by me
-12. As a `User`, I can create **Part list** with any name to contain any Parts
-13. As a `User`, I can edit or delete **Part list**, created by me
-14. As a `User`, I can view any of my **Part list**
-15. As a `User`, I can add Parts to any of my **Part list**
-16. As a `User`, I can remove any Part from any of my **Part list**
+10. As a `User`, I can create **Part list** with any name to contain any Parts
+11. As a `User`, I can edit or delete **Part list**, created by me
+12. As a `User`, I can view any of my **Part list**
+13. As a `User`, I can add Parts to any of my **Part list**
+14. As a `User`, I can remove any Part from any of my **Part list**
 
 ## `Administrator`
 1. As an `Administrator`, I can do everything I could do in a V1

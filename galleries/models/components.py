@@ -5,7 +5,8 @@ from galleries.mixins import BaseImageMixin
 
 
 class AntennaGallery(BaseImageMixin):
-    object = models.ForeignKey('components.Antenna', on_delete=models.CASCADE, related_name='images')
+    object = models.ForeignKey('components.Antenna', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    suggestion = models.ForeignKey('suggestions.AntennaSuggestion', blank=True, null=True, on_delete=models.SET_NULL, related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_antenna'
@@ -15,7 +16,9 @@ class AntennaGallery(BaseImageMixin):
 
 
 class CameraGallery(BaseImageMixin):
-    object = models.ForeignKey('components.Camera', on_delete=models.CASCADE, related_name='images')
+    object = models.ForeignKey('components.Camera', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    suggestion = models.ForeignKey('suggestions.CameraSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_camera'
@@ -25,7 +28,9 @@ class CameraGallery(BaseImageMixin):
 
 
 class FrameGallery(BaseImageMixin):
-    object = models.ForeignKey('components.Frame', on_delete=models.CASCADE, related_name='images')
+    object = models.ForeignKey('components.Frame', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    suggestion = models.ForeignKey('suggestions.FrameSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_frame'
@@ -35,7 +40,9 @@ class FrameGallery(BaseImageMixin):
 
 
 class FlightControllerGallery(BaseImageMixin):
-    object = models.ForeignKey('components.FlightController', on_delete=models.CASCADE, related_name='images')
+    object = models.ForeignKey('components.FlightController', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    suggestion = models.ForeignKey('suggestions.FlightControllerSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_flight_controller'
@@ -45,7 +52,9 @@ class FlightControllerGallery(BaseImageMixin):
 
 
 class MotorGallery(BaseImageMixin):
-    object = models.ForeignKey('components.Motor', on_delete=models.CASCADE, related_name='images')
+    object = models.ForeignKey('components.Motor', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    suggestion = models.ForeignKey('suggestions.MotorSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_motor'
@@ -55,7 +64,9 @@ class MotorGallery(BaseImageMixin):
 
 
 class PropellerGallery(BaseImageMixin):
-    object = models.ForeignKey('components.Propeller', on_delete=models.CASCADE, related_name='images')
+    object = models.ForeignKey('components.Propeller', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    suggestion = models.ForeignKey('suggestions.PropellerSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_propeller'
@@ -65,7 +76,9 @@ class PropellerGallery(BaseImageMixin):
 
 
 class ReceiverGallery(BaseImageMixin):
-    object = models.ForeignKey('components.Receiver', on_delete=models.CASCADE, related_name='images')
+    object = models.ForeignKey('components.Receiver', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    suggestion = models.ForeignKey('suggestions.ReceiverSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_receiver'
@@ -75,7 +88,9 @@ class ReceiverGallery(BaseImageMixin):
 
 
 class StackGallery(BaseImageMixin):
-    object = models.ForeignKey('components.Stack', on_delete=models.CASCADE, related_name='images')
+    object = models.ForeignKey('components.Stack', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    suggestion = models.ForeignKey('suggestions.StackSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_stack'
@@ -85,7 +100,9 @@ class StackGallery(BaseImageMixin):
 
 
 class SpeedControllerGallery(BaseImageMixin):
-    object = models.ForeignKey('components.SpeedController', on_delete=models.CASCADE, related_name='images')
+    object = models.ForeignKey('components.SpeedController', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    suggestion = models.ForeignKey('suggestions.SpeedControllerSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_speed_controller'
@@ -95,7 +112,9 @@ class SpeedControllerGallery(BaseImageMixin):
 
 
 class TransmitterGallery(BaseImageMixin):
-    object = models.ForeignKey('components.Transmitter', on_delete=models.CASCADE, related_name='images')
+    object = models.ForeignKey('components.Transmitter', blank=True, null=True, on_delete=models.CASCADE, related_name='images')
+    suggestion = models.ForeignKey('suggestions.TransmitterSuggestion', blank=True, null=True, on_delete=models.SET_NULL,
+                                   related_name='suggested_images')
 
     class Meta:
         db_table = 'galleries_transmitter'

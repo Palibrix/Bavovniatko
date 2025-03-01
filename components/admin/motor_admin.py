@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from builds.forms import RequiredInlineFormSet
-from components.mixins import BaseModelAdminMixin
+from components.mixins.admin.base_motor_admin_mixins import MotorAdminMixin, RatedVoltageAdminMixin
 from components.models import MotorDetail, Motor, RatedVoltage
 from documents.admin.components_admin import MotorDocumentInline
 from galleries.admin.components_admin import MotorGalleryInline
@@ -16,16 +16,10 @@ class MotorDetailInline(admin.StackedInline):
 
 
 @admin.register(Motor)
-class MotorAdmin(BaseModelAdminMixin):
+class MotorAdmin(MotorAdminMixin):
     inlines = [MotorDetailInline, MotorGalleryInline, MotorDocumentInline]
-
-    list_display = ('__str__', 'id', 'configuration', 'get_stator_size', 'get_mount_dimensions')
-    list_filter = ('manufacturer', 'configuration')
-    search_fields = ('manufacturer', 'model')
 
 
 @admin.register(RatedVoltage)
-class RatedVoltageAdmin(BaseModelAdminMixin):
-    list_display = ('__str__', 'get_cells', 'type')
-    list_filter = ('type', 'min_cells', 'max_cells')
-    sortable_by = ('min_cells', 'max_cells')
+class RatedVoltageAdmin(RatedVoltageAdminMixin):
+    pass

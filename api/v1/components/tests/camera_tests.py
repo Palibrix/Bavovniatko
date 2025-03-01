@@ -28,7 +28,7 @@ class TestCameraAPIView(BaseAPITest):
         url = reverse('api:v1:components:camera-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), Camera.objects.all().count())
+        self.assertEqual(response.data.get('count'), Camera.objects.all().count())
 
     def test_detail_camera(self):
         url = reverse('api:v1:components:camera-detail', args={self.camera1.id})
@@ -40,19 +40,19 @@ class TestCameraAPIView(BaseAPITest):
         url = reverse('api:v1:components:camera-list')
         response = self.client.get(url, {'search': 'Man'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Camera.objects.filter(manufacturer__contains='Man').count())
 
         response = self.client.get(url, {'search': 'Manufacturer1'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Camera.objects.filter(manufacturer__contains='Manufacturer1').count())
 
     def test_filter_camera(self):
         url = reverse('api:v1:components:camera-list')
         response = self.client.get(url, {'ratio': 'switch'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Camera.objects.filter(ratio='switch').count())
 
         response = self.client.get(url, {'voltage_min': 2,
@@ -61,7 +61,7 @@ class TestCameraAPIView(BaseAPITest):
                                          }
                                    )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data),
+        self.assertEqual(response.data.get('count'),
                          Camera.objects.filter(voltage_min=2,
                                                voltage_max=10,
                                                fov=180).count())

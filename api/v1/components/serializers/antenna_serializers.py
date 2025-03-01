@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from api.v1.documents.serializers import AntennaDocumentSerializer
-from api.v1.galleries.serializers import AntennaGallerySerializer
+from api.v1.documents.serializers import AntennaDocumentReadSerializer
+from api.v1.galleries.serializers import AntennaGalleryReadSerializer
 from components.models import Antenna, AntennaDetail, AntennaType, AntennaConnector
 
 
@@ -27,8 +27,8 @@ class AntennaDetailSerializer(serializers.ModelSerializer):
 
 class AntennaSerializer(serializers.ModelSerializer):
     type = AntennaTypeSerializer(read_only=True)
-    images = AntennaGallerySerializer(many=True)
-    documents = AntennaDocumentSerializer(many=True)
+    images = AntennaGalleryReadSerializer(many=True)
+    documents = AntennaDocumentReadSerializer(many=True)
     details = AntennaDetailSerializer(many=True)
 
     class Meta:

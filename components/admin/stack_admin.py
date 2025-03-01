@@ -1,6 +1,10 @@
 from django.contrib import admin
 
-from components.mixins import BaseModelAdminMixin
+from components.mixins.admin.base_stack_admin_mixins import (
+    StackAdminMixin, FlightControllerAdminMixin, SpeedControllerAdminMixin,
+    GyroAdminMixin, FlightControllerFirmwareAdminMixin, SpeedControllerFirmwareAdminMixin,
+    SpeedControllerProtocolAdminMixin
+)
 from components.models import SpeedControllerProtocol, SpeedControllerFirmware, FlightControllerFirmware, Gyro, Stack, \
     FlightController, SpeedController
 from documents.admin.components_admin import FlightControllerDocumentInline, SpeedControllerDocumentInline, \
@@ -10,60 +14,35 @@ from galleries.admin.components_admin import SpeedControllerGalleryInline, Fligh
 
 
 @admin.register(Stack)
-class StackAdmin(BaseModelAdminMixin):
+class StackAdmin(StackAdminMixin):
     inlines = [StackGalleryInline, StackDocumentInline]
-    list_display = ('__str__', 'id', 'flight_controller', 'speed_controller',)
-    list_filter = ('flight_controller', 'speed_controller')
-    search_fields = ('manufacturer', 'model', 'id')
 
 
 @admin.register(FlightController)
-class FlightControllerAdmin(BaseModelAdminMixin):
+class FlightControllerAdmin(FlightControllerAdminMixin):
     inlines = [FlightControllerGalleryInline, FlightControllerDocumentInline]
-    list_display = ('__str__', 'id', 'voltage', 'connector_type',
-                    'get_dimensions', 'get_mount_dimensions',
-                    'bluetooth', 'wifi', 'barometer',
-                    'weight')
-    list_filter = ('model', 'voltage', 'connector_type',
-                   'bluetooth', 'wifi', 'barometer')
-    search_fields = ('manufacturer', 'model', 'id')
-    sortable_by = ('weight', )
 
 
 @admin.register(SpeedController)
-class SpeedControllerAdmin(BaseModelAdminMixin):
+class SpeedControllerAdmin(SpeedControllerAdminMixin):
     inlines = [SpeedControllerGalleryInline, SpeedControllerDocumentInline]
-    list_display = ('__str__', 'id',
-                    'voltage', 'get_burst_current',
-                    'get_dimensions', 'get_mount_dimensions',
-                    'is_wireless_conf',
-                    'weight')
-    list_filter = ('model', 'voltage', 'esc_type', 'is_wireless_conf',)
-    search_fields = ('manufacturer', 'model', 'id')
-    sortable_by = ('weight',)
 
 
 @admin.register(Gyro)
-class GyroAdmin(BaseModelAdminMixin):
-    list_display = ('__str__', 'id', 'spi_support')
-    list_filter = ('spi_support',)
-    search_fields = ('manufacturer', 'imu')
-    sortable_by = ('max_freq',)
+class GyroAdmin(GyroAdminMixin):
+    pass
 
 
 @admin.register(FlightControllerFirmware)
-class FlightControllerFirmwareAdmin(BaseModelAdminMixin):
-    list_display = ('__str__', 'id',)
-    search_fields = ('firmware', )
+class FlightControllerFirmwareAdmin(FlightControllerFirmwareAdminMixin):
+    pass
 
 
 @admin.register(SpeedControllerFirmware)
-class SpeedControllerFirmwareAdmin(BaseModelAdminMixin):
-    list_display = ('__str__', 'id',)
-    search_fields = ('firmware', )
+class SpeedControllerFirmwareAdmin(SpeedControllerFirmwareAdminMixin):
+    pass
 
 
 @admin.register(SpeedControllerProtocol)
-class SpeedControllerProtocolAdmin(BaseModelAdminMixin):
-    list_display = ('__str__', 'id',)
-    search_fields = ('protocol',)
+class SpeedControllerProtocolAdmin(SpeedControllerProtocolAdminMixin):
+    pass

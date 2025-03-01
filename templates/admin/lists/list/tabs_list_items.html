@@ -1,0 +1,127 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    .nav-tabs .nav-link {
+        color: #444;
+    }
+    .nav-tabs .nav-link.active {
+        font-weight: bold;
+        color: #007bff;
+    }
+    #items-tab-content {
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-main" class="col-12">
+    <ul class="nav nav-tabs" id="listTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link" id="details-tab" href="{% url 'admin:lists_list_change' list_obj.pk %}" role="tab" 
+               aria-controls="details" aria-selected="false">
+                <i class="fas fa-info-circle"></i> {% trans 'Details' %}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" id="items-tab" data-toggle="tab" href="#items" role="tab" 
+               aria-controls="items" aria-selected="true">
+                <i class="fas fa-list"></i> {% trans 'Items' %} <span class="badge badge-info">{{ list_obj.count_all }}</span>
+            </a>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="listTabsContent">
+        <div class="tab-pane fade show active" id="items-tab-content" role="tabpanel" aria-labelledby="items-tab">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">{% trans 'Items in' %} "{{ list_obj.name }}"</h3>
+                </div>
+                
+                <div class="card-body">
+                    {% if not items %}
+                        <div class="alert alert-info">
+                            {% trans 'No items in this list.' %}
+                        </div>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">{% trans 'ID' %}</th>
+                                        <th scope="col">{% trans 'Type' %}</th>
+                                        <th scope="col">{% trans 'Component' %}</th>
+                                        <th scope="col">{% trans 'Added' %}</th>
+                                        <th scope="col">{% trans 'Actions' %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in items %}
+                                        <tr>
+                                            <td>{{ item.id }}</td>
+                                            <td>{{ item.component_type_display }}</td>
+                                            <td>
+                                                <a href="{{ item.admin_url }}">{{ item.component_name }}</a>
+                                            </td>
+                                            <td>{{ item.added_at }}</td>
+                                            <td>
+                                                <button 
+                                                    class="btn btn-danger btn-sm"
+                                                    onclick="removeItem('{{ item.component_type }}', {{ item.component_id }})"
+                                                    title="{% trans 'Remove from list' %}">
+                                                    <i class="fas fa-trash"></i> {% trans 'Remove' %}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function removeItem(componentType, componentId) {
+        if (confirm("Are you sure you want to remove this item from the list?")) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ request.path }}';
+            
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = '{{ csrf_token }}';
+            
+            const actionInput = document.createElement('input');
+            actionInput.type = 'hidden';
+            actionInput.name = 'action';
+            actionInput.value = 'remove_item';
+            
+            const typeInput = document.createElement('input');
+            typeInput.type = 'hidden';
+            typeInput.name = 'component_type';
+            typeInput.value = componentType;
+            
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'component_id';
+            idInput.value = componentId;
+            
+            form.appendChild(csrfInput);
+            form.appendChild(actionInput);
+            form.appendChild(typeInput);
+            form.appendChild(idInput);
+            
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
+{% endblock %}

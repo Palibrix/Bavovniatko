@@ -34,8 +34,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         user = User.objects.get(username=self.username)
         from users.models import Profile
         if not Profile.objects.filter(user=user).exists():
-            profile = Profile.objects.create(user=user)
-            profile.save()
+            Profile.objects.create(user=user)
 
     def __str__(self):
         return self.username

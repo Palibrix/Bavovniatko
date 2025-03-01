@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 from builds.forms import RequiredInlineFormSet
-from components.mixins import BaseModelAdminMixin
+from components.mixins.admin.base_antenna_admin_mixins import AntennaAdminMixin, AntennaTypeAdminMixin, \
+    AntennaConnectorAdminMixin
 from components.models import Antenna, AntennaDetail, AntennaType, AntennaConnector
 from documents.admin.components_admin import AntennaDocumentInline
 from galleries.admin.components_admin import AntennaGalleryInline
@@ -16,23 +17,15 @@ class AntennaDetailInline(admin.StackedInline):
 
 
 @admin.register(Antenna)
-class AntennaAdmin(BaseModelAdminMixin):
+class AntennaAdmin(AntennaAdminMixin):
     inlines = [AntennaDetailInline, AntennaGalleryInline, AntennaDocumentInline]
-    list_display = ('__str__', 'id', 'type', 'center_frequency', 'get_bandwidth', 'swr', 'radiation')
-    sortable_by = ('swr', 'radiation',)
-    list_filter = ('manufacturer', 'type', 'center_frequency', 'swr')
-    search_fields = ('manufacturer', 'model', 'id',)
 
 
 @admin.register(AntennaType)
-class AntennaTypeAdmin(BaseModelAdminMixin):
-    list_display = ('__str__',)
-    list_filter = ('direction', 'polarization',)
-    search_fields = ('type',)
+class AntennaTypeAdmin(AntennaTypeAdminMixin):
+    pass
 
 
 @admin.register(AntennaConnector)
-class AntennaConnectorAdmin(BaseModelAdminMixin):
-    list_display = ('__str__', )
-    list_filter = ('type', )
-    search_fields = ('type',)
+class AntennaConnectorAdmin(AntennaConnectorAdminMixin):
+    pass

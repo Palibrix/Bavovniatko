@@ -1,13 +1,13 @@
 from rest_framework import serializers
 
-from api.v1.documents.serializers import PropellerDocumentSerializer
-from api.v1.galleries.serializers import PropellerGallerySerializer
+from api.v1.documents.serializers import PropellerDocumentReadSerializer
+from api.v1.galleries.serializers import PropellerGalleryReadSerializer
 from components.models import Propeller
 
 
 class PropellerSerializer(serializers.ModelSerializer):
-    images = PropellerGallerySerializer(many=True)
-    documents = PropellerDocumentSerializer(many=True)
+    images = PropellerGalleryReadSerializer(many=True)
+    documents = PropellerDocumentReadSerializer(many=True)
 
     class Meta:
         model = Propeller

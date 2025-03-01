@@ -64,7 +64,9 @@ INSTALLED_APPS = [
     'builds',
     'galleries',
     'documents',
-    'users.apps.UsersConfig'
+    'suggestions',
+    'users',
+    'lists.apps.ListsConfig'
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -83,9 +85,21 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': config.PAGE_SIZE,
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+    ],
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    'TEST_REQUEST_RENDERER_CLASSES': [
+        'rest_framework.renderers.MultiPartRenderer',
+        'rest_framework.renderers.HTMLFormRenderer',
+        'rest_framework.renderers.JSONRenderer',
+        #     'rest_framework.renderers.TemplateHTMLRenderer'
+    ]
 }
 
 SIMPLE_JWT = {
@@ -126,7 +140,6 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
-
 
 if USE_DEBUG_TOOLBAR and DEBUG:
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
@@ -179,7 +192,6 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# Database
 DATABASES = {
     'main': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -301,4 +313,40 @@ CKEDITOR_5_CONFIGS = {
             'reversed': 'true',
         }
     }
+}
+JAZZMIN_SETTINGS = {
+    "show_ui_builder": True,
+
+    "hide_apps": ["suggestions", 'constance'],
+    'hide_models': [
+        'components.antennaconnector', 'components.antennatype',
+        'components.gyro',
+        'components.outputpower', 'components.ratedvoltage',
+        'components.receiverprotocoltype',
+        'components.videoformat',
+        'components.flightcontrollerfirmware',
+        'components.speedcontrollerfirmware', 'components.speedcontrollerprotocol'
+    ],
+    "topmenu_links": [
+        {"app": "components"},
+        {"app": "suggestions"},
+        {'name': 'Server configs', 'url':'/admin/constance/config/', 'permissions': ["user.is_staff"]}
+    ],
+
+    'icons': {
+        # Main component suggestions
+        "components.antenna": "fas fa-broadcast-tower",
+        "components.camera": "fas fa-camera",
+        "components.frame": "fas fa-cube",
+        "components.motor": "fas fa-cog",
+        "components.propeller": "fas fa-fan",
+        "components.receiver": "fas fa-signal",
+        "components.stack": "fas fa-server",
+        "components.transmitter": "fas fa-satellite-dish",
+        "components.flightcontroller": "fas fa-microchip",
+        "components.speedcontroller": "fas fa-sliders-h",
+    },
+    # "language_chooser": True,
+
+
 }
