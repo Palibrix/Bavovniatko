@@ -83,7 +83,7 @@ Nothing here (yet)
 2. [x] Search: search any item 
 3. [x] Filter: filter any {{p_or_d}} by item-specific values
 4. [x] Suggest: suggest parts to add them to the database
-5. [ ] Save: select parts and drones for ease access in the future. You also can create item groups (like music playlists)
+5. [x] Save: select parts and drones for ease access in the future. You also can create item groups (like music playlists)
 6. [ ] Create: create drones from parts and see if parts are compatible with each other
 7. [ ] Review: comment any Part or Drone
 8. [ ] Compare: compare parts of the same type: motors, frames, and so on
