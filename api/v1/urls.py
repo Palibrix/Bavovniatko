@@ -7,4 +7,5 @@ urlpatterns = [
     path(r'components/', include('api.v1.components.urls', namespace='components')),
     path(r'suggestions/', include('api.v1.suggestions.urls', namespace='suggestions')),
     path(r'builds/', include('api.v1.builds.urls', namespace='builds')),
+    path(r'lists/', include('api.v1.lists.urls', namespace='lists')),
 ]

@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from components.mixins import BaseModelMixin
 from .managers import ListItemManager
 from .mixins import BaseListMixin, BaseListItemMixin
+from .registry import ComponentRegistry
 
 
 class List(BaseListMixin, BaseModelMixin):
@@ -14,62 +15,103 @@ class List(BaseListMixin, BaseModelMixin):
     Users can create multiple lists to organize their components.
     """
 
-    COMPONENT_TYPES = [
-        'antenna',
-        'camera',
-        'flight_controller',
-        'speed_controller',
-        'motor',
-        'propeller',
-        'receiver',
-        'stack',
-        'transmitter'
-    ]
+    # COMPONENT_TYPES = [
+    #     'antenna',
+    #     'camera',
+    #     'flight_controller',
+    #     'speed_controller',
+    #     'motor',
+    #     'propeller',
+    #     'receiver',
+    #     'stack',
+    #     'transmitter'
+    # ]
 
     def get_all_items(self):
         """
         Returns all items in the list, sorted by when they were added.
-        Uses the COMPONENT_TYPES list to ensure we include all component types.
+        Uses a more efficient approach that works with all databases.
         """
-        item_querysets = []
-        for component_type in self.COMPONENT_TYPES:
-            # Convert 'antenna' to 'antenna_items' to match related_name
-            related_name = f"{component_type}_items"
-            if hasattr(self, related_name):
-                items = getattr(self, related_name).include_component_data()
-                item_querysets.append(items)
+        # Use a list to collect all items
+        all_items = []
 
-        all_items = sorted(
-            chain(*item_querysets),
-            key=lambda x: x.added_at,
-            reverse=True
-        )
-        return all_items
+        for component_type in ComponentRegistry.get_all_types():
+            related_name = f"{component_type}_items"
+            if not hasattr(self, related_name):
+                continue
+
+            # Get items for this component type
+            items = getattr(self, related_name).include_component_data()
+
+            # Add component type info to each item
+            for item in items:
+                # Set an attribute so the template can determine the component type
+                item.component_type = component_type
+                all_items.append(item)
+
+        # Sort by added_at (newest first)
+        return sorted(all_items, key=lambda x: x.added_at, reverse=True)
+    
+    
 
     @property
-    def count_all(self):
+    def count_all(self) -> int:
         """
         Counts all items in the list using a single database query.
         More efficient than counting each type separately.
         """
-        counts = {}
-        for component_type in self.COMPONENT_TYPES:
-            counts[f"{component_type}_count"] = Count(f"{component_type}_items")
+        return sum(self.count_by_type().values())
 
-        result = List.objects.filter(id=self.id).aggregate(**counts)
-        return sum(result.values())
-
-    def count_by_type(self):
+    def count_by_type(self) -> dict:
         """
         Returns a dictionary with counts for each component type.
         Useful for displaying detailed statistics about the list.
         """
         counts = {}
-        for component_type in self.COMPONENT_TYPES:
+        for component_type in ComponentRegistry.get_all_types():
+            counts[f"{component_type}"] = Count(f"{component_type}_items", distinct=True)
+
+        result = List.objects.filter(id=self.id).aggregate(**counts)
+        return result
+
+    def filter_by_type(self, component_type):
+        """
+        Return all items of a specific component type, sorted by added_at.
+        """
+        related_name = f"{component_type}_items"
+        if hasattr(self, related_name):
+            return getattr(self, related_name).include_component_data().order_by('-added_at')
+        return []
+
+    def remove_items_bulk(self, items_data):
+        """
+        Remove multiple items at once.
+
+        items_data should be a list of dicts like:
+        [
+            {'component_type': 'antenna', 'component_id': 1},
+            {'component_type': 'camera', 'component_id': 3},
+        ]
+
+        Returns number of items removed.
+        """
+        removed_count = 0
+
+        for item_data in items_data:
+            component_type = item_data.get('component_type')
+            component_id = item_data.get('component_id')
+
+            if not component_type or not component_id:
+                continue
+
             related_name = f"{component_type}_items"
-            if hasattr(self, related_name):
-                counts[component_type] = getattr(self, related_name).count()
-        return counts
+            if not hasattr(self, related_name):
+                continue
+
+            result = getattr(self, related_name).filter(component_id=component_id).delete()
+            removed_count += result[0]  # Django delete() returns (count, details) tuple
+
+        return removed_count
 
     class Meta:
         unique_together = [('owner', 'name')]
