@@ -98,7 +98,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.MultiPartRenderer',
         'rest_framework.renderers.HTMLFormRenderer',
         'rest_framework.renderers.JSONRenderer',
-    #     'rest_framework.renderers.TemplateHTMLRenderer'
+        #     'rest_framework.renderers.TemplateHTMLRenderer'
     ]
 }
 
@@ -313,4 +313,40 @@ CKEDITOR_5_CONFIGS = {
             'reversed': 'true',
         }
     }
+}
+JAZZMIN_SETTINGS = {
+    "show_ui_builder": True,
+
+    "hide_apps": ["suggestions", 'constance'],
+    'hide_models': [
+        'components.antennaconnector', 'components.antennatype',
+        'components.gyro',
+        'components.outputpower', 'components.ratedvoltage',
+        'components.receiverprotocoltype',
+        'components.videoformat',
+        'components.flightcontrollerfirmware',
+        'components.speedcontrollerfirmware', 'components.speedcontrollerprotocol'
+    ],
+    "topmenu_links": [
+        {"app": "components"},
+        {"app": "suggestions"},
+        {'name': 'Server configs', 'url':'/admin/constance/config/', 'permissions': ["user.is_staff"]}
+    ],
+
+    'icons': {
+        # Main component suggestions
+        "components.antenna": "fas fa-broadcast-tower",
+        "components.camera": "fas fa-camera",
+        "components.frame": "fas fa-cube",
+        "components.motor": "fas fa-cog",
+        "components.propeller": "fas fa-fan",
+        "components.receiver": "fas fa-signal",
+        "components.stack": "fas fa-server",
+        "components.transmitter": "fas fa-satellite-dish",
+        "components.flightcontroller": "fas fa-microchip",
+        "components.speedcontroller": "fas fa-sliders-h",
+    },
+    # "language_chooser": True,
+
+
 }
