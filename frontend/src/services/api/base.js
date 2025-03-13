@@ -1,0 +1,109 @@
+// Base API configuration and helper functions
+
+// Base API URL - adjust this to match your Django backend
+export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api/v1';
+
+// Global request options (can be extended for auth tokens later)
+const defaultOptions = {
+  headers: {
+    'Content-Type': 'application/json',
+  }
+};
+
+/**
+ * Core API request function that all other API calls will use
+ * 
+ * @param {string} endpoint - API endpoint path (without base URL)
+ * @param {Object} options - Fetch options and parameters
+ * @returns {Promise} - Promise with response JSON data
+ */
+export async function apiRequest(endpoint, options = {}) {
+  try {
+    // Merge default options with any provided options
+    const requestOptions = {
+      ...defaultOptions,
+      ...options,
+      headers: {
+        ...defaultOptions.headers,
+        ...options.headers,
+      }
+    };
+
+    // Make the request
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
+    console.log(response.url);
+
+    // Handle non-2xx responses
+    if (!response.ok) {
+      // Try to get error message from response body
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        errorData = { detail: `HTTP Error ${response.status}` };
+      }
+      
+      throw {
+        status: response.status,
+        statusText: response.statusText,
+        data: errorData
+      };
+    }
+
+    // Parse JSON response (with error handling)
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('API request failed:', error);
+    throw error;
+  }
+}
+
+/**
+ * Helper function for GET requests
+ */
+export function get(endpoint, params = {}) {
+  // Build query string from params
+  const queryString = Object.keys(params).length 
+    ? '?' + new URLSearchParams(params).toString() 
+    : '';
+    
+  return apiRequest(`${endpoint}${queryString}`, { method: 'GET' });
+}
+
+/**
+ * Helper function for POST requests
+ */
+export function post(endpoint, data = {}) {
+  return apiRequest(endpoint, {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+}
+
+/**
+ * Helper function for PUT requests
+ */
+export function put(endpoint, data = {}) {
+  return apiRequest(endpoint, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
+/**
+ * Helper function for PATCH requests
+ */
+export function patch(endpoint, data = {}) {
+  return apiRequest(endpoint, {
+    method: 'PATCH',
+    body: JSON.stringify(data)
+  });
+}
+
+/**
+ * Helper function for DELETE requests
+ */
+export function del(endpoint) {
+  return apiRequest(endpoint, { method: 'DELETE' });
+}

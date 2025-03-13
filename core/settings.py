@@ -35,8 +35,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = config.DEBUG
 USE_DEBUG_TOOLBAR = config.USE_DEBUG_TOOLBAR
 
-BASE_URL = os.getenv('BASE_URL', 'http://localhost:8000')
+BASE_URL = os.getenv('BASE_URL', 'http://127.0.0.1:8000')
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
+
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ORIGIN_ALLOW_ALL=True
 
 # Application definition
 
@@ -46,6 +51,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'django_cleanup.apps.CleanupConfig',
+    'corsheaders',
+
     'jazzmin',
     'crispy_forms',
 
@@ -72,6 +79,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -86,7 +94,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': config.PAGE_SIZE,
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
