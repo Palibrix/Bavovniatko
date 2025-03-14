@@ -1,13 +1,10 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
+/* Custom cursor implementation */
+/*@layer base {*/
+/*  body {*/
+/*    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="4" fill="%23000000" stroke="%23000000" stroke-width="2"/><circle cx="6" cy="6" r="3" fill="%23000000" stroke="%23000000" stroke-width="1"/><circle cx="26" cy="6" r="3" fill="%23000000" stroke="%23000000" stroke-width="1"/><circle cx="6" cy="26" r="3" fill="%23000000" stroke="%23000000" stroke-width="1"/><circle cx="26" cy="26" r="3" fill="%23000000" stroke="%23000000" stroke-width="1"/><line x1="16" y1="16" x2="6" y2="6" stroke="%23000000" stroke-width="1"/><line x1="16" y1="16" x2="26" y2="6" stroke="%23000000" stroke-width="1"/><line x1="16" y1="16" x2="6" y2="26" stroke="%23000000" stroke-width="1"/><line x1="16" y1="16" x2="26" y2="26" stroke="%23000000" stroke-width="1"/></svg>') 16 16, auto;*/
+/*  }*/
+/*}*/
