@@ -1,0 +1,98 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCog, faFan, faMicrochip, faTachometerAlt, faBroadcastTower,
+  faBorderAll, faCamera, faSatelliteDish, faWifi, faChevronDown
+} from '@fortawesome/free-solid-svg-icons';
+import Dropdown, { DropdownSection } from '../common/Dropdown';
+import { ROUTES } from '../../routes';
+
+/**
+ * Specialized dropdown for component categories in the header
+ */
+function ComponentsDropdown() {
+  // Custom trigger for the dropdown
+  const dropdownTrigger = (
+    <button className="text-light-text hover:text-secondary transition-colors flex items-center">
+      Components
+      <FontAwesomeIcon
+        icon={faChevronDown}
+        className="ml-2 text-xs"
+      />
+    </button>
+  );
+
+  // Component category definitions
+  const categories = [
+    {
+      title: "Propulsion",
+      items: [
+        { name: "Motors", icon: faCog, type: "propulsion", path: "#" },
+        { name: "Propellers", icon: faFan, type: "propulsion", path: "#" }
+      ]
+    },
+    {
+      title: "Control Systems",
+      items: [
+        { name: "Flight Controllers", icon: faMicrochip, type: "control", path: "#" },
+        { name: "Speed Controllers", icon: faTachometerAlt, type: "control", path: "#" },
+        { name: "Receivers", icon: faBroadcastTower, type: "control", path: "#" }
+      ]
+    },
+    {
+      title: "Structure & Communications",
+      items: [
+        { name: "Frames", icon: faBorderAll, type: "frame", path: "#" },
+        { name: "Cameras", icon: faCamera, type: "video", path: "#" },
+        { name: "Transmitters", icon: faSatelliteDish, type: "video", path: "#" },
+        { name: "Antennas", icon: faWifi, type: "antenna", path: ROUTES.COMPONENTS.ANTENNAS.LIST }
+      ]
+    }
+  ];
+
+  return (
+    <Dropdown trigger={dropdownTrigger} width="md">
+      {categories.map((category, index) => (
+        <DropdownSection key={index} title={category.title}>
+          <div className="grid grid-cols-2 gap-2">
+            {category.items.map((item, itemIndex) => (
+              <ComponentMenuItem key={itemIndex} item={item} />
+            ))}
+          </div>
+        </DropdownSection>
+      ))}
+    </Dropdown>
+  );
+}
+
+/**
+ * Individual menu item for a component type
+ */
+function ComponentMenuItem({ item }) {
+  // Get the appropriate color class based on component type
+  const getIconBgColor = (type) => {
+    const types = {
+      propulsion: "bg-propulsion",
+      control: "bg-control",
+      frame: "bg-frame",
+      video: "bg-video",
+      antenna: "bg-antenna"
+    };
+    return types[type] || "bg-primary";
+  };
+
+  return (
+    <Link
+      to={item.path}
+      className="flex items-center text-gray-700 p-2 rounded-md hover:bg-gray-100 w-full"
+    >
+      <div className={`w-8 h-8 min-w-[2rem] rounded-full flex justify-center items-center mr-3 text-white ${getIconBgColor(item.type)}`}>
+        <FontAwesomeIcon icon={item.icon} className="text-sm" />
+      </div>
+      <span className="text-sm font-medium">{item.name}</span>
+    </Link>
+  );
+}
+
+export default ComponentsDropdown;
