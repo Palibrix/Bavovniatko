@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCog, faFan, faMicrochip, faTachometerAlt, faBroadcastTower,
@@ -12,6 +12,10 @@ import { ROUTES } from '../../routes';
  * Specialized dropdown for component categories in the header
  */
 function ComponentsDropdown() {
+  // Use location to determine active component
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   // Custom trigger for the dropdown
   const dropdownTrigger = (
     <button className="text-light-text hover:text-secondary transition-colors flex items-center">
@@ -51,13 +55,23 @@ function ComponentsDropdown() {
     }
   ];
 
+  // Check if an item is active based on the current path
+  const isItemActive = (path) => {
+    if (path === "#") return false;
+    return currentPath.startsWith(path);
+  };
+
   return (
     <Dropdown trigger={dropdownTrigger} width="md">
       {categories.map((category, index) => (
         <DropdownSection key={index} title={category.title}>
           <div className="grid grid-cols-2 gap-2">
             {category.items.map((item, itemIndex) => (
-              <ComponentMenuItem key={itemIndex} item={item} />
+              <ComponentMenuItem
+                key={itemIndex}
+                item={item}
+                isActive={isItemActive(item.path)}
+              />
             ))}
           </div>
         </DropdownSection>
@@ -69,7 +83,7 @@ function ComponentsDropdown() {
 /**
  * Individual menu item for a component type
  */
-function ComponentMenuItem({ item }) {
+function ComponentMenuItem({ item, isActive }) {
   // Get the appropriate color class based on component type
   const getIconBgColor = (type) => {
     const types = {
@@ -85,12 +99,17 @@ function ComponentMenuItem({ item }) {
   return (
     <Link
       to={item.path}
-      className="flex items-center text-gray-700 p-2 rounded-md hover:bg-gray-100 w-full"
+      className={`flex items-center p-2 rounded-md hover:bg-gray-100 w-full ${
+        isActive ? `bg-gray-50` : 'text-gray-700'
+      }`}
     >
       <div className={`w-8 h-8 min-w-[2rem] rounded-full flex justify-center items-center mr-3 text-white ${getIconBgColor(item.type)}`}>
         <FontAwesomeIcon icon={item.icon} className="text-sm" />
       </div>
-      <span className="text-sm font-medium">{item.name}</span>
+      <span className={`text-sm font-medium ${isActive ? `text-${item.type} font-semibold` : ''}`}>
+        {item.name}
+        {isActive && <span className="ml-2 text-xs">•</span>}
+      </span>
     </Link>
   );
 }

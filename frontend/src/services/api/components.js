@@ -15,6 +15,17 @@ const ENDPOINTS = {
 };
 
 /**
+ * Get filter options and counts for a component type
+ *
+ * @param {string} componentType - Type of component (antennas, cameras, etc.)
+ * @param {Object} params - Optional query parameters (filter_id, search)
+ * @returns {Promise} - Promise with filter options data
+ */
+export function getComponentFilterOptions(componentType, params = {}) {
+  return get(`${ENDPOINTS[componentType]}/filter_options/`, params);
+}
+
+/**
  * API functions for components
  */
 
