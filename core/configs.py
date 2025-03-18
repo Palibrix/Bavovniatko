@@ -27,7 +27,7 @@ constance_config = {
     'SLIDING_TOKEN_LIFETIME': (int(os.getenv('SLIDING_TOKEN_LIFETIME')), 'Sliding token lifetime (in minutes)', int),
     'SLIDING_TOKEN_REFRESH_LIFETIME': (int(os.getenv('SLIDING_TOKEN_REFRESH_LIFETIME')), 'Sliding token refresh lifetime (in days)', int),
 
-    'PAGE_SIZE': (40, 'Page size', int),
+    'PAGE_SIZE': (36, 'Page size', int),
 
     'DJANGO_STATICFILES_DIRS': ('assets/', 'Directory to Django static files', str),
     'DJANGO_DATABASE': ('dev', 'Django database name', str),
