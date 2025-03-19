@@ -2,18 +2,19 @@ import React from 'react';
 import { componentsApi } from '../../services/api';
 import { createComponentPages } from '../../utils/componentFactory';
 import { antennaSpecs } from '../../config/componentSpecs';
-import FilterSidebarPlaceholder from '../../components/filters/FilterSidebarPlaceholder';
+import FilterSidebar from '../../components/filters/FilterSidebar';
 
 /**
  * Create Antenna list and detail pages using the component factory
+ * This now uses the real FilterSidebar component instead of the placeholder
  */
 const { ListPage, DetailPage } = createComponentPages({
   type: 'antennas',
   title: 'Antennas',
   fetchList: componentsApi.getAntennas,
   fetchDetail: componentsApi.getAntennaById,
-  // Using placeholder filter sidebar for now
-  filterSidebar: <FilterSidebarPlaceholder componentType="antennas" />
+  // Using our real filter sidebar component
+  filterSidebar: <FilterSidebar componentType="antennas" />
 });
 
 export const AntennaListPage = ListPage;

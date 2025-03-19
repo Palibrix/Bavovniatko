@@ -9,13 +9,33 @@ class AntennaFilter(MetadataFilterSet):
     Filter for Antennas with UI metadata support.
     Defines both the filter logic and the UI structure.
     """
-    center_frequency = filters.RangeFilter(field_name='center_frequency')
-    swr = filters.RangeFilter(field_name='swr',)
-    gain = filters.RangeFilter(field_name='gain')
-    radiation = filters.RangeFilter(field_name='radiation')
-    weight = filters.RangeFilter(field_name='details__weight')
+    # Range filters
+    center_frequency_min = filters.NumberFilter(field_name='center_frequency', lookup_expr='gte')
+    center_frequency_max = filters.NumberFilter(field_name='center_frequency', lookup_expr='lte')
 
-    # Define UI metadata for the filters - structure matches the HTML prototype
+    swr_min = filters.NumberFilter(field_name='swr', lookup_expr='gte')
+    swr_max = filters.NumberFilter(field_name='swr', lookup_expr='lte')
+
+    gain_min = filters.NumberFilter(field_name='gain', lookup_expr='gte')
+    gain_max = filters.NumberFilter(field_name='gain', lookup_expr='lte')
+
+    radiation_min = filters.NumberFilter(field_name='radiation', lookup_expr='gte')
+    radiation_max = filters.NumberFilter(field_name='radiation', lookup_expr='lte')
+
+    weight_min = filters.NumberFilter(field_name='details__weight', lookup_expr='gte')
+    weight_max = filters.NumberFilter(field_name='details__weight', lookup_expr='lte')
+
+    # Choice filters
+    type = filters.CharFilter(field_name='type__type')
+    direction = filters.CharFilter(field_name='type__direction')
+    polarization = filters.CharFilter(field_name='type__polarization')
+    connector_type = filters.CharFilter(field_name='details__connector_type__type')
+    angle_type = filters.CharFilter(field_name='details__angle_type')
+
+    # Multi-select filters
+    manufacturer = filters.BaseInFilter(field_name='manufacturer')
+
+    # Define UI metadata for the filters
     filter_metadata = {
         "groups": [
             {
@@ -27,7 +47,7 @@ class AntennaFilter(MetadataFilterSet):
                         "type": "choice",
                         "label": "Manufacturer",
                         "field": "manufacturer",
-                        "searchable": True
+                        "searchable": True,
                     }
                 ]
             },
@@ -41,14 +61,14 @@ class AntennaFilter(MetadataFilterSet):
                         "label": "Center Frequency",
                         "field": "center_frequency",
                         "unit": "MHz",
-                        "default_value": 3000  # Default value for the slider
+                        "default_value": 3000
                     },
                     {
                         "id": "swr",
                         "type": "range",
                         "label": "SWR (VSWR)",
                         "field": "swr",
-                        "default_value": 2  # Default value for the slider
+                        "default_value": 2
                     },
                     {
                         "id": "gain",
@@ -56,7 +76,7 @@ class AntennaFilter(MetadataFilterSet):
                         "label": "Gain",
                         "field": "gain",
                         "unit": "dBi",
-                        "default_value": 7.5  # Default value for the slider
+                        "default_value": 2.5
                     },
                     {
                         "id": "radiation",
@@ -64,7 +84,7 @@ class AntennaFilter(MetadataFilterSet):
                         "label": "Radiation Efficiency",
                         "field": "radiation",
                         "unit": "%",
-                        "default_value": 50  # Default value for the slider
+                        "default_value": 50
                     }
                 ]
             },
@@ -72,12 +92,6 @@ class AntennaFilter(MetadataFilterSet):
                 "id": "antenna_type",
                 "title": "Antenna Type",
                 "filters": [
-                    {
-                        "id": "type",
-                        "type": "choice",
-                        "label": "Type",
-                        "field": "type__type"
-                    },
                     {
                         "id": "direction",
                         "type": "choice",
@@ -101,7 +115,7 @@ class AntennaFilter(MetadataFilterSet):
                         "type": "choice",
                         "label": "Connector Type",
                         "field": "details__connector_type__type",
-                        "model_field": "type"  # Use this field for display value
+                        "model_field": "type"
                     },
                     {
                         "id": "angle_type",
@@ -115,7 +129,7 @@ class AntennaFilter(MetadataFilterSet):
                         "label": "Weight",
                         "field": "details__weight",
                         "unit": "g",
-                        "default_value": 15  # Default value for the slider
+                        "default_value": 15
                     }
                 ]
             }
@@ -124,8 +138,13 @@ class AntennaFilter(MetadataFilterSet):
 
     class Meta:
         model = Antenna
-        fields = ['manufacturer', 'center_frequency', 'bandwidth_min', 'bandwidth_max',
-                  'swr', 'gain', 'radiation',
-                  'type__type', 'type__direction', 'type__polarization',
-                  'details__connector_type__type', 'details__angle_type',
-                  'weight']
+        fields = [
+            'manufacturer',
+            'center_frequency_min', 'center_frequency_max',
+            'swr_min', 'swr_max',
+            'gain_min', 'gain_max',
+            'radiation_min', 'radiation_max',
+            'direction', 'polarization',
+            'connector_type', 'angle_type',
+            'weight_min', 'weight_max'
+        ]

@@ -8,6 +8,10 @@ from django.db.models import Count, Min, Max
 from django_filters.rest_framework import FilterSet
 
 
+from django.db.models import Count, Min, Max
+from django_filters.rest_framework import FilterSet
+
+
 class MetadataFilterSet(FilterSet):
     """
     Extended FilterSet with metadata about filter UI structure.
@@ -106,8 +110,8 @@ class MetadataFilterSet(FilterSet):
         )
 
         return {
-            'min': result['min_value'],
-            'max': result['max_value'],
+            'min': result['min_value'] or 0,
+            'max': result['max_value'] or 100,
         }
 
     @staticmethod
@@ -200,7 +204,6 @@ class MetadataFilterSet(FilterSet):
             ]
 
         return options
-
 
 class SuggestionActionsMixin:
 
