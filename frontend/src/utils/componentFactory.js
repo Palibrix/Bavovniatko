@@ -241,37 +241,3 @@ function renderDetailContent(item, specsConfig) {
     </div>
   );
 }
-
-/**
- * @deprecated Use createComponentPages instead
- */
-export function createComponentListPage(componentType, title, fetchDataFn, renderItemFn) {
-  console.warn('createComponentListPage is deprecated, use createComponentPages instead');
-
-  const { ListPage } = createComponentPages({
-    type: componentType,
-    title: title,
-    fetchList: fetchDataFn,
-    fetchDetail: () => {}, // No-op because we don't need detail for list
-    renderListItem: renderItemFn,
-    renderDetailContent: () => null // No-op for detail content
-  });
-
-  return ListPage;
-}
-
-/**
- * @deprecated Use createComponentPages instead
- */
-export function createComponentDetailPage(componentType, fetchDataFn, renderDetailsFn) {
-  console.warn('createComponentDetailPage is deprecated, use createComponentPages instead');
-
-  const { DetailPage } = createComponentPages({
-    type: componentType,
-    fetchList: () => {}, // No-op because we don't need list for detail
-    fetchDetail: fetchDataFn,
-    renderDetailContent: renderDetailsFn
-  });
-
-  return DetailPage;
-}

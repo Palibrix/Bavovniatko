@@ -1,7 +1,6 @@
 import React from 'react';
 import { componentsApi } from '../../services/api';
 import { createComponentPages } from '../../utils/componentFactory';
-import { antennaSpecs } from '../../config/componentSpecs';
 import FilterSidebar from '../../components/filters/FilterSidebar';
 
 /**
