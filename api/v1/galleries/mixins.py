@@ -37,6 +37,7 @@ class BaseGalleryWriteSerializer(serializers.ModelSerializer):
 class GalleryContextMixin:
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        if self.action in ['update', 'partial_update']:
-            context['suggestion'] = self.get_object()
+        if not getattr(self, 'swagger_fake_view', False):
+            if self.action in ['update', 'partial_update']:
+                context['suggestion'] = self.get_object()
         return context

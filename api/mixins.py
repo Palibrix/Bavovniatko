@@ -205,6 +205,7 @@ class MetadataFilterSet(FilterSet):
 
         return options
 
+
 class SuggestionActionsMixin:
 
     @action(detail=True, methods=['post'])
