@@ -78,8 +78,35 @@ export const hasDetails = (item, componentType) => {
   }
 };
 
+// Helper to format specification values
+export const formatSpecValue = (value) => {
+    if (value === null || value === undefined) return 'N/A';
+
+    if (typeof value === 'boolean') {
+      return value ? 'Yes' : 'No';
+    }
+
+    if (typeof value === 'object') {
+      // If it's an array, join with commas
+      if (Array.isArray(value)) {
+        return value.join(', ');
+      }
+
+      // If it has a type property, it might be a related object
+      if (value.type) {
+        return value.type;
+      }
+
+      // For other objects, stringify (but limit length)
+      return JSON.stringify(value).substring(0, 50);
+    }
+
+    return value.toString();
+  };
+
 /**
  * Convert component data to a JSON string for copying
+ * Includes all specifications and details data
  *
  * @param {Object} item Component data
  * @param {Array} specsConfig Specs configuration
@@ -114,6 +141,35 @@ export const componentToJson = (item, specsConfig) => {
     });
   }
 
+  // Add details data based on component type
+  if (item.details && Array.isArray(item.details) && item.details.length > 0) {
+    result.details = item.details.map(detail => {
+      // Create a clean details object without circular references
+      const cleanDetail = { ...detail };
+
+      // Remove any object references that might cause circular JSON
+      if (cleanDetail.antenna) delete cleanDetail.antenna;
+      if (cleanDetail.motor) delete cleanDetail.motor;
+      if (cleanDetail.camera) delete cleanDetail.camera;
+      if (cleanDetail.receiver) delete cleanDetail.receiver;
+
+      return cleanDetail;
+    });
+  }
+
+  // Add frame-specific details
+  if (item.camera_details && Array.isArray(item.camera_details) && item.camera_details.length > 0) {
+    result.camera_details = item.camera_details;
+  }
+
+  if (item.motor_details && Array.isArray(item.motor_details) && item.motor_details.length > 0) {
+    result.motor_details = item.motor_details;
+  }
+
+  if (item.vtx_details && Array.isArray(item.vtx_details) && item.vtx_details.length > 0) {
+    result.vtx_details = item.vtx_details;
+  }
+
   return JSON.stringify(result, null, 2);
 };
 
@@ -122,5 +178,6 @@ export default {
   getComponentThemeColor,
   hasDocuments,
   hasDetails,
-  componentToJson
+  componentToJson,
+  formatSpecValue
 };

@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faPlus, faCode } from '@fortawesome/free-solid-svg-icons';
 import LoadingSpinner from '../common/LoadingSpinner';
-import ErrorMessage from '../common/ErrorMessage';
-import ComponentGallery from './ComponentGallery';
-import KeySpecsPanel from './KeySpecsPanel';
-import { getSpecsForComponentType } from '../../config/componentSpecs';
+import ComponentGallery from '../detail/ComponentGallery';
+import KeySpecsPanel from '../detail/KeySpecsPanel';
+import TabContainer from '../detail/TabContainer';
+import {getFullSpecsForComponentType, getKeySpecsForComponentType} from '../../config/componentSpecs';
 import { getComponentThemeColor } from '../../utils/componentDetailUtils';
+import {
+  DescriptionTab,
+  SpecificationsTab,
+  DetailsTab,
+  DocumentsTab
+} from '../detail/tabs';
 
 /**
  * Template for displaying detailed component information
@@ -26,12 +32,8 @@ const ComponentDetailTemplate = ({
   item,
   isRefreshing = false,
   onRefresh,
-  onAddToList,
-  children
+  onAddToList
 }) => {
-  // State for active tab
-  const [activeTab, setActiveTab] = useState('description');
-
   if (!item) {
     return <LoadingSpinner />;
   }
@@ -40,9 +42,7 @@ const ComponentDetailTemplate = ({
   const themeColor = getComponentThemeColor(componentType);
 
   // Get specs configuration for this component type
-  const specsConfig = getSpecsForComponentType(componentType);
-
-  // No longer needed as we're using ComponentGallery
+  const specsConfig = getFullSpecsForComponentType(componentType);
 
   // Handle adding item to list
   const handleAddToList = () => {
@@ -51,10 +51,7 @@ const ComponentDetailTemplate = ({
     }
   };
 
-  // Handle tab switching
-  const handleTabClick = (tabId) => {
-    setActiveTab(tabId);
-  };
+
 
   return (
     <div className="w-[92%] max-w-[1400px] mx-auto px-4 py-8">
@@ -90,7 +87,6 @@ const ComponentDetailTemplate = ({
       <div className="flex flex-col lg:flex-row gap-10">
         {/* Left column - Gallery and Key Specs (sticky) */}
         <div className="w-full lg:w-5/12 lg:sticky lg:top-8 lg:self-start lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto pr-4">
-
           {/* Image gallery with thumbnails and navigation */}
           <ComponentGallery
             images={item.images}
@@ -107,94 +103,16 @@ const ComponentDetailTemplate = ({
         </div>
 
         {/* Right column - Tabbed content */}
-        <div className="flex-1"> {/* Removed PT-7 as we moved the header out */}
-          {/* Tab navigation */}
-          <div className="bg-white rounded-3xl shadow-sm mb-6 flex overflow-hidden">
-            <button
-              className={`flex-1 py-4 px-6 font-medium transition-colors ${activeTab === 'description' ? `text-${themeColor} border-b-3 border-${themeColor} bg-${themeColor} bg-opacity-5` : 'text-gray-600 hover:bg-gray-50'}`}
-              onClick={() => handleTabClick('description')}
-            >
-              Description
-            </button>
-            <button
-              className={`flex-1 py-4 px-6 font-medium transition-colors ${activeTab === 'specs' ? `text-${themeColor} border-b-3 border-${themeColor} bg-${themeColor} bg-opacity-5` : 'text-gray-600 hover:bg-gray-50'}`}
-              onClick={() => handleTabClick('specs')}
-            >
-              Specifications
-            </button>
-            <button
-              className={`flex-1 py-4 px-6 font-medium transition-colors ${activeTab === 'details' ? `text-${themeColor} border-b-3 border-${themeColor} bg-${themeColor} bg-opacity-5` : 'text-gray-600 hover:bg-gray-50'}`}
-              onClick={() => handleTabClick('details')}
-            >
-              Details
-            </button>
-            <button
-              className={`flex-1 py-4 px-6 font-medium transition-colors ${activeTab === 'documents' ? `text-${themeColor} border-b-3 border-${themeColor} bg-${themeColor} bg-opacity-5` : 'text-gray-600 hover:bg-gray-50'}`}
-              onClick={() => handleTabClick('documents')}
-            >
-              Documents
-            </button>
-          </div>
-
-          {/* Tab content sections - placeholders for now */}
-          <div className={`${activeTab === 'description' ? 'block' : 'hidden'}`}>
-            <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 font-semibold text-primary relative">
-                <div className={`absolute top-0 left-0 bottom-0 w-1 bg-${themeColor}`}></div>
-                <h2 className="text-xl">Description</h2>
-              </div>
-              <div className="p-6">
-                {/* Description content will be implemented in task 4 */}
-                {item.description ? (
-                  <div dangerouslySetInnerHTML={{ __html: item.description }} />
-                ) : (
-                  <p className="text-gray-500">No description available</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className={`${activeTab === 'specs' ? 'block' : 'hidden'}`}>
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 font-semibold text-primary relative flex justify-between items-center">
-                <div className={`absolute top-0 left-0 bottom-0 w-1 bg-${themeColor}`}></div>
-                <h2 className="text-xl">Technical Specifications</h2>
-                <button className={`text-${themeColor} px-3 py-1 text-sm rounded hover:bg-${themeColor} hover:bg-opacity-10`}>
-                  Copy JSON
-                </button>
-              </div>
-              <div className="p-6">
-                {/* Specs content will be implemented in task 4 */}
-                <p>Specifications will appear here</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`${activeTab === 'details' ? 'block' : 'hidden'}`}>
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 font-semibold text-primary relative">
-                <div className={`absolute top-0 left-0 bottom-0 w-1 bg-${themeColor}`}></div>
-                <h2 className="text-xl">Details</h2>
-              </div>
-              <div className="p-6">
-                {/* Details content will be implemented in task 4 */}
-                <p>Component details will appear here</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`${activeTab === 'documents' ? 'block' : 'hidden'}`}>
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-              <div className="px-6 py-4 border-b border-gray-100 font-semibold text-primary relative">
-                <div className={`absolute top-0 left-0 bottom-0 w-1 bg-${themeColor}`}></div>
-                <h2 className="text-xl">Documents</h2>
-              </div>
-              <div className="p-6">
-                {/* Documents content will be implemented in task 4 */}
-                <p>Documents will appear here</p>
-              </div>
-            </div>
-          </div>
+        <div className="flex-1">
+          <TabContainer
+            item={item}
+            componentType={componentType}
+            themeColor={themeColor}
+            descriptionTab={<DescriptionTab item={item} themeColor={themeColor} />}
+            specificationsTab={<SpecificationsTab item={item} specsConfig={specsConfig} themeColor={themeColor} />}
+            detailsTab={<DetailsTab item={item} componentType={componentType} themeColor={themeColor} />}
+            documentsTab={<DocumentsTab item={item} themeColor={themeColor} />}
+          />
         </div>
       </div>
     </div>
@@ -206,8 +124,7 @@ ComponentDetailTemplate.propTypes = {
   item: PropTypes.object,
   isRefreshing: PropTypes.bool,
   onRefresh: PropTypes.func,
-  onAddToList: PropTypes.func,
-  children: PropTypes.node
+  onAddToList: PropTypes.func
 };
 
 export default ComponentDetailTemplate;

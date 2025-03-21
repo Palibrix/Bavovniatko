@@ -2,27 +2,24 @@ import {
   faBroadcastTower, faArrowsAltH, faSignal,
   faTags, faCompass, faSyncAlt, faPlug,
   faWeightHanging, faAngleUp, faMicrochip, faCog,
-  faCamera, faRuler, faFan, faBatteryFull
+  faCamera, faRuler, faFan, faBatteryFull,
+  faWaveSquare, faChartPie, faRocket
 } from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Configuration for component specifications to display in list and detail views
- * Each component type has its own configuration
+ * Each component type has configurations for:
+ * - keySpecs: Shown in the sidebar key specs panel (4-6 most important specs)
+ * - fullSpecs: All specifications shown in the specifications tab
  */
 
-export const antennaSpecs = [
+// ANTENNAS
+export const antennaKeySpecs = [
   {
     label: 'Center Frequency',
     path: 'center_frequency',
     icon: faBroadcastTower,
     unit: 'MHz'
-  },
-  {
-    label: 'Bandwidth',
-    path: 'bandwidth',
-    icon: faArrowsAltH,
-    // Special formatter to combine bandwidth_min and bandwidth_max
-    formatter: (_, item) => `${item.bandwidth_min} - ${item.bandwidth_max} MHz`
   },
   {
     label: 'Gain',
@@ -31,23 +28,47 @@ export const antennaSpecs = [
     unit: 'dBi'
   },
   {
+    label: 'Polarization',
+    path: 'type.polarization',
+    icon: faSyncAlt
+  },
+  {
     label: 'Type',
     path: 'type.type',
     icon: faTags
   },
+      {
+    label: 'Bandwidth',
+    path: 'bandwidth',
+    icon: faArrowsAltH,
+    // Special formatter to combine bandwidth_min and bandwidth_max
+    formatter: (_, item) => `${item.bandwidth_min} - ${item.bandwidth_max} MHz`
+  },
+];
+
+export const antennaSpecs = [
+  ...antennaKeySpecs,
+
   {
     label: 'Direction',
     path: 'type.direction',
     icon: faCompass
   },
   {
-    label: 'Polarization',
-    path: 'type.polarization',
-    icon: faSyncAlt
+    label: 'SWR',
+    path: 'swr',
+    icon: faWaveSquare
+  },
+  {
+    label: 'Radiation Efficiency',
+    path: 'radiation',
+    icon: faChartPie,
+    unit: '%'
   }
 ];
 
-export const cameraSpecs = [
+// CAMERAS
+export const cameraKeySpecs = [
   {
     label: 'Resolution',
     path: 'tvl',
@@ -70,7 +91,11 @@ export const cameraSpecs = [
     label: 'Aspect Ratio',
     path: 'ratio',
     icon: faRuler
-  },
+  }
+];
+
+export const cameraSpecs = [
+  ...cameraKeySpecs,
   {
     label: 'Output Type',
     path: 'output_type',
@@ -81,10 +106,17 @@ export const cameraSpecs = [
     label: 'Light Sensitivity',
     path: 'light_sens',
     icon: faSignal
+  },
+  {
+    label: 'Weight',
+    path: 'weight',
+    icon: faWeightHanging,
+    unit: 'g'
   }
 ];
 
-export const motorSpecs = [
+// MOTORS
+export const motorKeySpecs = [
   {
     label: 'Size',
     path: 'stator_size',
@@ -108,7 +140,11 @@ export const motorSpecs = [
     path: 'details.0.weight',
     icon: faWeightHanging,
     unit: 'g'
-  },
+  }
+];
+
+export const motorSpecs = [
+  ...motorKeySpecs,
   {
     label: 'Configuration',
     path: 'configuration',
@@ -119,10 +155,17 @@ export const motorSpecs = [
     path: 'mount_dimensions',
     icon: faRuler,
     formatter: (_, item) => `${item.mount_width}x${item.mount_height} mm`
+  },
+  {
+    label: 'Peak Current',
+    path: 'details.0.peak_current',
+    icon: faRocket,
+    unit: 'A'
   }
 ];
 
-export const propellerSpecs = [
+// PROPELLERS
+export const propellerKeySpecs = [
   {
     label: 'Size',
     path: 'size',
@@ -145,16 +188,27 @@ export const propellerSpecs = [
     path: 'weight',
     icon: faWeightHanging,
     unit: 'g'
-  },
-  {
-    label: 'Material',
-    path: 'material',
-    icon: faTags
   }
 ];
 
-// Export a mapping function to get the right specs for a component type
-export const getSpecsForComponentType = (type) => {
+export const propellerSpecs = [
+  ...propellerKeySpecs
+];
+
+// Export functions to get specs for a component type
+export const getKeySpecsForComponentType = (type) => {
+  const specsMap = {
+    antennas: antennaKeySpecs,
+    cameras: cameraKeySpecs,
+    motors: motorKeySpecs,
+    propellers: propellerKeySpecs,
+    // Add more component types as needed
+  };
+
+  return specsMap[type] || [];
+};
+
+export const getFullSpecsForComponentType = (type) => {
   const specsMap = {
     antennas: antennaSpecs,
     cameras: cameraSpecs,

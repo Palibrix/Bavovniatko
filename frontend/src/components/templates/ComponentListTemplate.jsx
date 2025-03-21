@@ -111,7 +111,7 @@ const ComponentListTemplate = ({
       </div>
 
       <div className="flex flex-col md:flex-row gap-8">
-        {/* Filter sidebar placeholder - will be filled later */}
+
         {filterSidebar && (
           <div className="w-full md:w-72 md:flex-shrink-0">
             {filterSidebar}

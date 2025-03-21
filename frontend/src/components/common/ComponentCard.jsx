@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
+import {formatSpecValue} from "../../utils/componentDetailUtils";
 
 /**
  * Reusable component card that supports both list and grid views
@@ -57,19 +58,17 @@ const ComponentCard = ({
 
   // Function to render specification value based on type
   const renderSpecValue = (spec, value) => {
-    if (value === null || value === undefined) return 'N/A';
 
-    // Check if formatter function is provided
-    if (spec.formatter) {
-      return spec.formatter(value);
-    }
+      let formattedValue;
+      if (spec.formatter) {
+        formattedValue = spec.formatter(value, item);
+      } else if (spec.unit) {
+        formattedValue = (value) ? `${value} ${spec.unit}` : 'N/A';
+      } else {
+        formattedValue = formatSpecValue(value);
+      }
 
-    // Check if unit should be appended
-    if (spec.unit) {
-      return `${value} ${spec.unit}`;
-    }
-
-    return value;
+    return formattedValue;
   };
 
   // Add to list handler with stop propagation to prevent navigation
@@ -118,11 +117,11 @@ const ComponentCard = ({
                 SPECIFICATIONS
               </div>
               <div className="grid grid-cols-3 gap-5">
-                {specsConfig.map((spec, index) => {
+               {specsConfig.slice(0, 6).map((spec, index) => {
                   const value = spec.path.split('.').reduce((obj, key) =>
-                      obj && obj[key] !== undefined ? obj[key] : null, item);
+                    obj && obj[key] !== undefined ? obj[key] : null, item);
 
-                  return (
+                  return renderSpecValue(spec, value) !== "N/A" ? (
                       <div
                           key={index}
                           className="bg-gray-50 p-2 rounded-lg transition-all border hover:bg-gray-100 hover:-translate-y-0.5"
@@ -137,7 +136,7 @@ const ComponentCard = ({
                           {renderSpecValue(spec, value)}
                         </div>
                       </div>
-                  );
+                  ) : null;
                 })}
               </div>
             </div>
@@ -182,12 +181,12 @@ const ComponentCard = ({
             const value = spec.path.split('.').reduce((obj, key) =>
               obj && obj[key] !== undefined ? obj[key] : null, item);
 
-            return (
+            return renderSpecValue(spec, value) !== "N/A" ? (
               <div key={index} className="flex flex-col">
                 <span className="text-xs text-gray-500">{spec.label}</span>
                 <span className="font-medium">{renderSpecValue(spec, value)}</span>
               </div>
-            );
+            ): null;
           })}
         </div>
 

@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const KeySpecsPanel = ({
   item,
   specsConfig,
-  minSpecs = 4,
+  minSpecs = 0,
   maxSpecs = 6,
   themeColor = 'primary'
 }) => {

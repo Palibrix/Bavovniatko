@@ -4,7 +4,7 @@ import ComponentListTemplate from '../components/templates/ComponentListTemplate
 import ComponentDetailTemplate from '../components/templates/ComponentDetailTemplate';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
-import { getSpecsForComponentType, generateComponentTags } from '../config/componentSpecs';
+import { getKeySpecsForComponentType, generateComponentTags } from '../config/componentSpecs';
 
 /**
  * Creates both list and detail page components for a component type with
@@ -135,7 +135,7 @@ export function createComponentPages(config) {
     }
 
     // Get the component-specific specifications
-    const specsConfig = getSpecsForComponentType(type);
+    const specsConfig = getKeySpecsForComponentType(type);
 
     // Render the list template with data
     return (
@@ -211,7 +211,7 @@ export function createComponentPages(config) {
     }
 
     // Get the component-specific specifications
-    const specsConfig = getSpecsForComponentType(type);
+    const specsConfig = getKeySpecsForComponentType(type);
 
     // Render the detail template with data
     return (
