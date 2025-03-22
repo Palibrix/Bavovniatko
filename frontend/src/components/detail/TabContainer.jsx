@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { hasDetails, hasDocuments } from '../../utils/componentDetailUtils';
-
+import { themeClasses } from '../../utils/themeUtils';
 
 /**
  * Container component for detail page tabs
@@ -27,6 +27,7 @@ const TabContainer = ({
 }) => {
   const [activeTab, setActiveTab] = useState('description');
   const [availableTabs, setAvailableTabs] = useState([]);
+  const themeClass = themeClasses[themeColor] || themeClasses.primary;
 
   // Determine which tabs should be available based on the data
   useEffect(() => {
@@ -85,7 +86,7 @@ const TabContainer = ({
             key={tab.id}
             className={`flex-1 py-4 px-6 font-medium transition-colors ${
               activeTab === tab.id
-                ? `text-${themeColor} border-b-3 border-${themeColor} bg-${themeColor} bg-opacity-5`
+                ? themeClass.combined.activeTab
                 : 'text-gray-600 hover:bg-gray-50'
             }`}
             onClick={() => handleTabClick(tab.id)}

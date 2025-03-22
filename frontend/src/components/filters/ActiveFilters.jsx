@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import {themeClasses} from "../../utils/themeUtils";
 
 /**
  * Component to display active filters with the ability to remove them
@@ -12,6 +13,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
  * @param {string} props.themeColor Theme color for styling
  */
 const ActiveFilters = ({ filters = [], onRemove, themeColor = 'primary' }) => {
+    const themeClass = themeClasses[themeColor] || themeClasses.primary;
   if (!filters || filters.length === 0) return null;
 
   // Group filters by their group title
@@ -47,7 +49,7 @@ const ActiveFilters = ({ filters = [], onRemove, themeColor = 'primary' }) => {
             {groupFilters.map((filter, index) => (
               <div
                 key={`${filter.id}-${index}`}
-                className={`inline-flex items-center text-xs bg-${themeColor}-50 text-${themeColor}-700 border border-${themeColor}-200 rounded-full px-2.5 py-1 transition-colors`}
+                className={`inline-flex items-center text-xs border ${themeClass.borderLight} rounded-full px-2.5 py-1 transition-colors`}
               >
                 <span className="font-medium mr-1">{filter.label}:</span>
                 <span>{filter.displayValue}</span>
@@ -58,7 +60,7 @@ const ActiveFilters = ({ filters = [], onRemove, themeColor = 'primary' }) => {
                 >
                   <FontAwesomeIcon
                     icon={faTimes}
-                    className={`text-${themeColor}-500 text-xs`}
+                    className={`${themeClass.text} text-xs`}
                   />
                 </button>
               </div>

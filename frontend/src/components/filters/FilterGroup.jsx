@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import {themeClasses} from "../../utils/themeUtils";
 
 /**
  * Expandable/collapsible filter group with smooth animation
@@ -16,6 +17,7 @@ const FilterGroup = ({ title, initialExpanded = false, children, themeColor = 'p
   const [expanded, setExpanded] = useState(initialExpanded);
   const contentRef = useRef(null);
   const [contentHeight, setContentHeight] = useState(initialExpanded ? 'auto' : '0px');
+  const themeClass = themeClasses[themeColor] || themeClasses.primary;
 
   // Set initial height on mount
   useEffect(() => {
@@ -65,7 +67,7 @@ const FilterGroup = ({ title, initialExpanded = false, children, themeColor = 'p
         <h3 className="font-semibold text-gray-700">{title}</h3>
         <FontAwesomeIcon
           icon={faChevronDown}
-          className={`text-gray-400 transition-transform duration-300 ${expanded ? 'rotate-180 text-' + themeColor : ''}`}
+          className={`text-gray-400 transition-transform duration-300 ${expanded ? 'rotate-180 ' + themeClass.text : ''}`}
         />
       </div>
 

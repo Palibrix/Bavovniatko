@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { themeClasses } from '../../utils/themeUtils';
 
 /**
  * Panel showing key specifications of a component
@@ -21,6 +22,8 @@ const KeySpecsPanel = ({
 }) => {
   if (!item || !specsConfig) return null;
 
+  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+
   // Get displayable specs (specs that have values in the item)
   const filteredSpecs = specsConfig.filter(spec => {
     const value = spec.path.split('.').reduce((obj, key) =>
@@ -38,8 +41,8 @@ const KeySpecsPanel = ({
   const displaySpecs = Array(totalSlots).fill(null).map((_, i) => keySpecs[i] || null);
 
   return (
-    <div className={`bg-white rounded-3xl shadow-sm overflow-hidden border-t-4 border-t-${themeColor}`}>
-      <div className={`py-4 px-6 border-b border-gray-100 font-semibold text-${themeColor} bg-${themeColor} bg-opacity-5`}>
+    <div className={`bg-white rounded-3xl shadow-sm overflow-hidden border-t-4 ${themeClass.borderTop}`}>
+      <div className={`py-4 px-6 border-b border-gray-100 font-semibold ${themeClass.text} ${themeClass.bgOpacity[5]}`}>
         Key Specifications
       </div>
       <div className="grid grid-cols-2 gap-4 p-6">
@@ -66,7 +69,7 @@ const KeySpecsPanel = ({
           return (
             <div key={index} className="key-spec">
               <div className="text-sm text-gray-500 flex items-center gap-1.5">
-                {spec.icon && <FontAwesomeIcon icon={spec.icon} className={`text-${themeColor} text-xs`} />}
+                {spec.icon && <FontAwesomeIcon icon={spec.icon} className={`${themeClass.text} text-xs`} />}
                 {spec.label}
               </div>
               <div className="font-semibold text-primary">

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faPlus, faMinus, faExpand, faCompress, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { themeClasses } from '../../utils/themeUtils';
 
 /**
  * Component gallery with main image, thumbnails, navigation, and fullscreen mode
@@ -21,6 +22,7 @@ const ComponentGallery = ({ images = [], alt = 'Component image', themeColor = '
 
   const mainImageRef = useRef(null);
   const galleryContainerRef = useRef(null);
+  const themeClass = themeClasses[themeColor] || themeClasses.primary;
 
   // Fallback image if no images are provided
   const placeholderImage = '/api/placeholder/400/300';
@@ -206,7 +208,7 @@ const ComponentGallery = ({ images = [], alt = 'Component image', themeColor = '
 
         {/* Right accent line - hide in fullscreen */}
         {!isFullscreen && (
-          <div className={`absolute top-0 bottom-0 right-0 w-1 bg-gradient-to-b from-${themeColor} to-${themeColor}-200 opacity-80`}></div>
+          <div className={`absolute top-0 bottom-0 right-0 w-1 bg-gradient-to-b ${themeClass.bg} opacity-80`}></div>
         )}
 
         {/* Close button in fullscreen mode */}
@@ -224,28 +226,28 @@ const ComponentGallery = ({ images = [], alt = 'Component image', themeColor = '
         <div className="absolute top-4 right-4 bg-white bg-opacity-90 rounded-lg shadow-sm flex overflow-hidden z-10">
           <button
             onClick={zoomIn}
-            className={`w-8 h-8 flex items-center justify-center hover:bg-${themeColor} hover:bg-opacity-10 transition-colors`}
+            className={`w-8 h-8 flex items-center justify-center hover:bg-opacity-10 hover:${themeClass.bgOpacity[10]} transition-colors`}
             aria-label="Zoom in"
           >
             <FontAwesomeIcon icon={faPlus} className="text-gray-600" />
           </button>
           <button
             onClick={zoomOut}
-            className={`w-8 h-8 flex items-center justify-center hover:bg-${themeColor} hover:bg-opacity-10 transition-colors`}
+            className={`w-8 h-8 flex items-center justify-center hover:bg-opacity-10 hover:${themeClass.bgOpacity[10]} transition-colors`}
             aria-label="Zoom out"
           >
             <FontAwesomeIcon icon={faMinus} className="text-gray-600" />
           </button>
           <button
             onClick={resetZoom}
-            className={`w-8 h-8 flex items-center justify-center hover:bg-${themeColor} hover:bg-opacity-10 transition-colors`}
+            className={`w-8 h-8 flex items-center justify-center hover:bg-opacity-10 hover:${themeClass.bgOpacity[10]} transition-colors`}
             aria-label="Reset zoom"
           >
             <FontAwesomeIcon icon={faExpand} className="text-gray-600" />
           </button>
           <button
             onClick={toggleFullscreen}
-            className={`w-8 h-8 flex items-center justify-center hover:bg-${themeColor} hover:bg-opacity-10 transition-colors`}
+            className={`w-8 h-8 flex items-center justify-center hover:bg-opacity-10 hover:${themeClass.bgOpacity[10]} transition-colors`}
             aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
           >
             <FontAwesomeIcon
@@ -260,14 +262,14 @@ const ComponentGallery = ({ images = [], alt = 'Component image', themeColor = '
           <div className="absolute top-1/2 left-0 right-0 transform -translate-y-1/2 flex justify-between px-4 z-10">
             <button
               onClick={prevImage}
-              className={`w-10 h-10 rounded-full bg-white flex items-center justify-center border border-${themeColor} text-${themeColor} hover:bg-${themeColor} hover:text-white transition-colors shadow-sm`}
+              className={`w-10 h-10 rounded-full bg-white flex items-center justify-center ${themeClass.border} ${themeClass.text} hover:${themeClass.bg} hover:text-white transition-colors shadow-sm`}
               aria-label="Previous image"
             >
               <FontAwesomeIcon icon={faChevronLeft} />
             </button>
             <button
               onClick={nextImage}
-              className={`w-10 h-10 rounded-full bg-white flex items-center justify-center border border-${themeColor} text-${themeColor} hover:bg-${themeColor} hover:text-white transition-colors shadow-sm`}
+              className={`w-10 h-10 rounded-full bg-white flex items-center justify-center ${themeClass.border} ${themeClass.text} hover:${themeClass.bg} hover:text-white transition-colors shadow-sm`}
               aria-label="Next image"
             >
               <FontAwesomeIcon icon={faChevronRight} />
@@ -285,7 +287,7 @@ const ComponentGallery = ({ images = [], alt = 'Component image', themeColor = '
               onClick={() => selectImage(index)}
               className={`w-16 h-16 flex-shrink-0 bg-white rounded-lg border-2 ${
                 index === currentIndex 
-                  ? `border-${themeColor}` 
+                  ? themeClass.border
                   : 'border-transparent hover:border-gray-200'
               } flex items-center justify-center cursor-pointer transition-all hover:-translate-y-1`}
               aria-label={`View image ${index + 1}`}
@@ -302,17 +304,6 @@ const ComponentGallery = ({ images = [], alt = 'Component image', themeColor = '
       )}
     </div>
   );
-};
-
-ComponentGallery.propTypes = {
-  images: PropTypes.arrayOf(
-    PropTypes.shape({
-      image: PropTypes.string.isRequired,
-      order: PropTypes.number
-    })
-  ),
-  alt: PropTypes.string,
-  themeColor: PropTypes.string
 };
 
 ComponentGallery.propTypes = {

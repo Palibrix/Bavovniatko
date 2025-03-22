@@ -7,8 +7,9 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import ComponentGallery from '../detail/ComponentGallery';
 import KeySpecsPanel from '../detail/KeySpecsPanel';
 import TabContainer from '../detail/TabContainer';
-import {getFullSpecsForComponentType} from '../../config/componentSpecs';
+import { getFullSpecsForComponentType } from '../../config/componentSpecs';
 import { getComponentThemeColor } from '../../utils/componentDetailUtils';
+import { themeClasses } from '../../utils/themeUtils';
 import {
   DescriptionTab,
   SpecificationsTab,
@@ -40,6 +41,7 @@ const ComponentDetailTemplate = ({
 
   // Get component theme color
   const themeColor = getComponentThemeColor(componentType);
+  const themeClass = themeClasses[themeColor] || themeClasses.primary;
 
   // Get specs configuration for this component type
   const specsConfig = getFullSpecsForComponentType(componentType);
@@ -50,8 +52,6 @@ const ComponentDetailTemplate = ({
       onAddToList(item);
     }
   };
-
-
 
   return (
     <div className="w-[92%] max-w-[1400px] mx-auto px-4 py-8">
@@ -66,7 +66,7 @@ const ComponentDetailTemplate = ({
 
       {/* Product header - moved outside columns */}
       <div className="mb-6 relative">
-        <span className={`inline-block text-xs font-semibold text-white bg-${themeColor} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
+        <span className={`inline-block text-xs font-semibold text-white ${themeClass.bg} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
           {item.manufacturer}
         </span>
         <h1 className="text-4xl font-bold text-primary">{item.model}</h1>
@@ -75,7 +75,7 @@ const ComponentDetailTemplate = ({
         <div className="absolute top-0 right-0">
           <button
             onClick={handleAddToList}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg bg-${themeColor} text-white font-semibold transition-all hover:bg-opacity-90 hover:translate-y-[-2px] hover:shadow-md`}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg ${themeClass.bg} text-white font-semibold transition-all hover:bg-opacity-90 hover:translate-y-[-2px] hover:shadow-md`}
           >
             <FontAwesomeIcon icon={faPlus} />
             Add to List

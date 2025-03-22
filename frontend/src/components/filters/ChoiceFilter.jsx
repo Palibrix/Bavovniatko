@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import {themeClasses} from "../../utils/themeUtils";
 
 /**
  * Checkbox-based filter with searchable options
@@ -14,15 +15,16 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
  * @param {string} props.themeColor Theme color for styling
  */
 const ChoiceFilter = ({ filter, activeValues = [], onChange, onRemove, themeColor = 'primary' }) => {
+  const themeClass = themeClasses[themeColor] || themeClasses.primary;
   const { id, label, field, options = [], searchable } = filter;
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredOptions, setFilteredOptions] = useState(options);
 
-  // Get base field name for comparison with active values
-  const baseFieldName = field.split('__').pop();
-
-  // Special case for manufacturer
-  const isManufacturer = id === 'manufacturer';
+  // // Get base field name for comparison with active values
+  // const baseFieldName = field.split('__').pop();
+  //
+  // // Special case for manufacturer
+  // const isManufacturer = id === 'manufacturer';
 
   // Filter options when search term changes
   useEffect(() => {
@@ -153,7 +155,7 @@ const ChoiceFilter = ({ filter, activeValues = [], onChange, onRemove, themeColo
                   type="checkbox"
                   checked={isChecked}
                   onChange={() => handleCheckboxChange(option)}
-                  className={`h-4 w-4 rounded border-gray-300 text-${themeColor} focus:ring-${themeColor}`}
+                  className={`h-4 w-4 rounded border-gray-300 ${themeClass.text}`}
                 />
                 <span className="ml-2 text-sm text-gray-700 group-hover:text-gray-900">
                   {option.display}
@@ -170,7 +172,7 @@ const ChoiceFilter = ({ filter, activeValues = [], onChange, onRemove, themeColo
       {/* Show more/less button */}
       {hasMoreOptions && (
         <button
-          className={`text-${themeColor} text-sm hover:underline mt-1 w-full text-left`}
+          className={`${themeClass.text} text-sm hover:underline mt-1 w-full text-left`}
           onClick={() => setShowAllOptions(!showAllOptions)}
         >
           {showAllOptions ? 'Show less' : `Show ${sortedOptions.length - maxVisibleOptions} more...`}

@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
-import {formatSpecValue} from "../../utils/componentDetailUtils";
+import { formatSpecValue } from "../../utils/componentDetailUtils";
+import { themeClasses } from "../../utils/themeUtils";
 
 /**
  * Reusable component card that supports both list and grid views
@@ -46,6 +47,7 @@ const ComponentCard = ({
   };
 
   const theme = getComponentTheme();
+  const themeClass = themeClasses[theme] || themeClasses.primary;
   const isDrone = componentType === 'drones';
 
   // Get the primary image URL or a placeholder
@@ -84,16 +86,16 @@ const ComponentCard = ({
   if (viewMode === 'list') {
     return (
         <Link
-        to={detailUrl}
-            className={`bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-300 mb-4 flex flex-col border-t-4 border border-gray-200 border-t-${theme} hover:shadow-lg hover:-translate-y-1`}>
+          to={detailUrl}
+          className={`bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-300 mb-4 flex flex-col border-t-4 border border-gray-200 ${themeClass.borderTop} hover:shadow-lg hover:-translate-y-1`}>
           <div className="flex items-center p-6 border-b border-gray-100">
             <div className="flex-1">
               {item.manufacturer ? (
-                <span className={`inline-block text-xs font-semibold text-white bg-${theme} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
+                <span className={`inline-block text-xs font-semibold text-white ${themeClass.bg} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
                   {item.manufacturer}
                 </span>
               ) : isDrone ? (
-                <span className={`inline-block text-xs font-semibold text-white bg-${theme} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
+                <span className={`inline-block text-xs font-semibold text-white ${themeClass.bg} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
                   Custom Drone
                 </span>
               ) : null}
@@ -103,7 +105,7 @@ const ComponentCard = ({
             </div>
             <button
                 onClick={handleAddToList}
-                className={`bg-white text-${theme} border-2 border-${theme} px-5 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 transition-all hover:bg-${theme} hover:text-white`}>
+                className={themeClass.combined.actionButton + " px-5 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 transition-all"}>
               <FontAwesomeIcon icon={faPlus}/>
               Add to List
             </button>
@@ -111,7 +113,7 @@ const ComponentCard = ({
 
           <div className="flex relative">
             <div className="w-56 min-w-56 p-6 flex items-center justify-center bg-gray-50 relative">
-              <div className={`absolute top-0 bottom-0 right-0 w-0.5 bg-${theme}`}></div>
+              <div className={`absolute top-0 bottom-0 right-0 w-0.5 ${themeClass.bg}`}></div>
               <img
                   src={getImageUrl()}
                   alt={`${item.manufacturer || ''} ${item.model}`}
@@ -135,7 +137,7 @@ const ComponentCard = ({
                       >
                         <div className="flex items-center text-xs text-gray-500 mb-1 gap-1">
                           {spec.icon && (
-                              <FontAwesomeIcon icon={spec.icon} className={`text-${theme}`}/>
+                              <FontAwesomeIcon icon={spec.icon} className={themeClass.text}/>
                           )}
                           {spec.label}
                         </div>
@@ -150,7 +152,7 @@ const ComponentCard = ({
           </div>
 
           <div className="bg-gray-50 p-4 border-t border-gray-100 relative">
-            <div className={`absolute top-0 left-0 right-0 h-0.5 bg-${theme}`}></div>
+            <div className={`absolute top-0 left-0 right-0 h-0.5 ${themeClass.bg}`}></div>
             <div className="flex flex-wrap gap-2">
               {item.tags && item.tags.map((tag, index) => (
                   <span key={index}
@@ -168,7 +170,7 @@ const ComponentCard = ({
   return (
       <Link
         to={detailUrl}
-          className={`bg-white rounded-lg overflow-hidden shadow-sm transition-all duration-300 flex flex-col border-t-4 border-t-${theme}`}>
+        className={`bg-white rounded-lg overflow-hidden shadow-sm transition-all duration-300 flex flex-col border-t-4 ${themeClass.borderTop}`}>
         <div className="p-6 h-52 min-h-52 flex items-center justify-center bg-gray-50">
         <img
           src={getImageUrl()}
@@ -199,14 +201,14 @@ const ComponentCard = ({
         <div className="flex justify-between mt-auto">
           <Link
             to={detailUrl}
-            className={`text-${theme} text-sm font-medium hover:underline`}
+            className={`${themeClass.text} text-sm font-medium hover:underline`}
           >
             View Details
           </Link>
 
           <button
             onClick={handleAddToList}
-            className={`text-${theme} text-sm font-medium hover:underline flex items-center gap-1`}
+            className={`${themeClass.text} text-sm font-medium hover:underline flex items-center gap-1`}
           >
             <FontAwesomeIcon icon={faPlus} />
             Add to List

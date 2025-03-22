@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import {themeClasses} from "../../utils/themeUtils";
 
 /**
  * Pagination component for navigating between pages of results
@@ -21,6 +22,7 @@ const Pagination = ({
   themeColor = 'primary'
 }) => {
   if (totalPages <= 1) return null;
+  const themeClass = themeClasses[themeColor] || themeClasses.primary;
 
   // Generate array of page numbers to display
   const getPageNumbers = () => {
@@ -94,7 +96,7 @@ const Pagination = ({
             key={index}
             className={`min-w-10 h-10 flex items-center justify-center rounded-md ${
               page === currentPage
-                ? `bg-${themeColor} text-white border border-${themeColor}`
+                ? `${themeClass.bg} text-white border ${themeClass.border}`
                 : page === '...'
                   ? 'text-gray-500 border border-transparent cursor-default'
                   : 'border border-gray-300 text-gray-700 hover:bg-gray-50'

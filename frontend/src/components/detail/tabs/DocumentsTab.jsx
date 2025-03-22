@@ -13,11 +13,14 @@ import {
   faDownload
 } from '@fortawesome/free-solid-svg-icons';
 import TabSection from '../TabSection';
+import { themeClasses } from '../../../utils/themeUtils';
 
 /**
  * Documents tab content for component detail page
  */
 const DocumentsTab = ({ item, themeColor }) => {
+  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+
   const getDocumentIcon = (fileUrl) => {
     if (!fileUrl) return faFile;
 
@@ -110,7 +113,7 @@ const DocumentsTab = ({ item, themeColor }) => {
             key={index}
             className="bg-gray-50 rounded-xl p-4 flex items-center transition-all hover:bg-gray-100 hover:-translate-y-1"
           >
-            <div className={`bg-${themeColor} text-white w-12 h-12 flex-shrink-0 rounded-lg flex items-center justify-center mr-4`}>
+            <div className={`${themeClass.bg} text-white w-12 h-12 flex-shrink-0 rounded-lg flex items-center justify-center mr-4`}>
               <FontAwesomeIcon icon={getDocumentIcon(doc.file)} size="lg" />
             </div>
 
@@ -130,7 +133,7 @@ const DocumentsTab = ({ item, themeColor }) => {
                   e.preventDefault();
                   window.open(doc.file, '_blank', 'noopener,noreferrer');
                 }}
-                className={`w-8 h-8 flex items-center justify-center border border-${themeColor} text-${themeColor} rounded hover:bg-${themeColor} hover:text-white transition-colors`}
+                className={`w-8 h-8 flex items-center justify-center ${themeClass.border} ${themeClass.text} rounded hover:${themeClass.bg} hover:text-white transition-colors`}
                 title="View document"
               >
                 <FontAwesomeIcon icon={faEye} />
@@ -138,7 +141,7 @@ const DocumentsTab = ({ item, themeColor }) => {
               <a
                 href={doc.file}
                 download
-                className={`w-8 h-8 flex items-center justify-center border border-${themeColor} text-${themeColor} rounded hover:bg-${themeColor} hover:text-white transition-colors`}
+                className={`w-8 h-8 flex items-center justify-center ${themeClass.border} ${themeClass.text} rounded hover:${themeClass.bg} hover:text-white transition-colors`}
                 title="Download document"
               >
                 <FontAwesomeIcon icon={faDownload} />

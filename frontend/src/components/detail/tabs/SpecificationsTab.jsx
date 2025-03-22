@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCode, faCheck } from '@fortawesome/free-solid-svg-icons';
 import TabSection from '../TabSection';
-import {componentToJson, formatSpecValue} from '../../../utils/componentDetailUtils';
+import { componentToJson, formatSpecValue } from '../../../utils/componentDetailUtils';
+import { themeClasses } from '../../../utils/themeUtils';
 
 /**
  * Specifications tab content for component detail page
@@ -11,6 +12,7 @@ import {componentToJson, formatSpecValue} from '../../../utils/componentDetailUt
  */
 const SpecificationsTab = ({ item, specsConfig, themeColor }) => {
   const [copySuccess, setCopySuccess] = useState(false);
+  const themeClass = themeClasses[themeColor] || themeClasses.primary;
 
   // Handle copy specs as JSON
   const handleCopySpecs = () => {
@@ -32,8 +34,8 @@ const SpecificationsTab = ({ item, specsConfig, themeColor }) => {
     <button
       className={`${
         copySuccess 
-          ? `bg-${themeColor} text-white` 
-          : `text-${themeColor} hover:bg-${themeColor} hover:bg-opacity-10`
+          ? `${themeClass.bg} text-white` 
+          : `${themeClass.text} hover:${themeClass.bgOpacity[10]}`
       } px-3 py-1 text-sm rounded transition-colors flex items-center gap-1`}
       onClick={handleCopySpecs}
     >
@@ -48,8 +50,6 @@ const SpecificationsTab = ({ item, specsConfig, themeColor }) => {
       // Extract value using the path
       let value = spec.path.split('.').reduce((obj, key) =>
         obj && obj[key] !== undefined ? obj[key] : null, item);
-
-      // if (value === null || value === undefined) {value = 'N/A'}
 
       // Format the value based on spec configuration
       let formattedValue;
@@ -70,7 +70,6 @@ const SpecificationsTab = ({ item, specsConfig, themeColor }) => {
   };
 
   const configSpecs = getConfigSpecs();
-  // const directProperties = getDirectProperties();
 
   return (
     <TabSection
@@ -87,7 +86,7 @@ const SpecificationsTab = ({ item, specsConfig, themeColor }) => {
           >
             <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
               {spec.icon && (
-                <FontAwesomeIcon icon={spec.icon} className={`text-${themeColor}`} />
+                <FontAwesomeIcon icon={spec.icon} className={themeClass.text} />
               )}
               {spec.label}
             </div>
@@ -96,28 +95,6 @@ const SpecificationsTab = ({ item, specsConfig, themeColor }) => {
             </div>
           </div>
         ))}
-
-        {/* Render direct properties that weren't in config */}
-        {/*{directProperties.map((prop, index) => {*/}
-        {/*  // Skip if this property is already displayed from config*/}
-        {/*  if (configSpecs.some(spec => spec.label.toLowerCase() === prop.label.toLowerCase())) {*/}
-        {/*    return null;*/}
-        {/*  }*/}
-
-        {/*  return (*/}
-        {/*    <div*/}
-        {/*      key={`direct-${index}`}*/}
-        {/*      className="bg-gray-50 p-4 rounded-xl transition-all hover:bg-gray-100 hover:transform hover:-translate-y-1"*/}
-        {/*    >*/}
-        {/*      <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">*/}
-        {/*        {prop.label}*/}
-        {/*      </div>*/}
-        {/*      <div className="font-semibold text-primary text-lg">*/}
-        {/*        {formatSpecValue(prop.value)}*/}
-        {/*      </div>*/}
-        {/*    </div>*/}
-        {/*  );*/}
-        {/*})}*/}
       </div>
     </TabSection>
   );

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import TabSection from '../TabSection';
+import { themeClasses } from '../../../utils/themeUtils';
 
 /**
  * Details tab content for component detail page
@@ -9,6 +10,7 @@ import TabSection from '../TabSection';
 const DetailsTab = ({ item, componentType, themeColor }) => {
   // Setup state for selected variants (used for components with multiple connectors, etc.)
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
+  const themeClass = themeClasses[themeColor] || themeClasses.primary;
 
   // Get the appropriate details based on component type
   const getDetails = () => {
@@ -68,7 +70,7 @@ const DetailsTab = ({ item, componentType, themeColor }) => {
       <TabSection title="Details" themeColor={themeColor}>
         {details.map((detailGroup, groupIndex) => (
           <div key={groupIndex} className="mb-8 last:mb-0">
-            <h3 className={`text-lg font-semibold text-${themeColor} mb-4`}>
+            <h3 className={`text-lg font-semibold ${themeClass.text} mb-4`}>
               {detailGroup.label}
             </h3>
             <div className="bg-gray-50 rounded-xl p-6">
@@ -141,7 +143,7 @@ const DetailsTab = ({ item, componentType, themeColor }) => {
                 key={index}
                 className={`py-3 px-4 font-medium transition-colors flex-1 ${
                   selectedVariantIndex === index
-                    ? `bg-${themeColor} bg-opacity-10 text-${themeColor} border-b-2 border-${themeColor}`
+                    ? `${themeClass.bgOpacity[10]} ${themeClass.text} border-b-2 ${themeClass.border}`
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
                 onClick={() => setSelectedVariantIndex(index)}

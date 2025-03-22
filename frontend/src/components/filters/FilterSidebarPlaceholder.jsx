@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {themeClasses} from "../../utils/themeUtils";
 
 /**
  * Placeholder component for the filter sidebar
@@ -21,20 +22,22 @@ const FilterSidebarPlaceholder = ({ componentType = 'antennas' }) => {
       transmitters: 'video',
       stacks: 'control',
       flight_controllers: 'control',
-      speed_controllers: 'control'
+      speed_controllers: 'control',
+      drones: 'drones'
     };
 
     return themes[componentType] || 'primary';
   };
 
   const themeColor = getThemeColor();
+  const themeClass = themeClasses[themeColor] || themeClasses.primary;
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm overflow-hidden">
       <div className="p-5 flex justify-between items-center border-b border-gray-100 bg-gray-50">
-        <h2 className={`text-lg font-semibold text-${themeColor}`}>Filters</h2>
+        <h2 className={`text-lg font-semibold ${themeClass.text}`}>Filters</h2>
         <button
-          className={`text-${themeColor} text-sm px-2 py-1 rounded-md hover:bg-gray-100`}
+          className={`${themeClass.text} text-sm px-2 py-1 rounded-md hover:bg-gray-100`}
         >
           Clear All
         </button>
@@ -63,7 +66,7 @@ const FilterSidebarPlaceholder = ({ componentType = 'antennas' }) => {
       </div>
 
       <div className="p-4 bg-gray-50 border-t border-gray-100 text-center">
-        <div className={`text-xs text-${themeColor}`}>
+        <div className={`text-xs ${themeClass.text}`}>
           Filter functionality coming soon
         </div>
       </div>

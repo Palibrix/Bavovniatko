@@ -8,6 +8,7 @@ import RangeFilter from './RangeFilter';
 import ActiveFilters from './ActiveFilters';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
+import { themeClasses } from '../../utils/themeUtils';
 
 /**
  * Main filter sidebar component that fetches filter options from API
@@ -35,14 +36,15 @@ const FilterSidebar = ({ componentType = 'antennas' }) => {
       transmitters: 'video',
       stacks: 'control',
       flight_controllers: 'control',
-      speed_controllers: 'control'
+      speed_controllers: 'control',
+      drones: 'drones'
     };
 
     return themes[componentType] || 'primary';
   };
 
   const themeColor = getThemeColor();
-
+  const themeClass = themeClasses[themeColor] || themeClasses.primary;
   // Initialize active filters from URL params on mount
 useEffect(() => {
   const initialFilters = {};
@@ -363,11 +365,11 @@ useEffect(() => {
   return (
     <div className="w-full bg-white rounded-lg shadow-sm overflow-hidden">
       <div className={`p-4 flex justify-between items-center border-b border-gray-100 bg-gray-50`}>
-        <h2 className={`text-lg font-semibold text-${themeColor}`}>Filters</h2>
+        <h2 className={`text-lg font-semibold ${themeClass.text}`}>Filters</h2>
         <button
           onClick={clearAllFilters}
           disabled={!hasActiveFilters}
-          className={`text-${themeColor} text-sm px-2 py-1 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed`}
+          className={`${themeClass.text} text-sm px-2 py-1 rounded-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed`}
         >
           Clear All
         </button>

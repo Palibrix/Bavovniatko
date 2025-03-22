@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { themeClasses } from '../../utils/themeUtils';
 
 import ComponentCard from '../common/ComponentCard';
 import ListToolbar from '../common/ListToolbar';
@@ -59,6 +60,7 @@ const ComponentListTemplate = ({
   };
 
   const themeColor = getThemeColor();
+  const themeClass = themeClasses[themeColor] || themeClasses.primary;
 
   // Handle adding an item to the user's list (placeholder function for now)
   const handleAddToList = (item) => {
@@ -91,7 +93,7 @@ const ComponentListTemplate = ({
         <div>
           <h1 className="text-3xl font-bold text-primary relative pb-2 mb-1">
             {title}
-            <span className={`absolute bottom-0 left-0 w-14 h-1 bg-${themeColor}`}></span>
+            <span className={`absolute bottom-0 left-0 w-14 h-1 ${themeClass.bg}`}></span>
           </h1>
           <Link to="/" className="text-primary hover:text-gray-600 inline-flex items-center">
             <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
@@ -143,7 +145,7 @@ const ComponentListTemplate = ({
               </p>
               {filterSidebar && (
                 <button
-                  className="px-4 py-2 text-primary border border-primary rounded-md hover:bg-primary hover:text-white transition-colors"
+                  className={`px-4 py-2 ${themeClass.text} ${themeClass.border} rounded-md hover:${themeClass.bg} hover:text-white transition-colors`}
                   onClick={() => {/* Clear filters function will go here */}}
                 >
                   Clear All Filters
