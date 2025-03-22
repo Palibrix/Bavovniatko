@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import {themeClasses} from "../../utils/themeUtils";
+import {getEntityThemeClass, themeClasses} from "../../utils/themeUtils";
 
 /**
  * Pagination component for navigating between pages of results
@@ -12,17 +12,17 @@ import {themeClasses} from "../../utils/themeUtils";
  * @param {number} props.totalPages Total number of pages
  * @param {Function} props.onPageChange Callback function when page changes
  * @param {number} props.siblingCount Number of siblings to show around current page
- * @param {string} props.themeColor Color theme for active page
+ * @param {string} props.themeClass Color class theme for active page
  */
 const Pagination = ({
   currentPage,
   totalPages,
   onPageChange,
   siblingCount = 1,
-  themeColor = 'primary'
+  themeClass
 }) => {
   if (totalPages <= 1) return null;
-  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+  // const themeClass = getEntityThemeClasses(componentType);
 
   // Generate array of page numbers to display
   const getPageNumbers = () => {

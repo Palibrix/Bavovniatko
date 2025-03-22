@@ -8,7 +8,7 @@ import RangeFilter from './RangeFilter';
 import ActiveFilters from './ActiveFilters';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
-import { themeClasses } from '../../utils/themeUtils';
+import {getEntityThemeClass, themeClasses} from '../../utils/themeUtils';
 
 /**
  * Main filter sidebar component that fetches filter options from API
@@ -17,34 +17,14 @@ import { themeClasses } from '../../utils/themeUtils';
  * @param {Object} props Component properties
  * @param {string} props.componentType Type of component for themed styling
  */
-const FilterSidebar = ({ componentType = 'antennas' }) => {
+const FilterSidebar = ({ componentType}) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filterMetadata, setFilterMetadata] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeFilters, setActiveFilters] = useState({});
 
-  // Get the theme color based on component type
-  const getThemeColor = () => {
-    const themes = {
-      antennas: 'antenna',
-      cameras: 'video',
-      frames: 'frame',
-      motors: 'propulsion',
-      propellers: 'propulsion',
-      receivers: 'control',
-      transmitters: 'video',
-      stacks: 'control',
-      flight_controllers: 'control',
-      speed_controllers: 'control',
-      drones: 'drones'
-    };
-
-    return themes[componentType] || 'primary';
-  };
-
-  const themeColor = getThemeColor();
-  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+  const themeClass = getEntityThemeClass(componentType);
   // Initialize active filters from URL params on mount
 useEffect(() => {
   const initialFilters = {};
@@ -235,7 +215,7 @@ useEffect(() => {
             activeValues={activeFilters[baseFieldName] || []}
             onChange={(value) => handleFilterChange(field, value)}
             onRemove={(value) => handleFilterChange(field, value, true)}
-            themeColor={themeColor}
+            componentType={componentType}
           />
         );
 
@@ -258,7 +238,7 @@ useEffect(() => {
             onRemove={() => {
               handleFilterChange(baseFieldName, '', true);
             }}
-            themeColor={themeColor}
+            componentType={componentType}
           />
         );
 
@@ -380,7 +360,7 @@ useEffect(() => {
         <ActiveFilters
           filters={activeFilterData}
           onRemove={(filterId, value) => handleFilterChange(filterId, value, true)}
-          themeColor={themeColor}
+          componentType={componentType}
         />
       )}
 
@@ -390,7 +370,7 @@ useEffect(() => {
           key={group.id}
           title={group.title}
           initialExpanded={group.id === 'manufacturer'} // Expand manufacturer by default
-          themeColor={themeColor}
+          componentType={componentType}
         >
           {group.filters.map((filter) => renderFilter(filter))}
         </FilterGroup>

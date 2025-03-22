@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import {themeClasses} from "../../utils/themeUtils";
+import {getEntityThemeClass, themeClasses} from "../../utils/themeUtils";
 
 /**
  * Checkbox-based filter with searchable options
@@ -12,10 +12,10 @@ import {themeClasses} from "../../utils/themeUtils";
  * @param {Array} props.activeValues Currently active values
  * @param {Function} props.onChange Callback when a value is selected
  * @param {Function} props.onRemove Callback when a value is removed
- * @param {string} props.themeColor Theme color for styling
+ * @param {string} props.componentType Theme color for styling
  */
-const ChoiceFilter = ({ filter, activeValues = [], onChange, onRemove, themeColor = 'primary' }) => {
-  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+const ChoiceFilter = ({ filter, activeValues = [], onChange, onRemove, componentType }) => {
+  const themeClass = getEntityThemeClass(componentType);
   const { id, label, field, options = [], searchable } = filter;
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredOptions, setFilteredOptions] = useState(options);

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {themeClasses} from "../../utils/themeUtils";
+import {getEntityThemeClass, themeClasses} from "../../utils/themeUtils";
 
 /**
  * Placeholder component for the filter sidebar
@@ -10,27 +10,8 @@ import {themeClasses} from "../../utils/themeUtils";
  * @param {string} props.componentType Type of component for theming
  */
 const FilterSidebarPlaceholder = ({ componentType = 'antennas' }) => {
-  // Get the theme color based on component type
-  const getThemeColor = () => {
-    const themes = {
-      antennas: 'antenna',
-      cameras: 'video',
-      frames: 'frame',
-      motors: 'propulsion',
-      propellers: 'propulsion',
-      receivers: 'control',
-      transmitters: 'video',
-      stacks: 'control',
-      flight_controllers: 'control',
-      speed_controllers: 'control',
-      drones: 'drones'
-    };
 
-    return themes[componentType] || 'primary';
-  };
-
-  const themeColor = getThemeColor();
-  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+  const themeClass = getEntityThemeClass(componentType);
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm overflow-hidden">

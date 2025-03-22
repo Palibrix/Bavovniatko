@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { hasDetails, hasDocuments } from '../../utils/componentDetailUtils';
-import { themeClasses } from '../../utils/themeUtils';
+import {getEntityThemeClass} from "../../utils/themeUtils";
 
 /**
  * Container component for detail page tabs
@@ -10,7 +10,6 @@ import { themeClasses } from '../../utils/themeUtils';
  * @param {Object} props Component properties
  * @param {Object} props.item Component data to display
  * @param {string} props.componentType Type of component (antennas, cameras, etc.)
- * @param {string} props.themeColor Theme color for styling
  * @param {React.ReactNode} props.descriptionTab Description tab content
  * @param {React.ReactNode} props.specificationsTab Specifications tab content
  * @param {React.ReactNode} props.detailsTab Details tab content
@@ -19,7 +18,6 @@ import { themeClasses } from '../../utils/themeUtils';
 const TabContainer = ({
   item,
   componentType,
-  themeColor,
   descriptionTab,
   specificationsTab,
   detailsTab,
@@ -27,7 +25,7 @@ const TabContainer = ({
 }) => {
   const [activeTab, setActiveTab] = useState('description');
   const [availableTabs, setAvailableTabs] = useState([]);
-  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+  const themeClass = getEntityThemeClass(componentType);
 
   // Determine which tabs should be available based on the data
   useEffect(() => {
@@ -107,7 +105,6 @@ const TabContainer = ({
 TabContainer.propTypes = {
   item: PropTypes.object.isRequired,
   componentType: PropTypes.string.isRequired,
-  themeColor: PropTypes.string.isRequired,
   descriptionTab: PropTypes.node,
   specificationsTab: PropTypes.node,
   detailsTab: PropTypes.node,

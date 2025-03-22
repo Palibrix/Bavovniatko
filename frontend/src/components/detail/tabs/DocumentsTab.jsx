@@ -13,13 +13,13 @@ import {
   faDownload
 } from '@fortawesome/free-solid-svg-icons';
 import TabSection from '../TabSection';
-import { themeClasses } from '../../../utils/themeUtils';
+import {getEntityThemeClass} from '../../../utils/themeUtils';
 
 /**
  * Documents tab content for component detail page
  */
-const DocumentsTab = ({ item, themeColor }) => {
-  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+const DocumentsTab = ({ item, componentType }) => {
+  const themeClass = getEntityThemeClass(componentType)
 
   const getDocumentIcon = (fileUrl) => {
     if (!fileUrl) return faFile;
@@ -99,14 +99,14 @@ const DocumentsTab = ({ item, themeColor }) => {
   // If no documents, show a message
   if (!item.documents || item.documents.length === 0) {
     return (
-      <TabSection title="Documents" themeColor={themeColor}>
+      <TabSection title="Documents" componentType={componentType}>
         <p className="text-gray-500 italic">No documents available for this component.</p>
       </TabSection>
     );
   }
 
   return (
-    <TabSection title="Documents" themeColor={themeColor}>
+    <TabSection title="Documents" componentType={componentType}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {item.documents.map((doc, index) => (
           <div
@@ -156,7 +156,7 @@ const DocumentsTab = ({ item, themeColor }) => {
 
 DocumentsTab.propTypes = {
   item: PropTypes.object.isRequired,
-  themeColor: PropTypes.string.isRequired
+  componentType: PropTypes.string.isRequired
 };
 
 export default DocumentsTab;

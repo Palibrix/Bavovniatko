@@ -8,8 +8,7 @@ import ComponentGallery from '../detail/ComponentGallery';
 import KeySpecsPanel from '../detail/KeySpecsPanel';
 import TabContainer from '../detail/TabContainer';
 import { getFullSpecsForComponentType } from '../../config/componentSpecs';
-import { getComponentThemeColor } from '../../utils/componentDetailUtils';
-import { themeClasses } from '../../utils/themeUtils';
+import { getEntityThemeClass, themeClasses} from '../../utils/themeUtils';
 import {
   DescriptionTab,
   SpecificationsTab,
@@ -40,8 +39,7 @@ const ComponentDetailTemplate = ({
   }
 
   // Get component theme color
-  const themeColor = getComponentThemeColor(componentType);
-  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+  const themeClass = getEntityThemeClass(componentType);
 
   // Get specs configuration for this component type
   const specsConfig = getFullSpecsForComponentType(componentType);
@@ -91,14 +89,14 @@ const ComponentDetailTemplate = ({
           <ComponentGallery
             images={item.images}
             alt={`${item.manufacturer} ${item.model}`}
-            themeColor={themeColor}
+            themeClass={themeClass}
           />
 
           {/* Key specifications panel */}
           <KeySpecsPanel
             item={item}
             specsConfig={specsConfig}
-            themeColor={themeColor}
+            themeClass={themeClass}
           />
         </div>
 
@@ -107,11 +105,10 @@ const ComponentDetailTemplate = ({
           <TabContainer
             item={item}
             componentType={componentType}
-            themeColor={themeColor}
-            descriptionTab={<DescriptionTab item={item} themeColor={themeColor} />}
-            specificationsTab={<SpecificationsTab item={item} specsConfig={specsConfig} themeColor={themeColor} />}
-            detailsTab={<DetailsTab item={item} componentType={componentType} themeColor={themeColor} />}
-            documentsTab={<DocumentsTab item={item} themeColor={themeColor} />}
+            descriptionTab={<DescriptionTab item={item} componentType={componentType} />}
+            specificationsTab={<SpecificationsTab item={item} specsConfig={specsConfig} componentType={componentType} />}
+            detailsTab={<DetailsTab item={item} componentType={componentType} />}
+            documentsTab={<DocumentsTab item={item} componentType={componentType} />}
           />
         </div>
       </div>

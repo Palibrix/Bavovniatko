@@ -18,29 +18,6 @@ export const getPrimaryImage = (item) => {
 };
 
 /**
- * Get the appropriate theme color based on component type
- *
- * @param {string} componentType Type of component (antennas, cameras, etc.)
- * @returns {string} Theme color name
- */
-export const getComponentThemeColor = (componentType) => {
-  const themes = {
-    antennas: 'antenna',
-    cameras: 'video',
-    frames: 'frame',
-    motors: 'propulsion',
-    propellers: 'propulsion',
-    receivers: 'control',
-    transmitters: 'video',
-    stacks: 'control',
-    flight_controllers: 'control',
-    speed_controllers: 'control'
-  };
-
-  return themes[componentType] || 'primary';
-};
-
-/**
  * Check if a component has documents
  *
  * @param {Object} item Component data
@@ -175,7 +152,6 @@ export const componentToJson = (item, specsConfig) => {
 
 export default {
   getPrimaryImage,
-  getComponentThemeColor,
   hasDocuments,
   hasDetails,
   componentToJson,

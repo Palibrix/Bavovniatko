@@ -5,29 +5,33 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import { formatSpecValue } from "../../utils/componentDetailUtils";
 import { themeClasses } from "../../utils/themeUtils";
+import { ROUTES } from '../../routes';
 
 /**
  * Reusable component card that supports both list and grid views
+ * Enhanced to work with different entity types (components, drones, etc.)
  *
  * @param {Object} props Component properties
  * @param {Object} props.item The component data to display
  * @param {string} props.viewMode Display mode ('list' or 'grid')
- * @param {string} props.componentType Type of component (antennas, cameras, etc.)
- * @param {string} props.detailUrl URL to the detail page
+ * @param {string} props.entityType Type of entity (antennas, cameras, drones, etc.)
+ * @param {string} props.entityCategory Category grouping (components, builds, etc.) - defaults to 'components'
+ * @param {string} props.detailUrlTemplate Optional custom URL template with :id placeholder
  * @param {Object} props.specsConfig Configuration for which specs to display
  * @param {Function} props.onAddToList Callback when add to list button is clicked
  */
 const ComponentCard = ({
   item,
   viewMode = 'list',
-  componentType,
-  detailUrl,
+  entityType,
+  entityCategory = 'components',
+  detailUrlTemplate = null,
   specsConfig,
   onAddToList
 }) => {
   if (!item) return null;
 
-  // Get the color theme based on component type
+  // Get the color theme based on entity type
   const getComponentTheme = () => {
     const themes = {
       antennas: 'antenna',
@@ -43,12 +47,38 @@ const ComponentCard = ({
       drones: 'drone'
     };
 
-    return themes[componentType] || 'antenna';
+    return themes[entityType] || 'antenna';
+  };
+
+  // Generate the detail URL based on the entity type and category
+  const getDetailUrl = () => {
+    // If a custom template is provided, use it
+    if (detailUrlTemplate) {
+      return detailUrlTemplate.replace(':id', item.id);
+    }
+
+    // Try to use the ROUTES constant if available
+    try {
+      const upperEntityType = entityType.toUpperCase();
+      const upperEntityCategory = entityCategory.toUpperCase();
+
+      // Check if the route exists in the ROUTES object
+      if (ROUTES[upperEntityCategory] && ROUTES[upperEntityCategory][upperEntityType] &&
+          ROUTES[upperEntityCategory][upperEntityType].DETAIL) {
+        return ROUTES[upperEntityCategory][upperEntityType].DETAIL.replace(':id', item.id);
+      }
+    } catch (e) {
+      console.warn('Route not found in ROUTES object, falling back to default URL pattern');
+    }
+
+    // Fallback to the default URL pattern
+    return `/${entityCategory}/${entityType}/${item.id}`;
   };
 
   const theme = getComponentTheme();
   const themeClass = themeClasses[theme] || themeClasses.primary;
-  const isDrone = componentType === 'drones';
+  const isDrone = entityType === 'drones';
+  const detailUrl = getDetailUrl();
 
   // Get the primary image URL or a placeholder
   const getImageUrl = () => {
@@ -62,15 +92,14 @@ const ComponentCard = ({
 
   // Function to render specification value based on type
   const renderSpecValue = (spec, value) => {
-
-      let formattedValue;
-      if (spec.formatter) {
-        formattedValue = spec.formatter(value, item);
-      } else if (spec.unit) {
-        formattedValue = (value) ? `${value} ${spec.unit}` : 'N/A';
-      } else {
-        formattedValue = formatSpecValue(value);
-      }
+    let formattedValue;
+    if (spec.formatter) {
+      formattedValue = spec.formatter(value, item);
+    } else if (spec.unit) {
+      formattedValue = (value) ? `${value} ${spec.unit}` : 'N/A';
+    } else {
+      formattedValue = formatSpecValue(value);
+    }
 
     return formattedValue;
   };
@@ -222,8 +251,9 @@ const ComponentCard = ({
 ComponentCard.propTypes = {
   item: PropTypes.object.isRequired,
   viewMode: PropTypes.oneOf(['list', 'grid']),
-  componentType: PropTypes.string.isRequired,
-  detailUrl: PropTypes.string.isRequired,
+  entityType: PropTypes.string.isRequired,
+  entityCategory: PropTypes.string,
+  detailUrlTemplate: PropTypes.string,
   specsConfig: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,

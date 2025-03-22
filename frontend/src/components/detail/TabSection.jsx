@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { themeClasses } from '../../utils/themeUtils';
+import {getEntityThemeClass, themeClasses} from '../../utils/themeUtils';
 
 /**
  * Reusable container for tab content with consistent styling
@@ -8,11 +8,11 @@ import { themeClasses } from '../../utils/themeUtils';
  * @param {Object} props Component properties
  * @param {string} props.title Section title
  * @param {React.ReactNode} props.children Content to display
- * @param {string} props.themeColor Theme color for styling
+ * @param {string} props.componentType Theme color for styling
  * @param {React.ReactNode} props.headerActions Optional actions to display in the header
  */
-const TabSection = ({ title, children, themeColor, headerActions }) => {
-  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+const TabSection = ({ title, children, componentType, headerActions }) => {
+  const themeClass = getEntityThemeClass(componentType);
 
   return (
     <div className="bg-white rounded-3xl shadow-sm overflow-hidden mb-6">
@@ -35,7 +35,7 @@ const TabSection = ({ title, children, themeColor, headerActions }) => {
 TabSection.propTypes = {
   title: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
-  themeColor: PropTypes.string.isRequired,
+  componentType: PropTypes.string.isRequired,
   headerActions: PropTypes.node,
 };
 

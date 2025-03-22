@@ -10,9 +10,9 @@ import { themeClasses } from '../../utils/themeUtils';
  * @param {Object} props Component properties
  * @param {Array} props.images Array of image objects
  * @param {string} props.alt Alt text for images
- * @param {string} props.themeColor Theme color for styling
+ * @param {string} props.themeClass Theme color for styling
  */
-const ComponentGallery = ({ images = [], alt = 'Component image', themeColor = 'primary' }) => {
+const ComponentGallery = ({ images = [], alt = 'Component image', themeClass }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -22,7 +22,6 @@ const ComponentGallery = ({ images = [], alt = 'Component image', themeColor = '
 
   const mainImageRef = useRef(null);
   const galleryContainerRef = useRef(null);
-  const themeClass = themeClasses[themeColor] || themeClasses.primary;
 
   // Fallback image if no images are provided
   const placeholderImage = '/api/placeholder/400/300';

@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import TabSection from '../TabSection';
-import { themeClasses } from '../../../utils/themeUtils';
+import {getEntityThemeClass} from '../../../utils/themeUtils';
 
 /**
  * Details tab content for component detail page
  * Supports multiple detail blocks for components like frames
  */
-const DetailsTab = ({ item, componentType, themeColor }) => {
+const DetailsTab = ({ item, componentType }) => {
   // Setup state for selected variants (used for components with multiple connectors, etc.)
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
-  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+  const themeClass = getEntityThemeClass(componentType);
 
   // Get the appropriate details based on component type
   const getDetails = () => {
@@ -58,7 +58,7 @@ const DetailsTab = ({ item, componentType, themeColor }) => {
   // If no details available, show a message
   if (!details.length) {
     return (
-      <TabSection title="Details" themeColor={themeColor}>
+      <TabSection title="Details" componentType={componentType}>
         <p className="text-gray-500 italic">No additional details available for this component.</p>
       </TabSection>
     );
@@ -67,7 +67,7 @@ const DetailsTab = ({ item, componentType, themeColor }) => {
   // For frames, show multiple detail blocks
   if (componentType === 'frames') {
     return (
-      <TabSection title="Details" themeColor={themeColor}>
+      <TabSection title="Details" componentType={componentType}>
         {details.map((detailGroup, groupIndex) => (
           <div key={groupIndex} className="mb-8 last:mb-0">
             <h3 className={`text-lg font-semibold ${themeClass.text} mb-4`}>
@@ -125,7 +125,7 @@ const DetailsTab = ({ item, componentType, themeColor }) => {
 
   // For other components with variants (like antennas)
   return (
-    <TabSection title="Details" themeColor={themeColor}>
+    <TabSection title="Details" componentType={componentType}>
       {details.length > 1 ? (
         <div className="mb-6 bg-gray-50 rounded-lg flex overflow-hidden">
           {details.map((detail, index) => {
@@ -225,8 +225,7 @@ const DetailsTab = ({ item, componentType, themeColor }) => {
 
 DetailsTab.propTypes = {
   item: PropTypes.object.isRequired,
-  componentType: PropTypes.string.isRequired,
-  themeColor: PropTypes.string.isRequired
+  componentType: PropTypes.string.isRequired
 };
 
 export default DetailsTab;

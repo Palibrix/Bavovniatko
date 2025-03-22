@@ -170,3 +170,24 @@ export function getThemeClasses(themeName, pattern) {
       return '';
   }
 }
+
+
+export const getEntityThemeClass = (componentType) => {
+    const themes = {
+      antennas: 'antenna',
+      cameras: 'video',
+      frames: 'frame',
+      motors: 'propulsion',
+      propellers: 'propulsion',
+      receivers: 'control',
+      transmitters: 'video',
+      stacks: 'control',
+      flight_controllers: 'control',
+      speed_controllers: 'control',
+      drones: 'drone'
+    };
+
+    let themeColor = themes[componentType] || 'primary';
+    return themeClasses[themeColor] || themeClasses.primary;
+
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import {getEntityThemeClass} from "../../utils/themeUtils";
 
 /**
  * Range filter component with min/max inputs, no slider
@@ -10,7 +11,7 @@ import PropTypes from 'prop-types';
  * @param {string|number} props.maxValue Current maximum value
  * @param {Function} props.onChange Callback when range values change
  * @param {Function} props.onRemove Callback to remove this filter
- * @param {string} props.themeColor Theme color for styling
+ * @param {string} props.componentType Theme color for styling
  */
 const RangeFilter = ({
   filter,
@@ -18,10 +19,11 @@ const RangeFilter = ({
   maxValue = '',
   onChange,
   onRemove,
-  themeColor = 'primary'
+  componentType
 }) => {
   const { id, label, min, max, unit } = filter;
 
+  // const themeClass = getEntityThemeClass(componentType);
   // Extract base field name
   const baseFieldName = filter.field.split('__').pop();
 

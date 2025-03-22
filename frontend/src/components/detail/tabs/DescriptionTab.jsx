@@ -5,9 +5,9 @@ import TabSection from '../TabSection';
 /**
  * Description tab content for component detail page
  */
-const DescriptionTab = ({ item, themeColor }) => {
+const DescriptionTab = ({ item, componentType }) => {
   return (
-    <TabSection title="Description" themeColor={themeColor}>
+    <TabSection title="Description" componentType={componentType}>
       {item.description ? (
         <div
           className="prose prose-lg max-w-none"
@@ -22,7 +22,7 @@ const DescriptionTab = ({ item, themeColor }) => {
 
 DescriptionTab.propTypes = {
   item: PropTypes.object.isRequired,
-  themeColor: PropTypes.string.isRequired
+  componentType: PropTypes.string.isRequired
 };
 
 export default DescriptionTab;

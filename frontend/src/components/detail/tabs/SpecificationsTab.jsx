@@ -4,15 +4,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCode, faCheck } from '@fortawesome/free-solid-svg-icons';
 import TabSection from '../TabSection';
 import { componentToJson, formatSpecValue } from '../../../utils/componentDetailUtils';
-import { themeClasses } from '../../../utils/themeUtils';
+import {getEntityThemeClass} from '../../../utils/themeUtils';
 
 /**
  * Specifications tab content for component detail page
  * Shows all available specifications for the component
  */
-const SpecificationsTab = ({ item, specsConfig, themeColor }) => {
+const SpecificationsTab = ({ item, specsConfig, componentType }) => {
   const [copySuccess, setCopySuccess] = useState(false);
-  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+  const themeClass = getEntityThemeClass(componentType);
 
   // Handle copy specs as JSON
   const handleCopySpecs = () => {
@@ -74,7 +74,7 @@ const SpecificationsTab = ({ item, specsConfig, themeColor }) => {
   return (
     <TabSection
       title="Technical Specifications"
-      themeColor={themeColor}
+      componentType={componentType}
       headerActions={copyButton}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -103,7 +103,7 @@ const SpecificationsTab = ({ item, specsConfig, themeColor }) => {
 SpecificationsTab.propTypes = {
   item: PropTypes.object.isRequired,
   specsConfig: PropTypes.array.isRequired,
-  themeColor: PropTypes.string.isRequired
+  componentType: PropTypes.string.isRequired
 };
 
 export default SpecificationsTab;

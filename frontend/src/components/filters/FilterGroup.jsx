@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import {themeClasses} from "../../utils/themeUtils";
+import {getEntityThemeClass, themeClasses} from "../../utils/themeUtils";
 
 /**
  * Expandable/collapsible filter group with smooth animation
@@ -11,13 +11,13 @@ import {themeClasses} from "../../utils/themeUtils";
  * @param {string} props.title Group title
  * @param {boolean} props.initialExpanded Whether the group is initially expanded
  * @param {React.ReactNode} props.children Child components (filter controls)
- * @param {string} props.themeColor Theme color for styling
+ * @param {string} props.componentType Theme color for styling
  */
-const FilterGroup = ({ title, initialExpanded = false, children, themeColor = 'primary' }) => {
+const FilterGroup = ({ title, initialExpanded = false, children, componentType }) => {
   const [expanded, setExpanded] = useState(initialExpanded);
   const contentRef = useRef(null);
   const [contentHeight, setContentHeight] = useState(initialExpanded ? 'auto' : '0px');
-  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+  const themeClass = getEntityThemeClass(componentType);
 
   // Set initial height on mount
   useEffect(() => {

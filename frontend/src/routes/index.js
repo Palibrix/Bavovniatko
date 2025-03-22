@@ -25,8 +25,10 @@ export const ROUTES = {
     // },
     // Add more component types here as needed
   },
-  DRONES: {
-    LIST: routesConfig.drones.list.path,
-    DETAIL: routesConfig.drones.detail.path,
+  BUILDS: {
+    DRONES: {
+      LIST: routesConfig.builds.drones.list.path,
+      DETAIL: routesConfig.builds.drones.detail.path,
+  }
   }
 };

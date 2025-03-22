@@ -54,7 +54,8 @@ const routesConfig = {
   },
 
     // Drone routes
-  drones: {
+  builds:{
+      drones: {
     list: {
       path: '/drones',
       element: DroneListPage,
@@ -64,6 +65,8 @@ const routesConfig = {
       element: DroneDetailPage,
     }
   }
+  }
+
 };
 
 export default routesConfig;

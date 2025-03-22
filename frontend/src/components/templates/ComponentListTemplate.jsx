@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { themeClasses } from '../../utils/themeUtils';
+import {getEntityThemeClass} from '../../utils/themeUtils';
 
 import ComponentCard from '../common/ComponentCard';
 import ListToolbar from '../common/ListToolbar';
@@ -42,25 +42,10 @@ const ComponentListTemplate = ({
   const [viewMode, setViewMode] = useState('list');
 
   // Get the appropriate theme color based on component type
-  const getThemeColor = () => {
-    const themes = {
-      antennas: 'antenna',
-      cameras: 'video',
-      frames: 'frame',
-      motors: 'propulsion',
-      propellers: 'propulsion',
-      receivers: 'control',
-      transmitters: 'video',
-      stacks: 'control',
-      flight_controllers: 'control',
-      speed_controllers: 'control'
-    };
 
-    return themes[componentType] || 'primary';
-  };
 
-  const themeColor = getThemeColor();
-  const themeClass = themeClasses[themeColor] || themeClasses.primary;
+
+  const themeClass = getEntityThemeClass(componentType);
 
   // Handle adding an item to the user's list (placeholder function for now)
   const handleAddToList = (item) => {
@@ -162,8 +147,8 @@ const ComponentListTemplate = ({
                       key={item.id}
                       item={item}
                       viewMode="list"
-                      componentType={componentType}
-                      detailUrl={`/components/${componentType}/${item.id}`}
+                      entityType={componentType}
+                      entityCategory={componentType === 'drones' ? 'builds' : 'components'}
                       specsConfig={specsConfig}
                       onAddToList={handleAddToList}
                     />
@@ -179,8 +164,8 @@ const ComponentListTemplate = ({
                       key={item.id}
                       item={item}
                       viewMode="grid"
-                      componentType={componentType}
-                      detailUrl={`/components/${componentType}/${item.id}`}
+                      entityType={componentType}
+                      entityCategory={componentType === 'drones' ? 'builds' : 'components'}
                       specsConfig={specsConfig}
                       onAddToList={handleAddToList}
                     />
@@ -194,7 +179,7 @@ const ComponentListTemplate = ({
                   currentPage={pagination.page}
                   totalPages={pagination.totalPages}
                   onPageChange={onPageChange}
-                  themeColor={themeColor}
+                  themeClass={themeClass}
                 />
               )}
             </>

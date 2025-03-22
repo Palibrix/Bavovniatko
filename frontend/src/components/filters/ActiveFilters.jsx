@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import {themeClasses} from "../../utils/themeUtils";
+import {getEntityThemeClass, themeClasses} from "../../utils/themeUtils";
 
 /**
  * Component to display active filters with the ability to remove them
@@ -10,10 +10,10 @@ import {themeClasses} from "../../utils/themeUtils";
  * @param {Object} props Component properties
  * @param {Array} props.filters Array of active filter data
  * @param {Function} props.onRemove Callback when a filter is removed
- * @param {string} props.themeColor Theme color for styling
+ * @param {string} props.componentType Theme color for styling
  */
-const ActiveFilters = ({ filters = [], onRemove, themeColor = 'primary' }) => {
-    const themeClass = themeClasses[themeColor] || themeClasses.primary;
+const ActiveFilters = ({ filters = [], onRemove, componentType }) => {
+    const themeClass = getEntityThemeClass(componentType)
   if (!filters || filters.length === 0) return null;
 
   // Group filters by their group title

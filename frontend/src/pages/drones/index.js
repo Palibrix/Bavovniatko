@@ -19,8 +19,3 @@ const { ListPage, DetailPage } = createComponentPages({
 
 export const DroneListPage = ListPage;
 export const DroneDetailPage = DetailPage;
-
-/**
- * Additional drone-specific functions could be added here
- * For example, specialized add-to-list functions or other utility functions
- */
