@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import {getEntityThemeClass, themeClasses} from "../../utils/themeUtils";
 
 /**
  * Pagination component for navigating between pages of results
@@ -22,7 +21,6 @@ const Pagination = ({
   themeClass
 }) => {
   if (totalPages <= 1) return null;
-  // const themeClass = getEntityThemeClasses(componentType);
 
   // Generate array of page numbers to display
   const getPageNumbers = () => {

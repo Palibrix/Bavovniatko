@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { themeClasses } from '../../utils/themeUtils';
+import {getEntityThemeClass} from '../../utils/themeUtils';
 
 /**
  * Panel showing key specifications of a component
@@ -11,16 +11,18 @@ import { themeClasses } from '../../utils/themeUtils';
  * @param {Array} props.specsConfig Specs configuration from componentSpecs.js
  * @param {number} props.minSpecs Minimum number of specs to show (will pad with empty if needed)
  * @param {number} props.maxSpecs Maximum number of specs to show
- * @param {string} props.themeClass Theme color for styling
+ * @param {string} props.componentType Theme color for styling
  */
 const KeySpecsPanel = ({
   item,
   specsConfig,
   minSpecs = 0,
   maxSpecs = 6,
-  themeClass
+  componentType
 }) => {
   if (!item || !specsConfig) return null;
+
+  const themeClass = getEntityThemeClass(componentType);
 
   // Get displayable specs (specs that have values in the item)
   const filteredSpecs = specsConfig.filter(spec => {

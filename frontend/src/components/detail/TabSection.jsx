@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {getEntityThemeClass, themeClasses} from '../../utils/themeUtils';
+import {getEntityThemeClass} from '../../utils/themeUtils';
 
 /**
  * Reusable container for tab content with consistent styling

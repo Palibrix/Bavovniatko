@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
 import { formatSpecValue } from "../../utils/componentDetailUtils";
-import { themeClasses } from "../../utils/themeUtils";
+import {getEntityThemeClass} from "../../utils/themeUtils";
 import { ROUTES } from '../../routes';
 
 /**
@@ -31,25 +31,6 @@ const ComponentCard = ({
 }) => {
   if (!item) return null;
 
-  // Get the color theme based on entity type
-  const getComponentTheme = () => {
-    const themes = {
-      antennas: 'antenna',
-      cameras: 'video',
-      frames: 'frame',
-      motors: 'propulsion',
-      propellers: 'propulsion',
-      receivers: 'control',
-      transmitters: 'video',
-      stacks: 'control',
-      flight_controllers: 'control',
-      speed_controllers: 'control',
-      drones: 'drone'
-    };
-
-    return themes[entityType] || 'antenna';
-  };
-
   // Generate the detail URL based on the entity type and category
   const getDetailUrl = () => {
     // If a custom template is provided, use it
@@ -75,8 +56,7 @@ const ComponentCard = ({
     return `/${entityCategory}/${entityType}/${item.id}`;
   };
 
-  const theme = getComponentTheme();
-  const themeClass = themeClasses[theme] || themeClasses.primary;
+  const themeClass = getEntityThemeClass(entityType);
   const isDrone = entityType === 'drones';
   const detailUrl = getDetailUrl();
 

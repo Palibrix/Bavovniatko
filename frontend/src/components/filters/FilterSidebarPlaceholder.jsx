@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {getEntityThemeClass, themeClasses} from "../../utils/themeUtils";
+import {getEntityThemeClass} from "../../utils/themeUtils";
 
 /**
  * Placeholder component for the filter sidebar

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import {getEntityThemeClass, themeClasses} from "../../utils/themeUtils";
+import {getEntityThemeClass} from "../../utils/themeUtils";
 
 /**
  * Checkbox-based filter with searchable options

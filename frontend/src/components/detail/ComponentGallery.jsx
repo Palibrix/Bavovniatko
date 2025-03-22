@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faPlus, faMinus, faExpand, faCompress, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { themeClasses } from '../../utils/themeUtils';
+import {getEntityThemeClass} from "../../utils/themeUtils";
 
 /**
  * Component gallery with main image, thumbnails, navigation, and fullscreen mode
@@ -10,9 +10,9 @@ import { themeClasses } from '../../utils/themeUtils';
  * @param {Object} props Component properties
  * @param {Array} props.images Array of image objects
  * @param {string} props.alt Alt text for images
- * @param {string} props.themeClass Theme color for styling
+ * @param {string} props.componentType Theme color for styling
  */
-const ComponentGallery = ({ images = [], alt = 'Component image', themeClass }) => {
+const ComponentGallery = ({ images = [], alt = 'Component image', componentType }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -26,6 +26,7 @@ const ComponentGallery = ({ images = [], alt = 'Component image', themeClass }) 
   // Fallback image if no images are provided
   const placeholderImage = '/api/placeholder/400/300';
 
+  const themeClass = getEntityThemeClass(componentType);
   // Get the current image or placeholder
   const currentImage = images && images.length > 0
     ? images[currentIndex]?.image || placeholderImage

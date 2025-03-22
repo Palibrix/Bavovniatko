@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import {getEntityThemeClass, themeClasses} from "../../utils/themeUtils";
+import {getEntityThemeClass} from "../../utils/themeUtils";
 
 /**
  * Expandable/collapsible filter group with smooth animation

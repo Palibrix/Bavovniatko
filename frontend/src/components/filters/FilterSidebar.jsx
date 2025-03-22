@@ -8,7 +8,7 @@ import RangeFilter from './RangeFilter';
 import ActiveFilters from './ActiveFilters';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
-import {getEntityThemeClass, themeClasses} from '../../utils/themeUtils';
+import {getEntityThemeClass} from '../../utils/themeUtils';
 
 /**
  * Main filter sidebar component that fetches filter options from API

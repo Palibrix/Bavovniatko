@@ -8,7 +8,7 @@ import ComponentGallery from '../detail/ComponentGallery';
 import KeySpecsPanel from '../detail/KeySpecsPanel';
 import TabContainer from '../detail/TabContainer';
 import { getFullSpecsForComponentType } from '../../config/componentSpecs';
-import { getEntityThemeClass, themeClasses} from '../../utils/themeUtils';
+import { getEntityThemeClass} from '../../utils/themeUtils';
 import {
   DescriptionTab,
   SpecificationsTab,
@@ -89,14 +89,14 @@ const ComponentDetailTemplate = ({
           <ComponentGallery
             images={item.images}
             alt={`${item.manufacturer} ${item.model}`}
-            themeClass={themeClass}
+            componentType={componentType}
           />
 
           {/* Key specifications panel */}
           <KeySpecsPanel
             item={item}
             specsConfig={specsConfig}
-            themeClass={themeClass}
+            componentType={componentType}
           />
         </div>
 
