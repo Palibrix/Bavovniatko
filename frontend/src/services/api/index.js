@@ -5,6 +5,7 @@ export * from './base';
 
 // Export domain-specific API functions
 export * as componentsApi from './components';
+export * as dronesApi from './drones';
 // export * as usersApi from './users';
 // export * as suggestionsApi from './suggestions';
 // export * as listsApi from './lists';

@@ -24,22 +24,9 @@ export const ROUTES = {
     //   DETAIL: routesConfig.components.motors.detail.path,
     // },
     // Add more component types here as needed
+  },
+  DRONES: {
+    LIST: routesConfig.drones.list.path,
+    DETAIL: routesConfig.drones.detail.path,
   }
-};
-
-// Helper function to get a detail route for a specific item
-export const getDetailRoute = (type, id) => {
-  // Normalize type to match our route structure
-  const normalizedType = type.toLowerCase();
-  
-  // Get the appropriate detail route pattern
-  const routePattern = ROUTES.COMPONENTS[normalizedType.toUpperCase()]?.DETAIL;
-  
-  if (!routePattern) {
-    console.error(`No detail route found for component type: ${type}`);
-    return '/';
-  }
-  
-  // Replace :id with the actual ID
-  return routePattern.replace(':id', id);
 };

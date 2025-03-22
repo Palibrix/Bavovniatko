@@ -92,20 +92,7 @@ export function getFrameById(id) {
   return get(`${ENDPOINTS.frames}${id}/`);
 }
 
+
+
 // Add similar functions for other component types
 // This pattern can be extended for all component types in your application
-
-// Helper function to get any component type dynamically
-export function getComponentsByType(type, params = {}) {
-  if (!ENDPOINTS[type]) {
-    throw new Error(`Unknown component type: ${type}`);
-  }
-  return get(ENDPOINTS[type], params);
-}
-
-export function getComponentById(type, id) {
-  if (!ENDPOINTS[type]) {
-    throw new Error(`Unknown component type: ${type}`);
-  }
-  return get(`${ENDPOINTS[type]}${id}/`);
-}

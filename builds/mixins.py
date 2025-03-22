@@ -1,4 +1,5 @@
 # from ckeditor.fields import RichTextField
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.fields import CKEditor5Field
@@ -32,6 +33,42 @@ class BaseDroneMixin(models.Model):
                                           null=True, blank=True)
     speed_controller = models.ForeignKey('components.SpeedController', on_delete=models.SET_NULL,
                                          null=True, blank=True)
+
+    total_weight = models.FloatField(
+        verbose_name=_("Total Weight"),
+        help_text=_("Approximate total weight of the drone in grams"),
+        validators=[MinValueValidator(0)],
+        blank=True, null=True
+    )
+
+    flight_duration = models.FloatField(
+        verbose_name=_("Flight Duration"),
+        help_text=_("Expected flight time in minutes at normal usage"),
+        validators=[MinValueValidator(0)],
+        blank=True, null=True
+    )
+
+    max_speed = models.FloatField(
+        verbose_name=_("Maximum Speed"),
+        help_text=_("Maximum speed in km/h"),
+        validators=[MinValueValidator(0)],
+        null=True,
+        blank=True
+    )
+
+    control_range = models.PositiveIntegerField(
+        verbose_name=_("Control Range"),
+        help_text=_("Maximum control distance in meters"),
+        null=True,
+        blank=True
+    )
+
+    max_altitude = models.PositiveIntegerField(
+        verbose_name=_("Maximum Altitude"),
+        help_text=_("Maximum flying height in meters"),
+        null=True,
+        blank=True
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

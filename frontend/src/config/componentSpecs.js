@@ -6,6 +6,8 @@ import {
   faWaveSquare, faChartPie, faRocket
 } from '@fortawesome/free-solid-svg-icons';
 
+import { droneKeySpecs, droneFullSpecs, generateDroneTags } from './droneSpecs';
+
 /**
  * Configuration for component specifications to display in list and detail views
  * Each component type has configurations for:

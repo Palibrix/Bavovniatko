@@ -1,5 +1,6 @@
 import HomePage from '../pages/HomePage';
 import { AntennaListPage, AntennaDetailPage } from '../pages/antenna';
+import {DroneDetailPage, DroneListPage} from "../pages/drones";
 // import { CameraListPage, CameraDetailPage } from '../pages/camera';
 // import { MotorListPage, MotorDetailPage } from '../pages/motor';
 
@@ -50,6 +51,18 @@ const routesConfig = {
     // },
     
     // Add more component types here as needed
+  },
+
+    // Drone routes
+  drones: {
+    list: {
+      path: '/drones',
+      element: DroneListPage,
+    },
+    detail: {
+      path: '/drones/:id',
+      element: DroneDetailPage,
+    }
   }
 };
 

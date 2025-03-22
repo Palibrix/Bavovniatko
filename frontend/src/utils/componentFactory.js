@@ -5,6 +5,7 @@ import ComponentDetailTemplate from '../components/templates/ComponentDetailTemp
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
 import { getKeySpecsForComponentType, generateComponentTags } from '../config/componentSpecs';
+import { getKeySpecsForDroneType, generateDroneTags } from '../config/droneSpecs';
 
 /**
  * Creates both list and detail page components for a component type with
@@ -26,6 +27,8 @@ export function createComponentPages(config) {
     title = type.charAt(0).toUpperCase() + type.slice(1),
     filterSidebar
   } = config;
+
+  const isDrones = type === 'drones';
 
   /**
    * Enhanced list page component with integrated state management,
@@ -86,7 +89,7 @@ export function createComponentPages(config) {
         // Pre-process items to add tags
         const items = (result.results || result).map(item => ({
           ...item,
-          tags: generateComponentTags(type, item)
+          tags: isDrones ? generateDroneTags(item) : generateComponentTags(type, item)
         }));
 
         setData(items);
@@ -134,8 +137,10 @@ export function createComponentPages(config) {
       return <ErrorMessage message={error} onRetry={loadData} />;
     }
 
-    // Get the component-specific specifications
-    const specsConfig = getKeySpecsForComponentType(type);
+    // Get the appropriate specifications based on type
+    const specsConfig = isDrones
+      ? getKeySpecsForDroneType()
+      : getKeySpecsForComponentType(type);
 
     // Render the list template with data
     return (
@@ -175,7 +180,7 @@ export function createComponentPages(config) {
         // Add tags to the item
         setItem({
           ...result,
-          tags: generateComponentTags(type, result)
+          tags: isDrones ? generateDroneTags(result) : generateComponentTags(type, result)
         });
       } catch (err) {
         console.error(`Error fetching ${type} detail:`, err);
@@ -210,15 +215,11 @@ export function createComponentPages(config) {
       return <ErrorMessage message={`${title} not found.`} />;
     }
 
-    // Get the component-specific specifications
-    const specsConfig = getKeySpecsForComponentType(type);
-
     // Render the detail template with data
     return (
       <ComponentDetailTemplate
         componentType={type}
         item={item}
-        renderDetails={() => renderDetailContent(item, specsConfig)}
         isRefreshing={loading && item} // Pass refreshing state separately
         onRefresh={loadItem}
       />
@@ -226,18 +227,4 @@ export function createComponentPages(config) {
   };
 
   return { ListPage, DetailPage };
-}
-
-/**
- * Helper function to render component details
- * This can be customized based on the component type
- */
-function renderDetailContent(item, specsConfig) {
-  // Implementation will be updated when we focus on details page
-  return (
-    <div>
-      {/* This is a placeholder. We'll implement a proper detail view later */}
-      <pre>{JSON.stringify(item, null, 2)}</pre>
-    </div>
-  );
 }

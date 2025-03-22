@@ -34,7 +34,7 @@ function HomePage() {
               </p>
             </div>
             <div className="flex gap-6 justify-center flex-wrap">
-              <Link to="#" className="inline-flex items-center py-3 px-8 rounded-lg font-semibold transition-all duration-300 text-lg bg-light-bg text-primary hover:bg-white hover:translate-y-[-2px] hover:shadow-lg">
+              <Link to={ROUTES.DRONES.LIST} className="inline-flex items-center py-3 px-8 rounded-lg font-semibold transition-all duration-300 text-lg bg-light-bg text-primary hover:bg-white hover:translate-y-[-2px] hover:shadow-lg">
                 <i className="mr-3 text-xl">
                   <FontAwesomeIcon icon={faMagnifyingGlass} />
                 </i>

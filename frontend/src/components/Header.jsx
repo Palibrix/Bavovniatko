@@ -31,7 +31,7 @@ function Header() {
               </li>
 
               <li>
-                <Link to="#" className="text-light-text no-underline font-medium hover:text-secondary transition-colors">
+                <Link to={ROUTES.DRONES.LIST} className="text-light-text no-underline font-medium hover:text-secondary transition-colors">
                   Builds
                 </Link>
               </li>

@@ -38,13 +38,15 @@ const ComponentCard = ({
       transmitters: 'video',
       stacks: 'control',
       flight_controllers: 'control',
-      speed_controllers: 'control'
+      speed_controllers: 'control',
+      drones: 'drone'
     };
 
     return themes[componentType] || 'antenna';
   };
 
   const theme = getComponentTheme();
+  const isDrone = componentType === 'drones';
 
   // Get the primary image URL or a placeholder
   const getImageUrl = () => {
@@ -86,10 +88,15 @@ const ComponentCard = ({
             className={`bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-300 mb-4 flex flex-col border-t-4 border border-gray-200 border-t-${theme} hover:shadow-lg hover:-translate-y-1`}>
           <div className="flex items-center p-6 border-b border-gray-100">
             <div className="flex-1">
-            <span
-                className={`inline-block text-xs font-semibold text-white bg-${theme} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
-              {item.manufacturer}
-            </span>
+              {item.manufacturer ? (
+                <span className={`inline-block text-xs font-semibold text-white bg-${theme} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
+                  {item.manufacturer}
+                </span>
+              ) : isDrone ? (
+                <span className={`inline-block text-xs font-semibold text-white bg-${theme} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
+                  Custom Drone
+                </span>
+              ) : null}
               <h3 className="text-xl font-bold text-primary leading-snug">
                 {item.model}
               </h3>
@@ -107,14 +114,14 @@ const ComponentCard = ({
               <div className={`absolute top-0 bottom-0 right-0 w-0.5 bg-${theme}`}></div>
               <img
                   src={getImageUrl()}
-                  alt={`${item.manufacturer} ${item.model}`}
+                  alt={`${item.manufacturer || ''} ${item.model}`}
                   className="max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
               />
             </div>
 
             <div className="flex-1 p-6">
               <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
-                SPECIFICATIONS
+                {isDrone ? 'SPECIFICATIONS' : 'SPECIFICATIONS'}
               </div>
               <div className="grid grid-cols-3 gap-5">
                {specsConfig.slice(0, 6).map((spec, index) => {
@@ -153,8 +160,7 @@ const ComponentCard = ({
               ))}
             </div>
           </div>
-        {/*</div>*/}
-          </Link>
+        </Link>
     );
   }
 
@@ -162,18 +168,18 @@ const ComponentCard = ({
   return (
       <Link
         to={detailUrl}
-          className="bg-white rounded-lg overflow-hidden shadow-sm transition-all duration-300 flex flex-col border-t-4 border-t-antenna">
+          className={`bg-white rounded-lg overflow-hidden shadow-sm transition-all duration-300 flex flex-col border-t-4 border-t-${theme}`}>
         <div className="p-6 h-52 min-h-52 flex items-center justify-center bg-gray-50">
         <img
           src={getImageUrl()}
-          alt={`${item.manufacturer} ${item.model}`}
+          alt={`${item.manufacturer || ''} ${item.model}`}
           className="max-w-[90%] max-h-[90%] object-contain"
         />
       </div>
 
       <div className="p-6 flex flex-col flex-grow">
         <h3 className="text-lg font-semibold text-primary mb-3">
-          {item.manufacturer} {item.model}
+          {item.manufacturer ? `${item.manufacturer} ${item.model}` : item.model}
         </h3>
 
         <div className="grid grid-cols-2 gap-3 mb-6">

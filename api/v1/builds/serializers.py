@@ -3,6 +3,8 @@ from rest_framework import serializers
 from api.v1.components.serializers import (AntennaSerializer, CameraSerializer, FrameSerializer, \
     MotorSerializer, PropellerSerializer, ReceiverSerializer, TransmitterSerializer,
                                            SpeedControllerSerializer, FlightControllerSerializer)
+from api.v1.documents.serializers import DroneDocumentReadSerializer
+from api.v1.galleries.serializers import DroneGalleryReadSerializer
 from builds.models import Drone
 
 
@@ -16,6 +18,9 @@ class DroneSerializer(serializers.ModelSerializer):
     receiver = ReceiverSerializer(read_only=True)
     speed_controller = SpeedControllerSerializer(read_only=True)
     transmitter = TransmitterSerializer(read_only=True)
+
+    images = DroneGalleryReadSerializer(many=True)
+    documents = DroneDocumentReadSerializer(many=True)
 
     class Meta:
         model = Drone

@@ -39,6 +39,11 @@ module.exports = {
           DEFAULT: '#9cc298',
           light: '#c0dbbe',
           dark: '#76a571'
+        },
+        drone: {
+          DEFAULT: '#a4a0c8',
+          light: '#c0bcd8',
+          dark: '#8683a7'
         }
       }
     }
