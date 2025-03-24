@@ -4,13 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCode, faCheck } from '@fortawesome/free-solid-svg-icons';
 import TabSection from '../TabSection';
 import { componentToJson, formatSpecValue } from '../../../utils/componentDetailUtils';
-import {getEntityThemeClass} from '../../../utils/themeUtils';
+import { getEntityThemeClass } from '../../../utils/themeUtils';
 
 /**
  * Specifications tab content for component detail page
  * Shows all available specifications for the component
  */
-const SpecificationsTab = ({ item, specsConfig, componentType }) => {
+const SpecificationsTab = ({ item, specsConfig, componentType, inPanel = false }) => {
   const [copySuccess, setCopySuccess] = useState(false);
   const themeClass = getEntityThemeClass(componentType);
 
@@ -71,31 +71,36 @@ const SpecificationsTab = ({ item, specsConfig, componentType }) => {
 
   const configSpecs = getConfigSpecs();
 
-  return (
+  // If this is being shown in a panel, we don't need to wrap it in TabSection
+  const content = (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {/* Render specs from config first (with nice formatting) */}
+      {configSpecs.map((spec, index) => (
+        <div
+          key={`config-${index}`}
+          className="bg-gray-50 p-4 rounded-xl transition-all hover:bg-gray-100 hover:transform hover:-translate-y-1"
+        >
+          <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
+            {spec.icon && (
+              <FontAwesomeIcon icon={spec.icon} className={themeClass.text} />
+            )}
+            {spec.label}
+          </div>
+          <div className="font-semibold text-primary text-lg">
+            {spec.value}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  return inPanel ? content : (
     <TabSection
       title="Technical Specifications"
       componentType={componentType}
       headerActions={copyButton}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {/* Render specs from config first (with nice formatting) */}
-        {configSpecs.map((spec, index) => (
-          <div
-            key={`config-${index}`}
-            className="bg-gray-50 p-4 rounded-xl transition-all hover:bg-gray-100 hover:transform hover:-translate-y-1"
-          >
-            <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-              {spec.icon && (
-                <FontAwesomeIcon icon={spec.icon} className={themeClass.text} />
-              )}
-              {spec.label}
-            </div>
-            <div className="font-semibold text-primary text-lg">
-              {spec.value}
-            </div>
-          </div>
-        ))}
-      </div>
+      {content}
     </TabSection>
   );
 };
@@ -103,7 +108,8 @@ const SpecificationsTab = ({ item, specsConfig, componentType }) => {
 SpecificationsTab.propTypes = {
   item: PropTypes.object.isRequired,
   specsConfig: PropTypes.array.isRequired,
-  componentType: PropTypes.string.isRequired
+  componentType: PropTypes.string.isRequired,
+  inPanel: PropTypes.bool
 };
 
 export default SpecificationsTab;

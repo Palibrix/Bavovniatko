@@ -184,10 +184,15 @@ export const getEntityThemeClass = (componentType) => {
       stacks: 'control',
       flight_controllers: 'control',
       speed_controllers: 'control',
-      drones: 'drone'
+      drones: 'drone',
+      // Direct theme mappings (for component categories)
+      propulsion: 'propulsion',
+      control: 'control',
+      video: 'video',
+      primary: 'primary'
     };
 
     let themeColor = themes[componentType] || 'primary';
-    return themeClasses[themeColor] || themeClasses.primary;
 
+    return themeClasses[themeColor] || themeClasses.primary;
 }

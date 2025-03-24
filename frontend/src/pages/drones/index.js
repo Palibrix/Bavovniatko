@@ -1,19 +1,18 @@
 import React from 'react';
-import { componentsApi } from '../../services/api';
+import { dronesApi } from '../../services/api';
 import { createComponentPages } from '../../utils/componentFactory';
 import FilterSidebarPlaceholder from '../../components/filters/FilterSidebarPlaceholder';
-import * as dronesApi from "../../services/api/drones";
+import DroneDetailTemplate from '../../components/templates/DroneDetailTemplate';
 
 /**
- * Create Drone list and detail pages using the component factory
- * Uses placeholder filter sidebar until real implementation
+ * Create Drone list and detail pages
  */
 const { ListPage, DetailPage } = createComponentPages({
   type: 'drones',
   title: 'Drones',
   fetchList: dronesApi.getDrones,
   fetchDetail: dronesApi.getDroneById,
-  // Using placeholder filter sidebar for now
+  DetailTemplate: DroneDetailTemplate, // Use custom template
   filterSidebar: <FilterSidebarPlaceholder componentType="drones" />
 });
 

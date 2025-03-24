@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import TabSection from '../TabSection';
-import {getEntityThemeClass} from '../../../utils/themeUtils';
+import { getEntityThemeClass } from '../../../utils/themeUtils';
 
 /**
  * Details tab content for component detail page
  * Supports multiple detail blocks for components like frames
  */
-const DetailsTab = ({ item, componentType }) => {
+const DetailsTab = ({ item, componentType, inPanel = false }) => {
   // Setup state for selected variants (used for components with multiple connectors, etc.)
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const themeClass = getEntityThemeClass(componentType);
@@ -57,17 +57,21 @@ const DetailsTab = ({ item, componentType }) => {
 
   // If no details available, show a message
   if (!details.length) {
-    return (
+    const message = (
+      <p className="text-gray-500 italic">No additional details available for this component.</p>
+    );
+
+    return inPanel ? message : (
       <TabSection title="Details" componentType={componentType}>
-        <p className="text-gray-500 italic">No additional details available for this component.</p>
+        {message}
       </TabSection>
     );
   }
 
   // For frames, show multiple detail blocks
   if (componentType === 'frames') {
-    return (
-      <TabSection title="Details" componentType={componentType}>
+    const frameContent = (
+      <>
         {details.map((detailGroup, groupIndex) => (
           <div key={groupIndex} className="mb-8 last:mb-0">
             <h3 className={`text-lg font-semibold ${themeClass.text} mb-4`}>
@@ -119,13 +123,19 @@ const DetailsTab = ({ item, componentType }) => {
             </div>
           </div>
         ))}
+      </>
+    );
+
+    return inPanel ? frameContent : (
+      <TabSection title="Details" componentType={componentType}>
+        {frameContent}
       </TabSection>
     );
   }
 
   // For other components with variants (like antennas)
-  return (
-    <TabSection title="Details" componentType={componentType}>
+  const variantContent = (
+    <>
       {details.length > 1 ? (
         <div className="mb-6 bg-gray-50 rounded-lg flex overflow-hidden">
           {details.map((detail, index) => {
@@ -219,13 +229,20 @@ const DetailsTab = ({ item, componentType }) => {
           </table>
         </div>
       )}
+    </>
+  );
+
+  return inPanel ? variantContent : (
+    <TabSection title="Details" componentType={componentType}>
+      {variantContent}
     </TabSection>
   );
 };
 
 DetailsTab.propTypes = {
   item: PropTypes.object.isRequired,
-  componentType: PropTypes.string.isRequired
+  componentType: PropTypes.string.isRequired,
+  inPanel: PropTypes.bool
 };
 
 export default DetailsTab;

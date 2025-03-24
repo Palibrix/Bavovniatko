@@ -5,7 +5,7 @@ import ComponentDetailTemplate from '../components/templates/ComponentDetailTemp
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import ErrorMessage from '../components/common/ErrorMessage';
 import { getKeySpecsForComponentType, generateComponentTags } from '../config/componentSpecs';
-import { getKeySpecsForDroneType, generateDroneTags } from '../config/droneSpecs';
+import { getDroneKeySpecs, generateDroneTags } from '../config/droneSpecs';
 
 /**
  * Creates both list and detail page components for a component type with
@@ -139,7 +139,7 @@ export function createComponentPages(config) {
 
     // Get the appropriate specifications based on type
     const specsConfig = isDrones
-      ? getKeySpecsForDroneType()
+      ? getDroneKeySpecs()
       : getKeySpecsForComponentType(type);
 
     // Render the list template with data
@@ -163,7 +163,7 @@ export function createComponentPages(config) {
   /**
    * Enhanced detail page component with integrated state management
    */
-  const DetailPage = () => {
+const DetailPage = () => {
     const { id } = useParams(); // Get ID from the URL
     const [item, setItem] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -215,9 +215,12 @@ export function createComponentPages(config) {
       return <ErrorMessage message={`${title} not found.`} />;
     }
 
+    // Use the provided template or fall back to the default ComponentDetailTemplate
+    const TemplateComponent = config.DetailTemplate || ComponentDetailTemplate;
+
     // Render the detail template with data
     return (
-      <ComponentDetailTemplate
+      <TemplateComponent
         componentType={type}
         item={item}
         isRefreshing={loading && item} // Pass refreshing state separately

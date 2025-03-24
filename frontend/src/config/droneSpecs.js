@@ -1,13 +1,14 @@
 import {
   faClock, faWeightHanging, faTachometerAlt,
-  faLocationArrow, faArrowUp
+  faLocationArrow, faArrowUp, faMapMarkedAlt,
+  faBolt, faPlane, faInfoCircle
 } from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Configuration for drone specifications to display in list and detail views
  */
 
-// DRONES
+// DRONES - Key specs shown in cards and sidebar
 export const droneKeySpecs = [
   {
     label: 'Flight Duration',
@@ -41,9 +42,17 @@ export const droneKeySpecs = [
   }
 ];
 
+// All drone specifications including key specs
 export const droneSpecs = [
+  // Include key specs first
   ...droneKeySpecs,
-  // Additional drone specs can be added here
+
+  // Additional specifications - only include drone-specific specs
+  {
+    label: 'Drone Type',
+    path: 'type',
+    icon: faPlane,
+  }
 ];
 
 // Generate tags for drone cards
@@ -80,11 +89,11 @@ export const generateDroneTags = (item) => {
 };
 
 // Export functions to get specs for drones
-export const getKeySpecsForDroneType = () => {
+export const getDroneKeySpecs = () => {
   return droneKeySpecs;
 };
 
-export const getFullSpecsForDroneType = () => {
+export const getDroneFullSpecs = () => {
   return droneSpecs;
 };
 
@@ -92,6 +101,6 @@ export default {
   droneKeySpecs,
   droneSpecs,
   generateDroneTags,
-  getKeySpecsForDroneType,
-  getFullSpecsForDroneType
+  getDroneKeySpecs,
+  getDroneFullSpecs
 };

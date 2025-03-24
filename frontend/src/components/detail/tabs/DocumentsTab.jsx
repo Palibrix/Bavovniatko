@@ -13,13 +13,13 @@ import {
   faDownload
 } from '@fortawesome/free-solid-svg-icons';
 import TabSection from '../TabSection';
-import {getEntityThemeClass} from '../../../utils/themeUtils';
+import { getEntityThemeClass } from '../../../utils/themeUtils';
 
 /**
  * Documents tab content for component detail page
  */
-const DocumentsTab = ({ item, componentType }) => {
-  const themeClass = getEntityThemeClass(componentType)
+const DocumentsTab = ({ item, componentType, inPanel = false }) => {
+  const themeClass = getEntityThemeClass(componentType);
 
   const getDocumentIcon = (fileUrl) => {
     if (!fileUrl) return faFile;
@@ -98,65 +98,74 @@ const DocumentsTab = ({ item, componentType }) => {
 
   // If no documents, show a message
   if (!item.documents || item.documents.length === 0) {
-    return (
+    const message = (
+      <p className="text-gray-500 italic">No documents available for this component.</p>
+    );
+
+    return inPanel ? message : (
       <TabSection title="Documents" componentType={componentType}>
-        <p className="text-gray-500 italic">No documents available for this component.</p>
+        {message}
       </TabSection>
     );
   }
 
-  return (
-    <TabSection title="Documents" componentType={componentType}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {item.documents.map((doc, index) => (
-          <div
-            key={index}
-            className="bg-gray-50 rounded-xl p-4 flex items-center transition-all hover:bg-gray-100 hover:-translate-y-1"
-          >
-            <div className={`${themeClass.bg} text-white w-12 h-12 flex-shrink-0 rounded-lg flex items-center justify-center mr-4`}>
-              <FontAwesomeIcon icon={getDocumentIcon(doc.file)} size="lg" />
-            </div>
+  const content = (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {item.documents.map((doc, index) => (
+        <div
+          key={index}
+          className="bg-gray-50 rounded-xl p-4 flex items-center transition-all hover:bg-gray-100 hover:-translate-y-1"
+        >
+          <div className={`${themeClass.bg} text-white w-12 h-12 flex-shrink-0 rounded-lg flex items-center justify-center mr-4`}>
+            <FontAwesomeIcon icon={getDocumentIcon(doc.file)} size="lg" />
+          </div>
 
-            <div className="flex-grow min-w-0">
-              <h4 className="font-medium text-primary truncate">{doc.file.split('/').pop()}</h4>
-              <div className="text-xs text-gray-500">
-                {getDocumentType(doc.file)} • {getFileSize(doc.size)}
-              </div>
-            </div>
-
-            <div className="flex-shrink-0 ml-4 flex gap-2">
-              <a
-                href={doc.file}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.open(doc.file, '_blank', 'noopener,noreferrer');
-                }}
-                className={`w-8 h-8 flex items-center justify-center ${themeClass.border} ${themeClass.text} rounded hover:${themeClass.bg} hover:text-white transition-colors`}
-                title="View document"
-              >
-                <FontAwesomeIcon icon={faEye} />
-              </a>
-              <a
-                href={doc.file}
-                download
-                className={`w-8 h-8 flex items-center justify-center ${themeClass.border} ${themeClass.text} rounded hover:${themeClass.bg} hover:text-white transition-colors`}
-                title="Download document"
-              >
-                <FontAwesomeIcon icon={faDownload} />
-              </a>
+          <div className="flex-grow min-w-0">
+            <h4 className="font-medium text-primary truncate">{doc.file.split('/').pop()}</h4>
+            <div className="text-xs text-gray-500">
+              {getDocumentType(doc.file)} • {getFileSize(doc.size)}
             </div>
           </div>
-        ))}
-      </div>
+
+          <div className="flex-shrink-0 ml-4 flex gap-2">
+            <a
+              href={doc.file}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(doc.file, '_blank', 'noopener,noreferrer');
+              }}
+              className={`w-8 h-8 flex items-center justify-center ${themeClass.border} ${themeClass.text} rounded hover:${themeClass.bg} hover:text-white transition-colors`}
+              title="View document"
+            >
+              <FontAwesomeIcon icon={faEye} />
+            </a>
+            <a
+              href={doc.file}
+              download
+              className={`w-8 h-8 flex items-center justify-center ${themeClass.border} ${themeClass.text} rounded hover:${themeClass.bg} hover:text-white transition-colors`}
+              title="Download document"
+            >
+              <FontAwesomeIcon icon={faDownload} />
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  return inPanel ? content : (
+    <TabSection title="Documents" componentType={componentType}>
+      {content}
     </TabSection>
   );
 };
 
 DocumentsTab.propTypes = {
   item: PropTypes.object.isRequired,
-  componentType: PropTypes.string.isRequired
+  componentType: PropTypes.string.isRequired,
+  inPanel: PropTypes.bool
 };
 
 export default DocumentsTab;
