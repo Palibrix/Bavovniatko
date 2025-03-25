@@ -11,20 +11,44 @@ const defaultOptions = {
 };
 
 /**
+ * Get token for authentication
+ */
+const getToken = () => {
+  return localStorage.getItem('auth_token');
+};
+
+/**
+ * Get default headers for requests
+ */
+const getHeaders = () => {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  const token = getToken();
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  return headers;
+};
+/**
  * Core API request function that all other API calls will use
- * 
+ *
  * @param {string} endpoint - API endpoint path (without base URL)
  * @param {Object} options - Fetch options and parameters
  * @returns {Promise} - Promise with response JSON data
  */
 export async function apiRequest(endpoint, options = {}) {
   try {
+    // Get current headers
+    const headers = getHeaders();
+
     // Merge default options with any provided options
     const requestOptions = {
-      ...defaultOptions,
       ...options,
       headers: {
-        ...defaultOptions.headers,
+        ...headers,
         ...options.headers,
       }
     };
@@ -42,7 +66,7 @@ export async function apiRequest(endpoint, options = {}) {
       } catch (e) {
         errorData = { detail: `HTTP Error ${response.status}` };
       }
-      
+
       throw {
         status: response.status,
         statusText: response.statusText,
@@ -64,10 +88,10 @@ export async function apiRequest(endpoint, options = {}) {
  */
 export function get(endpoint, params = {}) {
   // Build query string from params
-  const queryString = Object.keys(params).length 
-    ? '?' + new URLSearchParams(params).toString() 
+  const queryString = Object.keys(params).length
+    ? '?' + new URLSearchParams(params).toString()
     : '';
-    
+
   return apiRequest(`${endpoint}${queryString}`, { method: 'GET' });
 }
 

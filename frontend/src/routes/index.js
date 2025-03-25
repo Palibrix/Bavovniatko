@@ -1,15 +1,16 @@
 import routesConfig from './routesConfig';
 import { generateRoutesFromConfig } from './routeUtils';
 
-// Export the routes configuration
-export { routesConfig };
 
 // Export a function to generate routes from the configuration
 export const getRoutes = () => generateRoutesFromConfig(routesConfig);
 
+export { routesConfig };
+
 // Export route paths as constants for easy reference throughout the app
 export const ROUTES = {
   HOME: routesConfig.home.path,
+  AUTH: routesConfig.auth.login.path,
   COMPONENTS: {
     ANTENNAS: {
       LIST: routesConfig.components.antennas.list.path,
