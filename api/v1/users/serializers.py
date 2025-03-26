@@ -5,11 +5,11 @@ from users.models import Profile
 
 User = get_user_model()
 
-class ProfileSerializer(serializers.ModelSerializer):
 
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = '__all__'
+        fields = ('first_name', 'last_name')
         read_only_fields = ('user', 'id',)
 
 
@@ -31,3 +31,55 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'password', 'profile']
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+    lists_count = serializers.SerializerMethodField()
+    suggestions_count = serializers.SerializerMethodField()
+    drones_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'profile', 'lists_count', 'suggestions_count', 'drones_count']
+
+    def get_lists_count(self, obj):
+        return obj.list_set.count()
+
+    def get_suggestions_count(self, obj):
+        # This is a placeholder counting only one type of suggestion
+        # In a full implementation, we would aggregate all suggestion types
+        return 0
+
+    def get_drones_count(self, obj):
+        return obj.drone_set.count() if hasattr(obj, 'drone_set') else 0
+
+
+class UserPublicProfileSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'profile']
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+
+    class Meta:
+        model = User
+        fields = ['email', 'profile']
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('profile', None)
+
+        if profile_data:
+            profile = instance.profile
+            profile.first_name = profile_data.get('first_name', profile.first_name)
+            profile.last_name = profile_data.get('last_name', profile.last_name)
+            profile.save()
+
+        instance.email = validated_data.get('email', instance.email)
+        instance.save()
+
+        return instance

@@ -1,9 +1,11 @@
 # from ckeditor.fields import RichTextField
+from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.fields import CKEditor5Field
 
+User = get_user_model()
 
 class BaseDroneMixin(models.Model):
 
@@ -19,6 +21,8 @@ class BaseDroneMixin(models.Model):
     short_description = models.CharField(max_length=256, help_text=_("Short description of the Drone"),
                                          blank=True, null=True)
     type = models.CharField(choices=TypeChoices.choices, max_length=50, default=TypeChoices.PHOTOGRAPHY)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     antenna = models.ForeignKey('components.Antenna', on_delete=models.SET_NULL, null=True, blank=True)
     battery = models.OneToOneField('components.Battery', on_delete=models.SET_NULL, null=True, blank=True)
