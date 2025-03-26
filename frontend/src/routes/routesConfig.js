@@ -2,6 +2,7 @@ import HomePage from '../pages/HomePage';
 import {AntennaListPage, AntennaDetailPage} from '../pages/antenna';
 import {DroneDetailPage, DroneListPage} from "../pages/drones";
 import AuthPage from "../pages/auth/AuthPage";
+import {ProfilePage} from "../pages/profile";
 // import { CameraListPage, CameraDetailPage } from '../pages/camera';
 // import { MotorListPage, MotorDetailPage } from '../pages/motor';
 
@@ -20,6 +21,18 @@ const routesConfig = {
         }
     },
 
+    // User profile routes
+    profile: {
+        current: {
+            path: '/profile',
+            element: ProfilePage,
+            protected: true,
+        },
+        detail: {
+            path: '/profile/:id',
+            element: ProfilePage,
+        },
+    },
 
     // Component routes grouped by component type
     components: {
@@ -34,30 +47,6 @@ const routesConfig = {
                 element: AntennaDetailPage,
             }
         },
-
-        // Camera routes
-        // cameras: {
-        //   list: {
-        //     path: '/components/cameras',
-        //     element: CameraListPage,
-        //   },
-        //   detail: {
-        //     path: '/components/cameras/:id',
-        //     element: CameraDetailPage,
-        //   }
-        // },
-        //
-        // // Motor routes
-        // motors: {
-        //   list: {
-        //     path: '/components/motors',
-        //     element: MotorListPage,
-        //   },
-        //   detail: {
-        //     path: '/components/motors/:id',
-        //     element: MotorDetailPage,
-        //   }
-        // },
 
         // Add more component types here as needed
     },

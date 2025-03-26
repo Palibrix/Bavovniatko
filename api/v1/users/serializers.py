@@ -44,7 +44,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'profile', 'lists_count', 'suggestions_count', 'drones_count']
 
     def get_lists_count(self, obj):
-        return obj.list_set.count()
+        return obj.lists.count()
 
     def get_suggestions_count(self, obj):
         # This is a placeholder counting only one type of suggestion

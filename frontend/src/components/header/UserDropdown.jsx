@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faSignOutAlt, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../../context/AuthContext';
 import Dropdown, { DropdownSection, DropdownItem } from '../common/Dropdown';
+import {ROUTES} from "../../routes";
 
 /**
  * User dropdown menu in header
@@ -32,7 +33,7 @@ const UserDropdown = () => {
       <DropdownSection>
         <DropdownItem
           icon={<FontAwesomeIcon icon={faUser} />}
-          href="#"
+          href={ROUTES.PROFILE.CURRENT}
         >
           Profile
         </DropdownItem>
