@@ -1,84 +1,74 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLayerGroup, faCalendarAlt, faClock, faEye, faEdit, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faLayerGroup, faCalendarAlt, faClock, faEye, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import ErrorMessage from '../../common/ErrorMessage';
-import Toast from '../../common/Toast';
-import { listsApi } from '../../../services/api';
-import CreateListModal from '../CreateListModal';
 
 const ListsTab = ({ profileData }) => {
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [toast, setToast] = useState({ message: '', type: '', visible: false });
+
+  // Placeholder data for demonstration
+  const demoLists = [
+    {
+      id: 1,
+      name: 'Racing Components',
+      items_count: 12,
+      created_at: '2025-03-10T00:00:00Z',
+      updated_at: '2025-03-15T00:00:00Z'
+    },
+    {
+      id: 2,
+      name: 'Favorite Antennas',
+      items_count: 5,
+      created_at: '2025-02-15T00:00:00Z',
+      updated_at: '2025-03-02T00:00:00Z'
+    },
+    {
+      id: 3,
+      name: 'Photography Setup',
+      items_count: 8,
+      created_at: '2025-01-22T00:00:00Z',
+      updated_at: '2025-03-18T00:00:00Z'
+    }
+  ];
 
   useEffect(() => {
+    // Simulate fetching lists data
+    const fetchLists = async () => {
+      try {
+        setLoading(true);
+        // In real implementation, you would fetch from API
+        // const response = await listsApi.getUserLists(profileData.id);
+
+        // Using demo data for now
+        setTimeout(() => {
+          setLists(demoLists);
+          setLoading(false);
+        }, 500);
+      } catch (err) {
+        setError('Failed to load lists');
+        setLoading(false);
+      }
+    };
+
     fetchLists();
-  }, []);
-
-  const fetchLists = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await listsApi.getUserLists();
-      setLists(response);
-    } catch (err) {
-      console.error('Error fetching lists:', err);
-      setError('Failed to load lists. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCreateList = () => {
-    setShowCreateModal(true);
-  };
-
-  const handleCreateSuccess = (newList) => {
-    setLists(prev => [newList, ...prev]);
-    setShowCreateModal(false);
-    setToast({
-      message: 'List created successfully',
-      type: 'success',
-      visible: true
-    });
-  };
-
-  const handleListDelete = async (listId) => {
-    // Confirm deletion
-    if (!window.confirm('Are you sure you want to delete this list?')) {
-      return;
-    }
-
-    try {
-      await listsApi.deleteList(listId);
-      // Remove from local state
-      setLists(prev => prev.filter(list => list.id !== listId));
-      setToast({
-        message: 'List deleted successfully',
-        type: 'success',
-        visible: true
-      });
-    } catch (err) {
-      console.error('Error deleting list:', err);
-      setToast({
-        message: 'Failed to delete list',
-        type: 'error',
-        visible: true
-      });
-    }
-  };
+  }, [profileData.id]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
+  const handleCreateList = () => {
+    // This would open a modal or navigate to create list page
+    alert('Create new list functionality will be implemented in the future');
+  };
+
   if (loading) return <LoadingSpinner />;
-  if (error) return <ErrorMessage message={error} onRetry={fetchLists} />;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <div>
@@ -120,7 +110,7 @@ const ListsTab = ({ profileData }) => {
                 <div className="space-y-2 mb-5">
                   <div className="flex items-center text-sm text-gray-500">
                     <FontAwesomeIcon icon={faLayerGroup} className="w-4 text-center mr-3 text-primary" />
-                    <span>{list.parts_count || 0} items</span>
+                    <span>{list.items_count} items</span>
                   </div>
                   <div className="flex items-center text-sm text-gray-500">
                     <FontAwesomeIcon icon={faCalendarAlt} className="w-4 text-center mr-3 text-primary" />
@@ -131,7 +121,7 @@ const ListsTab = ({ profileData }) => {
                     <span>Last updated: {formatDate(list.updated_at)}</span>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   <button className="flex-1 py-2 px-3 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors text-sm font-medium flex items-center justify-center gap-2">
                     <FontAwesomeIcon icon={faEye} />
                     View
@@ -140,32 +130,11 @@ const ListsTab = ({ profileData }) => {
                     <FontAwesomeIcon icon={faEdit} />
                     Edit
                   </button>
-                  <button
-                    onClick={() => handleListDelete(list.id)}
-                    className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
-      )}
-
-      {showCreateModal && (
-        <CreateListModal
-          onClose={() => setShowCreateModal(false)}
-          onSuccess={handleCreateSuccess}
-        />
-      )}
-
-      {toast.visible && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast({ ...toast, visible: false })}
-        />
       )}
     </div>
   );
