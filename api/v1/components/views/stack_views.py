@@ -2,12 +2,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets, filters
 
 from api.v1.components.filters import FlightControllerFilter, SpeedControllerFilter, StackFilter
+from api.v1.components.mixins import BaseComponentFilterMixin
 from api.v1.components.serializers import StackSerializer, FlightControllerSerializer, SpeedControllerSerializer
 from components.models import Receiver, Stack, FlightController, SpeedController
 
 
 class StackAPIViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
-                      viewsets.GenericViewSet):
+                      viewsets.GenericViewSet, BaseComponentFilterMixin):
     permission_classes = ()
     serializer_class = StackSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)

@@ -2,12 +2,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets, filters
 
 from api.v1.components.filters import ReceiverFilter
+from api.v1.components.mixins import BaseComponentFilterMixin
 from api.v1.components.serializers import ReceiverSerializer
 from components.models import Receiver
 
 
 class ReceiverAPIViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
-                         viewsets.GenericViewSet):
+                         viewsets.GenericViewSet, BaseComponentFilterMixin):
     permission_classes = ()
     serializer_class = ReceiverSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)

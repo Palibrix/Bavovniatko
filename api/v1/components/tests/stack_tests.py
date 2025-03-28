@@ -112,7 +112,7 @@ class TestFlightControllerAPIView(BaseAPITest):
 
     def test_filter_flight_controller(self):
         url = reverse('api:v1:components:flight_controller-list')
-        response = self.client.get(url, {'gyro__imu': 'IMU_1'})
+        response = self.client.get(url, {'gyro_imu': 'IMU_1'})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get('count'),
                          FlightController.objects.filter(gyro__imu='IMU_1').distinct().count())
