@@ -18,7 +18,11 @@ class DroneAPIViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
     def get_queryset(self):
         queryset = Drone.objects.all().distinct()
 
-        # Filter logic based on parameters
+        # For detail view, don't filter the queryset
+        if self.action == 'retrieve':
+            return queryset
+
+        # Filter logic for list views
         user_id = self.request.query_params.get('user_id')
         include_user_drones = self.request.query_params.get('include_user_drones', 'false').lower() == 'true'
 

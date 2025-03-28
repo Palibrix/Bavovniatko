@@ -33,7 +33,17 @@ class UserProfileViewSet(ModelViewSet):
             return self.request.user
         return get_object_or_404(User, pk=pk)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get', 'put', 'patch'])
     def me(self, request):
-        serializer = self.get_serializer(request.user)
-        return Response(serializer.data)
+        user = request.user
+
+        if request.method == 'GET':
+            serializer = self.get_serializer(user)
+            return Response(serializer.data)
+
+        elif request.method in ['PUT', 'PATCH']:
+            partial = request.method == 'PATCH'
+            serializer = UserUpdateSerializer(user, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)

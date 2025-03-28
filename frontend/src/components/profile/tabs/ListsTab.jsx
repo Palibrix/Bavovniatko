@@ -1,61 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLayerGroup, faCalendarAlt, faClock, faEye, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faLayerGroup, faCalendarAlt, faClock, faEye, faEdit, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import ErrorMessage from '../../common/ErrorMessage';
+import { listsApi } from '../../../services/api';
+import Toast from '../../common/Toast';
 
 const ListsTab = ({ profileData }) => {
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [toast, setToast] = useState({ visible: false, message: '', type: '' });
 
-  // Placeholder data for demonstration
-  const demoLists = [
-    {
-      id: 1,
-      name: 'Racing Components',
-      items_count: 12,
-      created_at: '2025-03-10T00:00:00Z',
-      updated_at: '2025-03-15T00:00:00Z'
-    },
-    {
-      id: 2,
-      name: 'Favorite Antennas',
-      items_count: 5,
-      created_at: '2025-02-15T00:00:00Z',
-      updated_at: '2025-03-02T00:00:00Z'
-    },
-    {
-      id: 3,
-      name: 'Photography Setup',
-      items_count: 8,
-      created_at: '2025-01-22T00:00:00Z',
-      updated_at: '2025-03-18T00:00:00Z'
-    }
-  ];
-
+  // Fetch real list data
   useEffect(() => {
-    // Simulate fetching lists data
     const fetchLists = async () => {
       try {
         setLoading(true);
-        // In real implementation, you would fetch from API
-        // const response = await listsApi.getUserLists(profileData.id);
+        const response = await listsApi.getUserLists();
 
-        // Using demo data for now
-        setTimeout(() => {
-          setLists(demoLists);
-          setLoading(false);
-        }, 500);
+        // Check if response is paginated (has results property)
+        const listsData = response.results || response;
+
+        // Ensure we have an array
+        setLists(Array.isArray(listsData) ? listsData : []);
+
+        console.log('Lists data:', listsData); // For debugging
+        setLoading(false);
       } catch (err) {
-        setError('Failed to load lists');
+        console.error('Error fetching lists:', err);
+        setError(err.message || 'Failed to load lists');
         setLoading(false);
       }
     };
 
     fetchLists();
-  }, [profileData.id]);
+  }, []);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -64,7 +45,29 @@ const ListsTab = ({ profileData }) => {
 
   const handleCreateList = () => {
     // This would open a modal or navigate to create list page
-    alert('Create new list functionality will be implemented in the future');
+    setToast({
+      visible: true,
+      message: 'Create list functionality will be implemented soon',
+      type: 'info'
+    });
+  };
+
+  const handleViewList = (listId) => {
+    // This would navigate to list detail page
+    setToast({
+      visible: true,
+      message: 'View list functionality will be implemented soon',
+      type: 'info'
+    });
+  };
+
+  const handleEditList = (listId) => {
+    // This would open edit modal
+    setToast({
+      visible: true,
+      message: 'Edit list functionality will be implemented soon',
+      type: 'info'
+    });
   };
 
   if (loading) return <LoadingSpinner />;
@@ -105,12 +108,15 @@ const ListsTab = ({ profileData }) => {
             <div key={list.id} className="bg-white rounded-xl shadow-sm overflow-hidden border-t-4 border-t-primary transition-all hover:-translate-y-1 hover:shadow-md">
               <div className="p-5 border-b border-gray-100">
                 <h3 className="text-lg font-semibold text-primary">{list.name}</h3>
+                {list.description && (
+                  <p className="text-sm text-gray-500 mt-1">{list.description}</p>
+                )}
               </div>
               <div className="p-5">
                 <div className="space-y-2 mb-5">
                   <div className="flex items-center text-sm text-gray-500">
                     <FontAwesomeIcon icon={faLayerGroup} className="w-4 text-center mr-3 text-primary" />
-                    <span>{list.items_count} items</span>
+                    <span>{list.parts_count || 0} items</span>
                   </div>
                   <div className="flex items-center text-sm text-gray-500">
                     <FontAwesomeIcon icon={faCalendarAlt} className="w-4 text-center mr-3 text-primary" />
@@ -122,11 +128,17 @@ const ListsTab = ({ profileData }) => {
                   </div>
                 </div>
                 <div className="flex gap-3">
-                  <button className="flex-1 py-2 px-3 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors text-sm font-medium flex items-center justify-center gap-2">
+                  <button
+                    onClick={() => handleViewList(list.id)}
+                    className="flex-1 py-2 px-3 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                  >
                     <FontAwesomeIcon icon={faEye} />
                     View
                   </button>
-                  <button className="flex-1 py-2 px-3 border border-primary text-primary rounded-md hover:bg-gray-50 transition-colors text-sm font-medium flex items-center justify-center gap-2">
+                  <button
+                    onClick={() => handleEditList(list.id)}
+                    className="flex-1 py-2 px-3 border border-primary text-primary rounded-md hover:bg-gray-50 transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                  >
                     <FontAwesomeIcon icon={faEdit} />
                     Edit
                   </button>
@@ -135,6 +147,14 @@ const ListsTab = ({ profileData }) => {
             </div>
           ))}
         </div>
+      )}
+
+      {toast.visible && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ ...toast, visible: false })}
+        />
       )}
     </div>
   );
