@@ -130,6 +130,7 @@ function HomePage() {
                 heading="FPV & Recording Cameras"
                 description="Capture stunning aerial footage with specialized drone cameras."
                 colorType="video"
+                to={ROUTES.COMPONENTS.CAMERAS.LIST}
               />
 
               <ComponentCard

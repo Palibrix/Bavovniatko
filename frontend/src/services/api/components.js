@@ -3,15 +3,15 @@ import { get } from './base';
 // Base endpoints for component types
 const ENDPOINTS = {
   antennas: '/components/antennas',
-  cameras: '/components/cameras/',
-  frames: '/components/frames/',
-  motors: '/components/motors/',
-  propellers: '/components/propellers/',
-  receivers: '/components/receivers/',
-  transmitters: '/components/transmitters/',
-  stacks: '/components/stacks/',
-  flightControllers: '/components/flight-controllers/',
-  speedControllers: '/components/speed-controllers/',
+  cameras: '/components/cameras',
+  frames: '/components/frames',
+  motors: '/components/motors',
+  propellers: '/components/propellers',
+  receivers: '/components/receivers',
+  transmitters: '/components/transmitters',
+  stacks: '/components/stacks',
+  flightControllers: '/components/flight-controllers',
+  speedControllers: '/components/speed-controllers',
 };
 
 /**
@@ -68,7 +68,7 @@ export function getCameras(params = {}) {
  * @returns {Promise} - Promise with camera data
  */
 export function getCameraById(id) {
-  return get(`${ENDPOINTS.cameras}${id}/`);
+  return get(`${ENDPOINTS.cameras}/${id}/`);
 }
 
 // ========== Frames ==========
@@ -89,7 +89,7 @@ export function getFrames(params = {}) {
  * @returns {Promise} - Promise with frame data
  */
 export function getFrameById(id) {
-  return get(`${ENDPOINTS.frames}${id}/`);
+  return get(`${ENDPOINTS.frames}/${id}/`);
 }
 
 

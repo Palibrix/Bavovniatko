@@ -1,5 +1,6 @@
 import HomePage from '../pages/HomePage';
 import {AntennaListPage, AntennaDetailPage} from '../pages/antenna';
+import {CameraListPage, CameraDetailPage} from '../pages/camera';
 import {DroneDetailPage, DroneListPage} from "../pages/drones";
 import AuthPage from "../pages/auth/AuthPage";
 import {ProfilePage} from "../pages/profile";
@@ -46,6 +47,17 @@ const routesConfig = {
                 path: '/components/antennas/:id',
                 element: AntennaDetailPage,
             }
+        },
+        cameras: {
+            list: {
+                path: '/components/cameras',
+                element: CameraListPage,
+            },
+            detail: {
+                path: '/components/cameras/:id',
+                element: CameraDetailPage,
+            }
+
         },
 
         // Add more component types here as needed

@@ -48,7 +48,7 @@ function ComponentsDropdown() {
       title: "Structure & Communications",
       items: [
         { name: "Frames", icon: faBorderAll, type: "frame", path: "#" },
-        { name: "Cameras", icon: faCamera, type: "video", path: "#" },
+        { name: "Cameras", icon: faCamera, type: "video", path: ROUTES.COMPONENTS.CAMERAS.LIST },
         { name: "Transmitters", icon: faSatelliteDish, type: "video", path: "#" },
         { name: "Antennas", icon: faWifi, type: "antenna", path: ROUTES.COMPONENTS.ANTENNAS.LIST }
       ]
