@@ -84,7 +84,7 @@ export function createComponentPages(config) {
           params.ordering = 'created_at';
         }
 
-        const result = await fetchList(params);
+        const result = await fetchList(type, params);
 
         // Pre-process items to add tags
         const items = (result.results || result).map(item => ({
@@ -175,7 +175,7 @@ const DetailPage = () => {
         setLoading(true);
         setError(null);
 
-        const result = await fetchDetail(id);
+        const result = await fetchDetail(type, id);
 
         // Add tags to the item
         setItem({

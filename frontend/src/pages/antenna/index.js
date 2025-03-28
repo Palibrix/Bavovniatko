@@ -1,7 +1,7 @@
 import React from 'react';
-import { componentsApi } from '../../services/api';
 import { createComponentPages } from '../../utils/componentFactory';
 import FilterSidebar from '../../components/filters/FilterSidebar';
+import {getComponentById, getComponentList} from "../../services/api/components";
 
 /**
  * Create Antenna list and detail pages using the component factory
@@ -10,8 +10,8 @@ import FilterSidebar from '../../components/filters/FilterSidebar';
 const { ListPage, DetailPage } = createComponentPages({
   type: 'antennas',
   title: 'Antennas',
-  fetchList: componentsApi.getAntennas,
-  fetchDetail: componentsApi.getAntennaById,
+  fetchList: getComponentList,
+  fetchDetail: getComponentById,
   // Using our real filter sidebar component
   filterSidebar: <FilterSidebar componentType="antennas" />
 });

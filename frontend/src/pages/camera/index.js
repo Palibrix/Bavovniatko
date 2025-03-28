@@ -2,6 +2,7 @@ import React from 'react';
 import { componentsApi } from '../../services/api';
 import { createComponentPages } from '../../utils/componentFactory';
 import FilterSidebar from '../../components/filters/FilterSidebar';
+import {getComponentById, getComponentList} from "../../services/api/components";
 
 /**
  * Create Camera list and detail pages using the component factory
@@ -9,8 +10,8 @@ import FilterSidebar from '../../components/filters/FilterSidebar';
 const { ListPage, DetailPage } = createComponentPages({
   type: 'cameras',
   title: 'Cameras',
-  fetchList: componentsApi.getCameras,
-  fetchDetail: componentsApi.getCameraById,
+  fetchList: getComponentList,
+  fetchDetail: getComponentById,
   // Using the filter sidebar component
   filterSidebar: <FilterSidebar componentType="cameras" />
 });

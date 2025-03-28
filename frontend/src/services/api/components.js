@@ -28,71 +28,10 @@ export function getComponentFilterOptions(componentType, params = {}) {
 /**
  * API functions for components
  */
-
-// ========== Antennas ==========
-/**
- * Get all antennas with optional filter parameters
- * 
- * @param {Object} params - Query parameters for filtering
- * @returns {Promise} - Promise with antenna data
- */
-export function getAntennas(params = {}) {
-  return get(ENDPOINTS.antennas, params);
+export function getComponentList(componentType, params = {}) {
+  return get(`${ENDPOINTS[componentType]}`, params);
 }
 
-/**
- * Get a specific antenna by ID
- * 
- * @param {string|number} id - Antenna ID
- * @returns {Promise} - Promise with antenna data
- */
-export function getAntennaById(id) {
-  return get(`${ENDPOINTS.antennas}/${id}/`);
+export function getComponentById(componentType, id, params = {}) {
+  return get(`${ENDPOINTS[componentType]}/${id}/`, params);
 }
-
-// ========== Cameras ==========
-/**
- * Get all cameras with optional filter parameters
- * 
- * @param {Object} params - Query parameters for filtering
- * @returns {Promise} - Promise with camera data
- */
-export function getCameras(params = {}) {
-  return get(ENDPOINTS.cameras, params);
-}
-
-/**
- * Get a specific camera by ID
- * 
- * @param {string|number} id - Camera ID
- * @returns {Promise} - Promise with camera data
- */
-export function getCameraById(id) {
-  return get(`${ENDPOINTS.cameras}/${id}/`);
-}
-
-// ========== Frames ==========
-/**
- * Get all frames with optional filter parameters
- * 
- * @param {Object} params - Query parameters for filtering
- * @returns {Promise} - Promise with frame data
- */
-export function getFrames(params = {}) {
-  return get(ENDPOINTS.frames, params);
-}
-
-/**
- * Get a specific frame by ID
- * 
- * @param {string|number} id - Frame ID
- * @returns {Promise} - Promise with frame data
- */
-export function getFrameById(id) {
-  return get(`${ENDPOINTS.frames}/${id}/`);
-}
-
-
-
-// Add similar functions for other component types
-// This pattern can be extended for all component types in your application
