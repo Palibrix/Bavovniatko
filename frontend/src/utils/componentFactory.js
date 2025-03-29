@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import ComponentListTemplate from '../components/templates/ComponentListTemplate';
 import ComponentDetailTemplate from '../components/templates/ComponentDetailTemplate';
@@ -37,6 +37,8 @@ export function createComponentPages(config) {
   const ListPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const fetchInProgress = useRef(false);
 
     // Get current page from URL or default to 1
     const page = parseInt(searchParams.get('page') || '1', 10);
@@ -61,9 +63,13 @@ export function createComponentPages(config) {
       totalCount: 0,
     });
 
-    // Function to load the data
+    // Function to load the data with deduplication
     const loadData = async () => {
+      // Prevent duplicate calls
+      if (fetchInProgress.current) return;
+
       try {
+        fetchInProgress.current = true;
         setLoading(true);
         setError(null);
 
@@ -84,7 +90,7 @@ export function createComponentPages(config) {
           params.ordering = 'created_at';
         }
 
-        const result = await fetchList(type, params);
+        const result = isDrones ? await fetchList(params): await fetchList(type, params);
 
         // Pre-process items to add tags
         const items = (result.results || result).map(item => ({
@@ -107,25 +113,29 @@ export function createComponentPages(config) {
         setError(`Failed to load ${type}. ${err.message || 'Please try again later.'}`);
       } finally {
         setLoading(false);
+        fetchInProgress.current = false;
       }
     };
 
-    // Handle page change
+    // Combined state for all URL parameters to prevent multiple re-renders
+    const urlParamsKey = `${page}_${sort}_${JSON.stringify(filterParams)}`;
+
+    // Handle page change - replace current history entry instead of adding new one
     const handlePageChange = (newPage) => {
       searchParams.set('page', newPage.toString());
-      setSearchParams(searchParams);
+      setSearchParams(searchParams, { replace: true });
     };
 
-    // Handle sort change
+    // Handle sort change - replace current history entry instead of adding new one
     const handleSortChange = (newSort) => {
       searchParams.set('sort', newSort);
-      setSearchParams(searchParams);
+      setSearchParams(searchParams, { replace: true });
     };
 
-    // Load data when parameters change
+    // Load data when parameters change, using the combined key to prevent multiple calls
     useEffect(() => {
       loadData();
-    }, [page, sort, JSON.stringify(filterParams)]);
+    }, [urlParamsKey]);
 
     // Show loading spinner while initially loading
     if (loading && !data) {
@@ -155,7 +165,10 @@ export function createComponentPages(config) {
         isRefreshing={loading && data} // Pass refreshing state separately
         onRefresh={loadData}
         specsConfig={specsConfig}
-        filterSidebar={filterSidebar}
+        filterSidebar={React.cloneElement(filterSidebar || <></>, {
+          // Pass down the replace option to ensure filter changes also use history replacement
+          setSearchParamsWithReplace: (params) => setSearchParams(params, { replace: true })
+        })}
       />
     );
   };
@@ -163,19 +176,23 @@ export function createComponentPages(config) {
   /**
    * Enhanced detail page component with integrated state management
    */
-const DetailPage = () => {
+  const DetailPage = () => {
     const { id } = useParams(); // Get ID from the URL
     const [item, setItem] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const fetchInProgress = useRef(false);
 
-    // Function to load the detail data
+    // Function to load the detail data with deduplication
     const loadItem = async () => {
+      if (fetchInProgress.current) return;
+
       try {
+        fetchInProgress.current = true;
         setLoading(true);
         setError(null);
 
-        const result = await fetchDetail(type, id);
+        const result = isDrones ? await fetchDetail(id) :  await fetchDetail(type, id);
 
         // Add tags to the item
         setItem({
@@ -187,17 +204,13 @@ const DetailPage = () => {
         setError(`Failed to load ${type} details. ${err.message || 'Please try again later.'}`);
       } finally {
         setLoading(false);
+        fetchInProgress.current = false;
       }
     };
 
     // Load data on component mount or when ID changes
     useEffect(() => {
       loadItem();
-
-      // Cleanup function
-      return () => {
-        // Any cleanup if needed
-      };
     }, [id]);
 
     // Show loading spinner while loading

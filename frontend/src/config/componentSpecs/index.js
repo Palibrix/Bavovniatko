@@ -1,64 +1,50 @@
 import {antennaSpecs, antennaKeySpecs} from "./antennaSpecs";
 import {cameraKeySpecs, cameraSpecs} from "./cameraSpecs";
+import {frameKeySpecs, frameSpecs} from "./frameSpecs";
+import {motorKeySpecs, motorSpecs} from "./motorSpecs";
+import {propellerKeySpecs, propellerSpecs} from "./propellerSpecs";
+import {receiverKeySpecs, receiverSpecs} from "./receiverSpecs";
+import {flightControllerKeySpecs, flightControllerSpecs} from "./flightControllerSpecs";
+import {speedControllerKeySpecs, speedControllerSpecs} from "./speedControllerSpecs";
+import {transmitterKeySpecs, transmitterSpecs} from "./transmitterSpecs";
 
+import {batterySpecs, batteryKeySpecs} from "./batterySpecs";
 
-// Export functions to get specs for a component type
+import generateComponentTags from "./tagGenerator";
+export {generateComponentTags}
+
 export const getKeySpecsForComponentType = (type) => {
-  const specsMap = {
-    antennas: antennaKeySpecs,
-    cameras: cameraKeySpecs,
+    const specsMap = {
+        antennas: antennaKeySpecs,
+        cameras: cameraKeySpecs,
+        frames: frameKeySpecs,
+        motors: motorKeySpecs,
+        propellers: propellerKeySpecs,
+        receivers: receiverKeySpecs,
+        flight_controllers: flightControllerKeySpecs,
+        speed_controllers: speedControllerKeySpecs,
+        transmitters: transmitterKeySpecs,
 
-    // Add more component types as needed
-  };
+        batteries: batteryKeySpecs,
+    };
 
-  return specsMap[type] || [];
+    return specsMap[type] || [];
 };
 
 export const getFullSpecsForComponentType = (type) => {
-  const specsMap = {
-    antennas: antennaSpecs,
-    cameras: cameraSpecs,
+    const specsMap = {
+        antennas: antennaSpecs,
+        cameras: cameraSpecs,
+        frames: frameSpecs,
+        motors: motorSpecs,
+        propellers: propellerSpecs,
+        receivers: receiverSpecs,
+        flight_controllers: flightControllerSpecs,
+        speed_controllers: speedControllerSpecs,
+        transmitters: transmitterSpecs,
 
-    // Add more component types as needed
-  };
+        batteries: batterySpecs,
+    };
 
-  return specsMap[type] || [];
-};
-
-// Generate tags for component cards based on component type and data
-export const generateComponentTags = (componentType, item) => {
-  if (!item) return [];
-
-  switch(componentType) {
-    case 'antennas':
-      const tags = [];
-
-      // Add connector types from details
-      if (item.details && item.details.length > 0) {
-        item.details.forEach(detail => {
-          if (detail.connector_type && detail.connector_type.type) {
-            tags.push(detail.connector_type.type);
-          }
-          if (detail.angle_type) {
-            tags.push(detail.angle_type);
-          }
-          if (detail.weight) {
-            tags.push(`${detail.weight}g`);
-          }
-        });
-      }
-
-      return tags;
-
-    case 'cameras':
-      return [
-        item.output_type === 'A' ? 'Analog' : 'Digital',
-        item.ratio,
-        item.weight ? `${item.weight}g` : null
-      ].filter(Boolean);
-
-    // Add more component types as needed
-    default:
-      return [];
-  }
+    return specsMap[type] || [];
 };

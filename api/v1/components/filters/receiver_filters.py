@@ -16,8 +16,8 @@ class ReceiverFilter(MetadataFilterSet):
     telemetry_power_min = filters.NumberFilter(field_name='details__telemetry_power', lookup_expr='gte')
     telemetry_power_max = filters.NumberFilter(field_name='details__telemetry_power', lookup_expr='lte')
 
-    weight_min = filters.NumberFilter(field_name='weight', lookup_expr='gte')
-    weight_max = filters.NumberFilter(field_name='weight', lookup_expr='lte')
+    weight_min = filters.NumberFilter(field_name='details__weight', lookup_expr='gte')
+    weight_max = filters.NumberFilter(field_name='details__weight', lookup_expr='lte')
 
     voltage_min = filters.NumberFilter(field_name='voltage_min', lookup_expr='gte')
     voltage_max = filters.NumberFilter(field_name='voltage_max', lookup_expr='lte')
@@ -122,7 +122,7 @@ class ReceiverFilter(MetadataFilterSet):
                         "id": "weight",
                         "type": "range",
                         "label": "Weight",
-                        "field": "weight",
+                        "field": "details__weight",
                         "unit": "g",
                         "default_value": 5
                     }

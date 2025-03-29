@@ -104,7 +104,7 @@ useEffect(() => {
     }
 
     // Update URL with new params
-    setSearchParams(newParams);
+    setSearchParams(newParams, { replace: true });
   }, [activeFilters]);
 
   // Handle adding a filter

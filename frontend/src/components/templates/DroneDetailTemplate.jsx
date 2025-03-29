@@ -85,7 +85,7 @@ const DroneDetailTemplate = ({
       'transmitter': 'transmitters',
       'camera': 'cameras',
       'antenna': 'antennas',
-      'battery': 'propulsion',
+      'battery': 'batteries',
     };
 
     return typeMapping[type] || `${type}s`; // Fallback to adding 's' if not mapped

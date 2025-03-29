@@ -179,6 +179,7 @@ export const getEntityThemeClass = (componentType) => {
       frames: 'frame',
       motors: 'propulsion',
       propellers: 'propulsion',
+      batteries: 'propulsion',
       receivers: 'control',
       transmitters: 'video',
       stacks: 'control',

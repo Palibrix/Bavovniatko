@@ -70,6 +70,7 @@ function HomePage() {
                 heading="Drone Motors"
                 description="Browse electric motors that power your drone's flight with various KV ratings, sizes, and power outputs."
                 colorType="propulsion"
+                to={ROUTES.COMPONENTS.MOTORS.LIST}
               />
 
               <ComponentCard
@@ -78,6 +79,7 @@ function HomePage() {
                 heading="Drone Propellers"
                 description="Explore propellers of different sizes, pitches, and blade counts to optimize your drone's performance."
                 colorType="propulsion"
+                to={ROUTES.COMPONENTS.PROPELLERS.LIST}
               />
             </div>
           </div>
@@ -92,6 +94,7 @@ function HomePage() {
                 heading="Flight Control Units"
                 description="The brain of your drone that processes inputs and controls flight dynamics."
                 colorType="control"
+                to={ROUTES.COMPONENTS.FLIGHT_CONTROLLERS.LIST}
               />
 
               <ComponentCard
@@ -100,6 +103,7 @@ function HomePage() {
                 heading="Electronic Speed Controllers"
                 description="Regulate motor speed with precision for optimal flight control."
                 colorType="control"
+                to={ROUTES.COMPONENTS.SPEED_CONTROLLERS.LIST}
               />
 
               <ComponentCard
@@ -108,6 +112,7 @@ function HomePage() {
                 heading="Radio Receivers"
                 description="Receive control signals from your transmitter to operate the drone."
                 colorType="control"
+                to={ROUTES.COMPONENTS.RECEIVERS.LIST}
               />
             </div>
           </div>
@@ -122,6 +127,7 @@ function HomePage() {
                 heading="Drone Frames"
                 description="Structural foundation that holds all components together in various configurations."
                 colorType="frame"
+                to={ROUTES.COMPONENTS.FRAMES.LIST}
               />
 
               <ComponentCard
@@ -139,6 +145,7 @@ function HomePage() {
                 heading="Video Transmitters"
                 description="Broadcast real-time video feed from your drone to your display or goggles."
                 colorType="video"
+                to={ROUTES.COMPONENTS.TRANSMITTERS.LIST}
               />
 
               <ComponentCard

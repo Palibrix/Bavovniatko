@@ -1,13 +1,17 @@
 import HomePage from '../pages/HomePage';
-import {AntennaListPage, AntennaDetailPage} from '../pages/antenna';
-import {CameraListPage, CameraDetailPage} from '../pages/camera';
+import {AntennaListPage, AntennaDetailPage} from '../pages/components/antenna';
+import {CameraListPage, CameraDetailPage} from '../pages/components/camera';
+import {FrameListPage, FrameDetailPage} from '../pages/components/frame';
+import {MotorListPage, MotorDetailPage} from '../pages/components/motor';
+import {PropellerListPage, PropellerDetailPage} from '../pages/components/propeller';
+import {ReceiverListPage, ReceiverDetailPage} from '../pages/components/receiver';
+import {FlightControllerListPage, FlightControllerDetailPage} from '../pages/components/flightController';
+import {SpeedControllerListPage, SpeedControllerDetailPage} from '../pages/components/speedController';
+import {TransmitterListPage, TransmitterDetailPage} from '../pages/components/transmitter';
 import {DroneDetailPage, DroneListPage} from "../pages/drones";
 import AuthPage from "../pages/auth/AuthPage";
 import {ProfilePage} from "../pages/profile";
-// import { CameraListPage, CameraDetailPage } from '../pages/camera';
-// import { MotorListPage, MotorDetailPage } from '../pages/motor';
 
-// Define routes configuration
 const routesConfig = {
     // Home route
     home: {
@@ -37,7 +41,6 @@ const routesConfig = {
 
     // Component routes grouped by component type
     components: {
-        // Antenna routes
         antennas: {
             list: {
                 path: '/components/antennas',
@@ -57,10 +60,77 @@ const routesConfig = {
                 path: '/components/cameras/:id',
                 element: CameraDetailPage,
             }
-
         },
-
-        // Add more component types here as needed
+        frames: {
+            list: {
+                path: '/components/frames',
+                element: FrameListPage,
+            },
+            detail: {
+                path: '/components/frames/:id',
+                element: FrameDetailPage,
+            }
+        },
+        motors: {
+            list: {
+                path: '/components/motors',
+                element: MotorListPage,
+            },
+            detail: {
+                path: '/components/motors/:id',
+                element: MotorDetailPage,
+            }
+        },
+        propellers: {
+            list: {
+                path: '/components/propellers',
+                element: PropellerListPage,
+            },
+            detail: {
+                path: '/components/propellers/:id',
+                element: PropellerDetailPage,
+            }
+        },
+        receivers: {
+            list: {
+                path: '/components/receivers',
+                element: ReceiverListPage,
+            },
+            detail: {
+                path: '/components/receivers/:id',
+                element: ReceiverDetailPage,
+            }
+        },
+        flight_controllers: {
+            list: {
+                path: '/components/flight_controllers',
+                element: FlightControllerListPage,
+            },
+            detail: {
+                path: '/components/flight_controllers/:id',
+                element: FlightControllerDetailPage,
+            }
+        },
+        speed_controllers: {
+            list: {
+                path: '/components/speed_controllers',
+                element: SpeedControllerListPage,
+            },
+            detail: {
+                path: '/components/speed_controllers/:id',
+                element: SpeedControllerDetailPage,
+            }
+        },
+        transmitters: {
+            list: {
+                path: '/components/transmitters',
+                element: TransmitterListPage,
+            },
+            detail: {
+                path: '/components/transmitters/:id',
+                element: TransmitterDetailPage,
+            }
+        }
     },
 
     // Drone routes
@@ -76,7 +146,6 @@ const routesConfig = {
             }
         }
     }
-
 };
 
 export default routesConfig;

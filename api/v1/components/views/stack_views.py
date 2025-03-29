@@ -20,7 +20,7 @@ class StackAPIViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
 
 
 class FlightControllerAPIViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
-                                 viewsets.GenericViewSet):
+                                 viewsets.GenericViewSet, BaseComponentFilterMixin):
     permission_classes = ()
     serializer_class = FlightControllerSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
@@ -30,7 +30,7 @@ class FlightControllerAPIViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixi
 
 
 class SpeedControllerAPIViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
-                                viewsets.GenericViewSet):
+                                viewsets.GenericViewSet, BaseComponentFilterMixin):
     permission_classes = ()
     serializer_class = SpeedControllerSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)

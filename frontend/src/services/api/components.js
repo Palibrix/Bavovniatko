@@ -10,8 +10,8 @@ const ENDPOINTS = {
   receivers: '/components/receivers',
   transmitters: '/components/transmitters',
   stacks: '/components/stacks',
-  flightControllers: '/components/flight-controllers',
-  speedControllers: '/components/speed-controllers',
+  flight_controllers: '/components/flight_controllers',
+  speed_controllers: '/components/speed_controllers',
 };
 
 /**
