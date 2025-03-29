@@ -44,7 +44,7 @@ const DronesTab = ({ profileData }) => {
     // Define required components
     const requiredComponents = [
       'frame', 'motor', 'propeller', 'flight_controller',
-      'speed_controller', 'receiver', 'camera', 'transmitter', 'antenna'
+      'speed_controller', 'receiver', 'camera', 'transmitter', 'antenna_transmitter', 'antenna_receiver',
     ];
 
     // Count how many required components are present
