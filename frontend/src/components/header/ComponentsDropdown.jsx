@@ -32,24 +32,24 @@ function ComponentsDropdown() {
     {
       title: "Propulsion",
       items: [
-        { name: "Motors", icon: faCog, type: "propulsion", path: "#" },
-        { name: "Propellers", icon: faFan, type: "propulsion", path: "#" }
+        { name: "Motors", icon: faCog, type: "propulsion", path: ROUTES.COMPONENTS.MOTORS.LIST },
+        { name: "Propellers", icon: faFan, type: "propulsion", path: ROUTES.COMPONENTS.PROPELLERS.LIST }
       ]
     },
     {
       title: "Control Systems",
       items: [
-        { name: "Flight Controllers", icon: faMicrochip, type: "control", path: "#" },
-        { name: "Speed Controllers", icon: faTachometerAlt, type: "control", path: "#" },
-        { name: "Receivers", icon: faBroadcastTower, type: "control", path: "#" }
+        { name: "Flight Controllers", icon: faMicrochip, type: "control", path: ROUTES.COMPONENTS.FLIGHT_CONTROLLERS.LIST },
+        { name: "Speed Controllers", icon: faTachometerAlt, type: "control", path: ROUTES.COMPONENTS.SPEED_CONTROLLERS.LIST },
+        { name: "Receivers", icon: faBroadcastTower, type: "control", path: ROUTES.COMPONENTS.RECEIVERS.LIST }
       ]
     },
     {
       title: "Structure & Communications",
       items: [
-        { name: "Frames", icon: faBorderAll, type: "frame", path: "#" },
+        { name: "Frames", icon: faBorderAll, type: "frame", path: ROUTES.COMPONENTS.FRAMES.LIST },
         { name: "Cameras", icon: faCamera, type: "video", path: ROUTES.COMPONENTS.CAMERAS.LIST },
-        { name: "Transmitters", icon: faSatelliteDish, type: "video", path: "#" },
+        { name: "Transmitters", icon: faSatelliteDish, type: "video", path: ROUTES.COMPONENTS.TRANSMITTERS.LIST },
         { name: "Antennas", icon: faWifi, type: "antenna", path: ROUTES.COMPONENTS.ANTENNAS.LIST }
       ]
     }
