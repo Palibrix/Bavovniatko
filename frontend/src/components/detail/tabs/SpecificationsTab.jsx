@@ -69,7 +69,13 @@ const SpecificationsTab = ({ item, specsConfig, componentType, inPanel = false }
     }).filter(Boolean);
   };
 
-  const configSpecs = getConfigSpecs();
+      const configSpecs = getConfigSpecs()
+
+
+  //   const configSpecs = getConfigSpecs().filter(spec =>
+  //   typeof spec.value !== 'object'
+  // );
+
 
   // If this is being shown in a panel, we don't need to wrap it in TabSection
   const content = (

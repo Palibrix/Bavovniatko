@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,48 +20,99 @@ import { hasDetails, hasDocuments } from '../../utils/componentDetailUtils';
  */
 const ComponentInfoPanel = ({ item, componentType, isBattery = false, onClose }) => {
   const [activeTab, setActiveTab] = useState('description');
+  const [displayedItem, setDisplayedItem] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const prevItemIdRef = useRef(null);
+  const prevComponentTypeRef = useRef(null);
   const themeClass = getEntityThemeClass(componentType);
 
-  // Handle close button click
-  const handleCloseClick = () => {
-    if (onClose) {
-      onClose();
-    }
-  };
-
-  // Track available specs
-  const [specsConfig, setSpecsConfig] = useState([]);
-
-
+  // Effect to handle component changes and loading state
   useEffect(() => {
-    // Normalize component type for specs lookup
+    // Check if the item or componentType has changed
+    const itemIdChanged = item?.id !== prevItemIdRef.current;
+    const typeChanged = componentType !== prevComponentTypeRef.current;
 
-    const specs = getFullSpecsForComponentType(componentType);
-    setSpecsConfig(specs || []);
+    // If something changed, update refs and set loading state
+    if (itemIdChanged || typeChanged) {
+      // Set loading state first
+      setIsLoading(true);
 
-  }, [componentType, item]);
+      // Update refs
+      prevItemIdRef.current = item?.id;
+      prevComponentTypeRef.current = componentType;
 
-  // Determine if the component has details and documents
-  const hasDetailsSection = hasDetails(item, componentType);
-  const hasDocumentsSection = hasDocuments(item);
+      // Clear the current displayed item during transition to avoid showing old data
+      setDisplayedItem(null);
 
-  // Get URL for viewing full component details
-  const getComponentUrl = () => {
-    if (isBattery) return null; // Batteries don't have detail pages
-    return `/components/${componentType}/${item.id}`;
-  };
+      // Set a small timeout to ensure we don't get a double render with old data
+      const timer = setTimeout(() => {
+        // Update displayed item and clear loading state
+        setDisplayedItem(item);
+        setIsLoading(false);
+      }, 50); // Small delay to ensure clean transition
 
-  const componentUrl = getComponentUrl();
+      return () => clearTimeout(timer);
+    } else if (item && !displayedItem) {
+      // Initial load or if item is set but displayedItem is not
+      setDisplayedItem(item);
+      setIsLoading(false);
+    }
+  }, [item, componentType]);
 
   // Handle tab change
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
   };
 
+  // Track available specs
+  const [specsConfig, setSpecsConfig] = useState([]);
+
+  useEffect(() => {
+    // Don't load specs config during loading state
+    if (isLoading || !displayedItem) return;
+
+    // Get specs for this component type
+    const specs = getFullSpecsForComponentType(componentType);
+    setSpecsConfig(specs || []);
+  }, [componentType, displayedItem, isLoading]);
+
+  // Show loading state
+  if (isLoading || !displayedItem) {
+    return (
+      <div className="bg-white rounded-3xl shadow-sm overflow-hidden mt-6">
+        <div className="py-4 px-6 border-b border-gray-100 flex justify-between items-center">
+          <h3 className={`font-semibold ${themeClass.text}`}>Loading...</h3>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500"
+            aria-label="Close component details"
+          >
+            <FontAwesomeIcon icon={faTimesCircle} />
+          </button>
+        </div>
+        <div className="p-6 flex justify-center items-center h-48">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        </div>
+      </div>
+    );
+  }
+
+  // Determine if the component has details and documents
+  const hasDetailsSection = hasDetails(displayedItem, componentType);
+  const hasDocumentsSection = hasDocuments(displayedItem);
+
+  // Get URL for viewing full component details
+  const getComponentUrl = () => {
+    if (isBattery) return null; // Batteries don't have detail pages
+    return `/components/${componentType}/${displayedItem.id}`;
+  };
+
+  const componentUrl = getComponentUrl();
+
   // Get component display name
   const getComponentName = () => {
-    if (!item) return '';
-    return `${item.manufacturer ? `${item.manufacturer} ` : ''}${item.model}`;
+    if (!displayedItem) return '';
+    return `${displayedItem.manufacturer ? `${displayedItem.manufacturer} ` : ''}${displayedItem.model}`;
   };
 
   return (
@@ -83,7 +134,7 @@ const ComponentInfoPanel = ({ item, componentType, isBattery = false, onClose })
 
           {/* Close button */}
           <button
-            onClick={() => handleCloseClick()}
+            onClick={() => onClose()}
             className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500"
             aria-label="Close component details"
           >
@@ -149,8 +200,8 @@ const ComponentInfoPanel = ({ item, componentType, isBattery = false, onClose })
       <div className="p-6">
         {activeTab === 'description' && (
           <div className="prose max-w-none">
-            {item.description ? (
-              <div dangerouslySetInnerHTML={{ __html: item.description }} />
+            {displayedItem.description ? (
+              <div dangerouslySetInnerHTML={{ __html: displayedItem.description }} />
             ) : (
               <p className="text-gray-500 italic">No description available for this component.</p>
             )}
@@ -159,7 +210,7 @@ const ComponentInfoPanel = ({ item, componentType, isBattery = false, onClose })
 
         {activeTab === 'specs' && specsConfig && specsConfig.length > 0 && (
           <SpecificationsTab
-            item={item}
+            item={displayedItem}
             specsConfig={specsConfig}
             componentType={componentType}
             inPanel={true}
@@ -168,7 +219,7 @@ const ComponentInfoPanel = ({ item, componentType, isBattery = false, onClose })
 
         {activeTab === 'details' && hasDetailsSection && (
           <DetailsTab
-            item={item}
+            item={displayedItem}
             componentType={componentType}
             inPanel={true}
           />
@@ -176,7 +227,7 @@ const ComponentInfoPanel = ({ item, componentType, isBattery = false, onClose })
 
         {activeTab === 'documents' && hasDocumentsSection && (
           <DocumentsTab
-            item={item}
+            item={displayedItem}
             componentType={componentType}
             inPanel={true}
           />
