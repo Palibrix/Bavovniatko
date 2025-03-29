@@ -24,7 +24,8 @@ class BaseDroneMixin(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
-    antenna = models.ForeignKey('components.Antenna', on_delete=models.SET_NULL, null=True, blank=True)
+    antenna_receiver = models.ForeignKey('components.Antenna', on_delete=models.SET_NULL, null=True, blank=True, related_name='antenna_receiver')
+    antenna_transmitter = models.ForeignKey('components.Antenna', on_delete=models.SET_NULL, null=True, blank=True, related_name='antenna_transmitter')
     battery = models.OneToOneField('components.Battery', on_delete=models.SET_NULL, null=True, blank=True)
     camera = models.ForeignKey('components.Camera', on_delete=models.SET_NULL, null=True, blank=True)
     frame = models.ForeignKey('components.Frame', on_delete=models.SET_NULL, null=True, blank=True)

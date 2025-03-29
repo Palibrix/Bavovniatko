@@ -49,7 +49,7 @@ const DroneDetailTemplate = ({
 
   // Calculate completion percentage
   const requiredComponents = ['frame', 'motor', 'propeller', 'flight_controller',
-    'speed_controller', 'receiver', 'transmitter', 'antenna', 'camera', 'battery'];
+    'speed_controller', 'receiver', 'transmitter', 'antenna_transmitter', 'antenna_receiver', 'camera', 'battery'];
 
   const presentComponents = requiredComponents.filter(comp => item[comp]);
   const completionPercentage = Math.round((presentComponents.length / requiredComponents.length) * 100);
@@ -84,7 +84,8 @@ const DroneDetailTemplate = ({
       'receiver': 'receivers',
       'transmitter': 'transmitters',
       'camera': 'cameras',
-      'antenna': 'antennas',
+      'antenna_transmitter': 'antennas',
+      'antenna_receiver': 'antennas',
       'battery': 'batteries',
     };
 

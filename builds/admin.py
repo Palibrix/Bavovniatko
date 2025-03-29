@@ -12,7 +12,7 @@ class DroneAdmin(BaseModelAdminMixin):
 
     list_display = ('__str__', 'id', 'created_at', 'updated_at')
 
-    list_filter = ('antenna', 'battery', 'camera', 'frame', 'motor',
+    list_filter = ('antenna_transmitter', 'antenna_receiver', 'battery', 'camera', 'frame', 'motor',
                    'propeller', 'receiver', 'transmitter',
                    'flight_controller', 'speed_controller')
 

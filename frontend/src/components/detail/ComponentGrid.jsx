@@ -20,7 +20,8 @@ const COMPONENT_CONFIG = {
   receiver: { category: 'receivers', icon: faBroadcastTower, label: 'Receiver' },
   camera: { category: 'cameras', icon: faCamera, label: 'Camera' },
   transmitter: { category: 'transmitters', icon: faSatelliteDish, label: 'Video Transmitter' },
-  antenna: { category: 'antennas', icon: faWifi, label: 'Antenna' },
+  antenna_receiver: { category: 'antennas', icon: faWifi, label: 'Receiver Antenna' },
+  antenna_transmitter: { category: 'antennas', icon: faWifi, label: 'Transmitter Antenna' },
   battery: { category: 'propulsion', icon: faBatteryFull, label: 'Battery' }
 };
 

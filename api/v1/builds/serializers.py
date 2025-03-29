@@ -10,7 +10,8 @@ from builds.models import Drone
 
 
 class DroneSerializer(serializers.ModelSerializer):
-    antenna = AntennaSerializer(read_only=True)
+    antenna_receiver = AntennaSerializer(read_only=True)
+    antenna_transmitter = AntennaSerializer(read_only=True)
     camera = CameraSerializer(read_only=True)
     battery = BatterySerializer(read_only=True)
     frame = FrameSerializer(read_only=True)

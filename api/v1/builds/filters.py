@@ -5,10 +5,10 @@ from components.models import Antenna, AntennaConnector, VideoFormat, ReceiverPr
 
 
 class DroneFilter(filters.FilterSet):
-    antenna__center_frequency = filters.RangeFilter(field_name='antenna__center_frequency')
-    antenna__swr = filters.RangeFilter(field_name='antenna__swr', )
-    antenna__gain = filters.RangeFilter(field_name='antenna__gain')
-    antenna__radiation = filters.RangeFilter(field_name='antenna__radiation')
+    # antenna__center_frequency = filters.RangeFilter(field_name='antenna__center_frequency')
+    # antenna__swr = filters.RangeFilter(field_name='antenna__swr', )
+    # antenna__gain = filters.RangeFilter(field_name='antenna__gain')
+    # antenna__radiation = filters.RangeFilter(field_name='antenna__radiation')
 
     battery__series = filters.RangeFilter(field_name='battery__series')
     battery__parallels = filters.RangeFilter(field_name='battery__parallels')
@@ -46,12 +46,12 @@ class DroneFilter(filters.FilterSet):
     class Meta:
         model = Drone
         fields = ['manufacturer', 'type',
-                  'antenna', 'camera', 'frame', 'motor', 'propeller',
+                  'antenna_transmitter', 'antenna_receiver', 'camera', 'frame', 'motor', 'propeller',
                   'receiver', 'transmitter', 'flight_controller', 'speed_controller',
 
-                  'antenna__center_frequency', 'antenna__swr', 'antenna__gain', 'antenna__radiation',
-                  'antenna__type__type', 'antenna__type__direction', 'antenna__type__polarization',
-                  'antenna__details__angle_type',
+                  # 'antenna__center_frequency', 'antenna__swr', 'antenna__gain', 'antenna__radiation',
+                  # 'antenna__type__type', 'antenna__type__direction', 'antenna__type__polarization',
+                  # 'antenna__details__angle_type',
 
                   'battery__series', 'battery__parallels', 'battery__size', 'battery__type',
                   'battery__capacity', 'battery__voltage',
