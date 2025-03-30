@@ -1,19 +1,23 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.viewsets import ModelViewSet
 
 from api.v1.builds.filters import DroneFilter
-from api.v1.builds.serializers import DroneSerializer
+from api.v1.builds.serializers import DroneSerializer, DroneWriteSerializer
 from builds.models import Drone
 
 
-class DroneAPIViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
-                      viewsets.GenericViewSet):
+class DroneAPIViewSet(ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    serializer_class = DroneSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = DroneFilter
     search_fields = ['model', 'manufacturer']
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return DroneWriteSerializer
+        return DroneSerializer
 
     def get_queryset(self):
         queryset = Drone.objects.all().distinct()
@@ -34,3 +38,6 @@ class DroneAPIViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
             queryset = queryset.filter(user__isnull=True)
 
         return queryset
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

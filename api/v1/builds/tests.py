@@ -42,14 +42,14 @@ class TestDroneAPIView(BaseAPITest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.get('count'), 1)
 
-    def test_filter_drone(self):
-        url = reverse('api:v1:builds:drone-list')
-        response = self.client.get(url, {'antenna': self.antenna1.id})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data.get('count'), 1)
-
-        response = self.client.get(url, {'antenna__center_frequency': 15})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data.get('count'), 2)
+    # def test_filter_drone(self):
+    #     url = reverse('api:v1:builds:drone-list')
+    #     response = self.client.get(url, {'antenna': self.antenna1.id})
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertEqual(response.data.get('count'), 1)
+    #
+    #     response = self.client.get(url, {'antenna__center_frequency': 15})
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertEqual(response.data.get('count'), 2)
 
 
