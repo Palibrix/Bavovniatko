@@ -1,8 +1,9 @@
-import { ROUTES } from '../../routes';import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faPlus, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { useAuth } from '../../context/AuthContext';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ComponentGallery from '../detail/ComponentGallery';
 import TabContainer from '../detail/TabContainer';
@@ -16,6 +17,7 @@ import {
   SpecificationsTab,
   DocumentsTab
 } from '../detail/tabs';
+import {ROUTES} from "../../routes";
 
 /**
  * Template for displaying detailed drone information
@@ -28,6 +30,7 @@ import {
  * @param {Function} props.onRefresh Function to call to refresh data
  * @param {Function} props.onAddToList Callback when "Add to List" button is clicked
  */
+
 const DroneDetailTemplate = ({
   componentType,
   item,
@@ -36,10 +39,20 @@ const DroneDetailTemplate = ({
   onAddToList
 }) => {
   const [selectedComponent, setSelectedComponent] = useState(null);
+  const { user } = useAuth();
 
   if (!item) {
     return <LoadingSpinner />;
   }
+
+    const getManufacturerDisplay = () => {
+    // If drone has a user, show "Username's Drone"
+    if (item.user) {
+      return `${item.user.username}'s Drone`;
+    }
+    // Otherwise show the actual manufacturer or default text
+    return item.manufacturer || "Custom Drone";
+  };
 
   // Get drone theme color
   const themeClass = getEntityThemeClass(componentType);
@@ -95,84 +108,96 @@ const DroneDetailTemplate = ({
   const selectedComponentType = selectedComponent ? getComponentType(selectedComponent) : '';
 
   return (
-    <div className="w-[92%] max-w-[1400px] mx-auto px-4 py-8">
-      {/* Back button */}
-      <Link
-        to={ROUTES.BUILDS.DRONES.LIST}
-        className="inline-flex items-center text-primary hover:text-gray-600 mb-6"
-      >
-        <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
-        Back to Builds
-      </Link>
+      <div className="w-[92%] max-w-[1400px] mx-auto px-4 py-8">
+        {/* Back button */}
+        <Link
+            to={ROUTES.BUILDS.DRONES.LIST}
+            className="inline-flex items-center text-primary hover:text-gray-600 mb-6"
+        >
+          <FontAwesomeIcon icon={faArrowLeft} className="mr-2"/>
+          Back to Builds
+        </Link>
 
-      {/* Product header - moved outside columns */}
-      <div className="mb-6 relative">
-        <span className={`inline-block text-xs font-semibold text-white ${themeClass.bg} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
-          {item.manufacturer || "Custom Drone"}
+        {/* Product header - moved outside columns */}
+
+        <div className="mb-6 relative">
+        <span
+            className={`inline-block text-xs font-semibold text-white ${themeClass.bg} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
+          {getManufacturerDisplay()}
         </span>
-        <h1 className="text-4xl font-bold text-primary">{item.model}</h1>
+          <h1 className="text-4xl font-bold text-primary">{item.model}</h1>
 
-        {/* Add to List Button (top right position) */}
-        <div className="absolute top-0 right-0">
-          <button
-            onClick={handleAddToList}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg ${themeClass.bg} text-white font-semibold transition-all hover:bg-opacity-90 hover:translate-y-[-2px] hover:shadow-md`}
-          >
-            <FontAwesomeIcon icon={faPlus} />
-            Add to List
-          </button>
-        </div>
-      </div>
-
-      {/* Main content area with two columns */}
-      <div className="flex flex-col lg:flex-row gap-10">
-        {/* Left column - Gallery and Components */}
-        <div className="w-full lg:w-5/12 flex flex-col pr-4">
-          {/* Image gallery with thumbnails and navigation */}
-          <ComponentGallery
-            images={item.images}
-            alt={`${item.manufacturer || 'Custom'} ${item.model}`}
-            componentType={componentType}
-          />
-
-          {/* Build completion meter */}
-          <BuildCompletionMeter
-            percentage={completionPercentage}
-            missingComponents={missingComponents}
-            themeClass={themeClass}
-          />
-
-          {/* Components Grid */}
-          <ComponentGrid
-            item={item}
-            selectedComponent={selectedComponent}
-            onSelectComponent={handleComponentSelect}
-          />
+          {/* Add to List Button and Edit Button (if owner) */}
+          <div className="absolute top-0 right-0 flex gap-3">
+            {user && item.user && (
+                <Link
+                    to={`${ROUTES.BUILDS.DRONES.EDIT}`.replace(':id', item.id)}
+                    className={`flex items-center gap-2 px-6 py-3 rounded-lg border-2 ${themeClass.border} ${themeClass.text} font-semibold transition-all hover:bg-opacity-10 hover:${themeClass.bgOpacity[10]} hover:translate-y-[-2px] hover:shadow-md`}
+                >
+                  <FontAwesomeIcon icon={faPencilAlt}/>
+                  Edit Drone
+                </Link>
+            )}
+            <button
+                onClick={handleAddToList}
+                className={`flex items-center gap-2 px-6 py-3 rounded-lg ${themeClass.bg} text-white font-semibold transition-all hover:bg-opacity-90 hover:translate-y-[-2px] hover:shadow-md`}
+            >
+              <FontAwesomeIcon icon={faPlus}/>
+              Add to List
+            </button>
+          </div>
         </div>
 
-        {/* Right column - Tabbed content */}
-        <div className="flex-1 flex flex-col">
-          {/* Main drone tabs */}
-          <TabContainer
-            item={item}
-            componentType={componentType}
-            descriptionTab={<DescriptionTab item={item} componentType={componentType} />}
-            specificationsTab={<SpecificationsTab item={item} specsConfig={specsConfig} componentType={componentType} />}
-            documentsTab={<DocumentsTab item={item} componentType={componentType} />}
-          />
-
-          {/* Selected component info */}
-          {selectedComponentData && (
-            <ComponentInfoPanel
-              item={selectedComponentData}
-              componentType={selectedComponentType}
-              isBattery={selectedComponent === 'battery'}
-              onClose={() => setSelectedComponent(null)}
+        {/* Main content area with two columns */}
+        <div className="flex flex-col lg:flex-row gap-10">
+          {/* Left column - Gallery and Components */}
+          <div className="w-full lg:w-5/12 flex flex-col pr-4">
+            {/* Image gallery with thumbnails and navigation */}
+            <ComponentGallery
+                images={item.images}
+                alt={`${item.manufacturer || 'Custom'} ${item.model}`}
+                componentType={componentType}
             />
-          )}
+
+            {/* Build completion meter */}
+            <BuildCompletionMeter
+                percentage={completionPercentage}
+                missingComponents={missingComponents}
+                themeClass={themeClass}
+            />
+
+            {/* Components Grid */}
+            <ComponentGrid
+                item={item}
+                selectedComponent={selectedComponent}
+                onSelectComponent={handleComponentSelect}
+            />
+          </div>
+
+          {/* Right column - Tabbed content */}
+          <div className="flex-1 flex flex-col">
+            {/* Main drone tabs */}
+            <TabContainer
+                item={item}
+                componentType={componentType}
+                descriptionTab={<DescriptionTab item={item} componentType={componentType}/>}
+                specificationsTab={<SpecificationsTab item={item} specsConfig={specsConfig}
+                                                      componentType={componentType}/>}
+                documentsTab={<DocumentsTab item={item} componentType={componentType}/>}
+            />
+
+            {/* Selected component info */}
+            {selectedComponentData && (
+                <ComponentInfoPanel
+                    item={selectedComponentData}
+                    componentType={selectedComponentType}
+                    isBattery={selectedComponent === 'battery'}
+                    onClose={() => setSelectedComponent(null)}
+                />
+            )}
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 

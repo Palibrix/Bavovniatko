@@ -1,8 +1,9 @@
-import { get } from './base';
+import { get, post, put, del} from './base';
 
 // Base endpoints for component types
 const ENDPOINTS = {
   antennas: '/components/antennas',
+  batteries: '/components/batteries',
   cameras: '/components/cameras',
   frames: '/components/frames',
   motors: '/components/motors',
@@ -34,4 +35,16 @@ export function getComponentList(componentType, params = {}) {
 
 export function getComponentById(componentType, id, params = {}) {
   return get(`${ENDPOINTS[componentType]}/${id}/`, params);
+}
+
+export function createBattery(batteryData) {
+  return post(`${ENDPOINTS.batteries}/`, batteryData);
+}
+
+export function updateBattery(id, batteryData) {
+  return put(`${ENDPOINTS.batteries}/${id}/`, batteryData);
+}
+
+export function deleteBattery(id) {
+  return del(`${ENDPOINTS.batteries}/${id}/`);
 }

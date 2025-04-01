@@ -23,7 +23,7 @@ const DronesTab = ({ profileData }) => {
       try {
         setLoading(true);
         // Fetch drones for the current user
-        const params = { user_id: profileData.id };
+        const params = { show_user_drones: true };
         const response = await dronesApi.getDrones(params);
 
         // Get drones from results if it's paginated, otherwise use response directly
@@ -178,13 +178,13 @@ const DronesTab = ({ profileData }) => {
                       <FontAwesomeIcon icon={faEye} />
                       View
                     </Link>
-                    <button
-                      onClick={() => handleEditDrone(drone.id)}
+                    <Link
+                      to={`${ROUTES.BUILDS.DRONES.EDIT.replace(':id', drone.id)}`}
                       className="flex-1 py-2 px-3 border border-drone text-drone rounded-md hover:bg-gray-50 transition-colors text-sm font-medium flex items-center justify-center gap-2"
                     >
                       <FontAwesomeIcon icon={faEdit} />
                       Edit
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

@@ -1,16 +1,18 @@
 import HomePage from '../pages/HomePage';
-import {AntennaListPage, AntennaDetailPage} from '../pages/components/antenna';
-import {CameraListPage, CameraDetailPage} from '../pages/components/camera';
-import {FrameListPage, FrameDetailPage} from '../pages/components/frame';
-import {MotorListPage, MotorDetailPage} from '../pages/components/motor';
-import {PropellerListPage, PropellerDetailPage} from '../pages/components/propeller';
-import {ReceiverListPage, ReceiverDetailPage} from '../pages/components/receiver';
-import {FlightControllerListPage, FlightControllerDetailPage} from '../pages/components/flightController';
-import {SpeedControllerListPage, SpeedControllerDetailPage} from '../pages/components/speedController';
-import {TransmitterListPage, TransmitterDetailPage} from '../pages/components/transmitter';
+import {AntennaDetailPage, AntennaListPage} from '../pages/components/antenna';
+import {CameraDetailPage, CameraListPage} from '../pages/components/camera';
+import {FrameDetailPage, FrameListPage} from '../pages/components/frame';
+import {MotorDetailPage, MotorListPage} from '../pages/components/motor';
+import {PropellerDetailPage, PropellerListPage} from '../pages/components/propeller';
+import {ReceiverDetailPage, ReceiverListPage} from '../pages/components/receiver';
+import {FlightControllerDetailPage, FlightControllerListPage} from '../pages/components/flightController';
+import {SpeedControllerDetailPage, SpeedControllerListPage} from '../pages/components/speedController';
+import {TransmitterDetailPage, TransmitterListPage} from '../pages/components/transmitter';
 import {DroneDetailPage, DroneListPage} from "../pages/drones";
+import DroneCreatePage from "../pages/drones/DroneCreatePage";
 import AuthPage from "../pages/auth/AuthPage";
 import {ProfilePage} from "../pages/profile";
+import DroneEditPage from "../pages/drones/DroneEditPage";
 
 const routesConfig = {
     // Home route
@@ -143,6 +145,16 @@ const routesConfig = {
             detail: {
                 path: '/drones/:id',
                 element: DroneDetailPage,
+            },
+            create: {
+                path: '/drones/create',
+                element: DroneCreatePage,
+                protected: true,
+            },
+            edit: {
+                path: '/drones/edit/:id',
+                element: DroneEditPage,
+                protected: true,
             }
         }
     }

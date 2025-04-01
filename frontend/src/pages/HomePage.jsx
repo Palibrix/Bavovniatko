@@ -40,7 +40,7 @@ function HomePage() {
                 </i>
                 Explore Drones
               </Link>
-              <Link to="#" className="inline-flex items-center py-3 px-8 rounded-lg font-semibold transition-all duration-300 text-lg bg-transparent text-white border-2 border-white hover:bg-white/10 hover:translate-y-[-2px]">
+              <Link to={ROUTES.BUILDS.DRONES.CREATE} className="inline-flex items-center py-3 px-8 rounded-lg font-semibold transition-all duration-300 text-lg bg-transparent text-white border-2 border-white hover:bg-white/10 hover:translate-y-[-2px]">
                 <i className="mr-3 text-xl">
                   <FontAwesomeIcon icon={faTools} />
                 </i>

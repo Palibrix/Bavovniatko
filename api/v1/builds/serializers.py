@@ -26,6 +26,7 @@ class DroneSerializer(serializers.ModelSerializer):
     receiver = ReceiverSerializer(read_only=True)
     speed_controller = SpeedControllerSerializer(read_only=True)
     transmitter = TransmitterSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
 
     images = DroneGalleryReadSerializer(many=True)
     documents = DroneDocumentReadSerializer(many=True)

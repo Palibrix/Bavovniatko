@@ -55,6 +55,8 @@ export const ROUTES = {
         DRONES: {
             LIST: routesConfig.builds.drones.list.path,
             DETAIL: routesConfig.builds.drones.detail.path,
+            CREATE: routesConfig.builds.drones.create.path,
+            EDIT: routesConfig.builds.drones.edit.path,
         }
     }
 };

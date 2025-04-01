@@ -26,18 +26,19 @@ class DroneAPIViewSet(ModelViewSet):
         if self.action == 'retrieve':
             return queryset
 
+        user_id = self.request.user.id
+
+        if self.action in ['create', 'update', 'partial_update']:
+            return queryset.filter(user_id=user_id)
+
         # Filter logic for list views
-        user_id = self.request.query_params.get('user_id')
-        include_user_drones = self.request.query_params.get('include_user_drones', 'false').lower() == 'true'
+        show_user_drones = self.request.query_params.get('show_user_drones', 'false').lower() == 'true'
 
-        if user_id:
-            # Get drones for a specific user
-            queryset = queryset.filter(user_id=user_id)
-        elif not include_user_drones:
-            # By default, show only official drones
-            queryset = queryset.filter(user__isnull=True)
+        if show_user_drones:
+            if user_id:
+                return queryset.filter(user_id=user_id)
 
-        return queryset
+        return queryset.filter(user__isnull=True)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

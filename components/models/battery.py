@@ -17,6 +17,7 @@ class Battery(BaseComponentMixin):
     # drone = models.OneToOneField('Drone', on_delete=models.CASCADE, related_name='battery')
 
     model = None
+    manufacturer = models.CharField(max_length=50, null=True, blank=True)
     series = models.PositiveSmallIntegerField(verbose_name='Cells in series',
                                               help_text=_('Number of cells in series, e.g. 6 from 6S3P'))
     parallels = models.PositiveSmallIntegerField(verbose_name='Cells in parallels',

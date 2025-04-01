@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from api.v1.components.views import (AntennaAPIViewSet, CameraAPIViewSet, FrameAPIViewSet, MotorAPIViewSet,
                                      PropellerAPIViewSet, ReceiverAPIViewSet, StackAPIViewSet,
                                      FlightControllerAPIViewSet, SpeedControllerAPIViewSet, TransmitterAPIViewSet)
+from api.v1.components.views.battery_views import BatteryAPIViewSet
 
 app_name = 'api-v1-components'
 router = DefaultRouter(trailing_slash=True)
@@ -17,6 +18,8 @@ router.register(r'stacks', StackAPIViewSet, basename="stack")
 router.register(r'flight_controllers', FlightControllerAPIViewSet, basename="flight_controller")
 router.register(r'speed_controllers', SpeedControllerAPIViewSet, basename="speed_controller")
 router.register(r'transmitters', TransmitterAPIViewSet, basename="transmitter")
+
+router.register(r'batteries', BatteryAPIViewSet, basename="battery")
 
 urlpatterns = [
 

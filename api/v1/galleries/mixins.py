@@ -13,7 +13,27 @@ def validate_image_size(image):
 
 class BaseGalleryWriteSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
-    image = Base64ImageField(validators=[validate_image_size])
+    image = Base64ImageField(validators=[validate_image_size], required=False)
+
+    def validate(self, data):
+
+        # Case 2: Existing image unchanged (id present, no image)
+        if data.get('id') and 'image' not in data:
+            return data
+
+        # Case 3: New image (no id, image present)
+        if not data.get('id') and 'image' in data:
+            return data
+
+        # If none of these cases match, raise validation error
+        if data.get('id') and 'image' in data:
+            raise serializers.ValidationError(
+                _("Cannot provide both id and image - either keep existing image (id only) or upload new one (image only)"))
+
+        if not data.get('id') and 'image' not in data:
+            raise serializers.ValidationError(_("Either id or image must be provided"))
+
+        return data
 
     def validate_id(self, value):
         if not value:
