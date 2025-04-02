@@ -28,7 +28,7 @@ class DroneAPIViewSet(ModelViewSet):
 
         user_id = self.request.user.id
 
-        if self.action in ['create', 'update', 'partial_update']:
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return queryset.filter(user_id=user_id)
 
         # Filter logic for list views

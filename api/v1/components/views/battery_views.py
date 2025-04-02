@@ -1,6 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, viewsets, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.viewsets import ModelViewSet
 
 # from api.v1.components.filters import BatteryFilter
 from api.v1.components.mixins import BaseComponentFilterMixin
@@ -8,9 +9,7 @@ from api.v1.components.serializers.battery_serializers import BatterySerializer,
 from components.models import Battery
 
 
-class BatteryAPIViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin,
-                         mixins.CreateModelMixin, mixins.UpdateModelMixin,
-                         viewsets.GenericViewSet):
+class BatteryAPIViewSet(ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     # filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     queryset = Battery.objects.all().distinct()

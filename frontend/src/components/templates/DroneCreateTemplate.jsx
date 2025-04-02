@@ -1,13 +1,15 @@
 import React, {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faArrowLeft, faExclamationTriangle, faSave, faSpinner} from '@fortawesome/free-solid-svg-icons';
+import {faArrowLeft, faExclamationTriangle, faSave, faSpinner, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {ROUTES} from '../../routes';
 import {componentsApi, dronesApi} from '../../services/api';
 import ComponentCategoryPanel from '../droneBuilder/ComponentCategoryPanel';
 import ComponentSelectionPanel from '../droneBuilder/ComponentSelectionPanel';
 import DronePropertiesPanel from '../droneBuilder/DronePropertiesPanel';
 import BatteryConfigModal from '../droneBuilder/BatteryConfigModal';
+import BuildCompletionMeter from '../detail/BuildCompletionMeter';
+import ConfirmationModal from '../common/ConfirmationModal';
 import {getEntityThemeClass} from '../../utils/themeUtils';
 
 /**
@@ -57,11 +59,30 @@ const DroneCreateTemplate = ({isEditMode = false, initialDrone = null}) => {
     const [selectedComponent, setSelectedComponent] = useState(null);
     const [selectedComponentType, setSelectedComponentType] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [saveError, setSaveError] = useState(null);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
     // Compatibility state (placeholders for now)
     const [componentCompatibility, setComponentCompatibility] = useState({});
     const [compatibilityIssues, setCompatibilityIssues] = useState([]);
+
+    // Handle drone delete
+    const handleDeleteDrone = async () => {
+        if (!isEditMode || !initialDrone) return;
+
+        setIsDeleting(true);
+        setSaveError(null);
+
+        try {
+            await dronesApi.deleteDrone(initialDrone.id);
+            navigate(ROUTES.BUILDS.DRONES.LIST);
+        } catch (error) {
+            console.error('Error deleting drone:', error);
+            setSaveError(`Failed to delete drone: ${error.message || 'Unknown error'}`);
+            setIsDeleting(false);
+        }
+    };
 
     // Get completion percentage and missing components
     const getCompletionData = () => {
@@ -106,8 +127,31 @@ const DroneCreateTemplate = ({isEditMode = false, initialDrone = null}) => {
     };
 
     // Handle component selection
-    const handleSelectComponent = (component, category) => {
-        // Map category ID to droneData property
+    const handleSelectComponent = async (component, category, componentKeyToRemove = null) => {
+        // If componentKeyToRemove is provided, remove the component
+        if (componentKeyToRemove) {
+            // Special case for battery - we need to delete it completely
+            if (componentKeyToRemove === 'battery' && droneData.battery?.id) {
+                try {
+                    // Delete the battery from the API
+                    await componentsApi.deleteBattery(droneData.battery.id);
+                    console.log(`Battery ${droneData.battery.id} deleted`);
+                } catch (error) {
+                    console.error('Error deleting battery:', error);
+                    // setSaveErrors(`Failed to delete battery: ${error.message || 'Unknown error'}`);
+                    return;
+                }
+            }
+
+            // Update the drone data
+            setDroneData({
+                ...droneData,
+                [componentKeyToRemove]: null
+            });
+            return;
+        }
+
+        // Otherwise, map category ID to droneData property and add component
         const categoryMap = {
             frames: 'frame',
             motors: 'motor',
@@ -200,18 +244,18 @@ const DroneCreateTemplate = ({isEditMode = false, initialDrone = null}) => {
                 description: droneData.description,
                 type: droneData.type,
                 // Include the component IDs for each component
-                frame: droneData.frame?.id,
-                motor: droneData.motor?.id,
-                propeller: droneData.propeller?.id,
-                flight_controller: droneData.flight_controller?.id,
-                speed_controller: droneData.speed_controller?.id,
-                receiver: droneData.receiver?.id,
-                camera: droneData.camera?.id,
-                transmitter: droneData.transmitter?.id,
-                antenna_receiver: droneData.antenna_receiver?.id,
-                antenna_transmitter: droneData.antenna_transmitter?.id,
+                frame: droneData.frame?.id || null,
+                motor: droneData.motor?.id || null,
+                propeller: droneData.propeller?.id || null,
+                flight_controller: droneData.flight_controller?.id || null,
+                speed_controller: droneData.speed_controller?.id || null,
+                receiver: droneData.receiver?.id || null,
+                camera: droneData.camera?.id || null,
+                transmitter: droneData.transmitter?.id || null,
+                antenna_receiver: droneData.antenna_receiver?.id || null,
+                antenna_transmitter: droneData.antenna_transmitter?.id || null,
                 // Include battery ID if saved
-                battery: droneData.battery.id,
+                battery: droneData.battery?.id || null,
                 // Include properties if provided
                 ...(droneData.total_weight ? {total_weight: Number(droneData.total_weight)} : {}),
                 ...(droneData.flight_duration ? {flight_duration: Number(droneData.flight_duration)} : {}),
@@ -298,11 +342,27 @@ const DroneCreateTemplate = ({isEditMode = false, initialDrone = null}) => {
                         </div>
                     )}
 
+                    {/* Delete button - only in edit mode */}
+                    {isEditMode && initialDrone && (
+                        <button
+                            className="bg-red-600 text-white px-5 py-3 rounded-lg font-semibold flex items-center gap-2 hover:bg-red-700 transition-opacity"
+                            onClick={() => setShowDeleteConfirmation(true)}
+                            disabled={isDeleting || isSaving}
+                        >
+                            {isDeleting ? (
+                                <FontAwesomeIcon icon={faSpinner} className="animate-spin"/>
+                            ) : (
+                                <FontAwesomeIcon icon={faTrash}/>
+                            )}
+                            {isDeleting ? 'Deleting...' : 'Delete'}
+                        </button>
+                    )}
+
                     {/* Save button */}
                     <button
                         className={`save-button ${themeClass.bg} text-white px-5 py-3 rounded-lg font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
                         onClick={handleSaveDrone}
-                        disabled={isSaving}
+                        disabled={isSaving || isDeleting}
                     >
                         {isSaving ? (
                             <FontAwesomeIcon icon={faSpinner} className="animate-spin"/>
@@ -343,6 +403,13 @@ const DroneCreateTemplate = ({isEditMode = false, initialDrone = null}) => {
 
                 {/* Right panel - Drone Properties */}
                 <div className="w-full lg:w-1/4">
+                    {/* Build Completion Meter */}
+                    <BuildCompletionMeter
+                        percentage={completionPercentage}
+                        missingComponents={missingComponents}
+                        themeClass={themeClass}
+                    />
+
                     <DronePropertiesPanel
                         droneData={droneData}
                         onChange={handleDroneDataChange}
@@ -362,6 +429,18 @@ const DroneCreateTemplate = ({isEditMode = false, initialDrone = null}) => {
                 initialData={droneData.battery || {}}
                 isSaving={isSavingBattery}
                 saveError={batterySaveError}
+            />
+
+            {/* Delete Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={showDeleteConfirmation}
+                onClose={() => setShowDeleteConfirmation(false)}
+                onConfirm={handleDeleteDrone}
+                title="Delete Drone"
+                message="Are you sure you want to delete this drone? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+                type="danger"
             />
         </div>
     );

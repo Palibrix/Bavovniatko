@@ -57,8 +57,12 @@ export async function apiRequest(endpoint, options = {}) {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
     console.log(response.url);
 
-    // Handle non-2xx responses
-    if (!response.ok) {
+    // Extract validation function for status code if provided
+    const validateStatus = options.validateStatus ||
+      ((status) => status >= 200 && status < 300);
+
+    // Handle non-2xx responses unless validated by validateStatus
+    if (!validateStatus(response.status)) {
       // Try to get error message from response body
       let errorData;
       try {
@@ -74,9 +78,26 @@ export async function apiRequest(endpoint, options = {}) {
       };
     }
 
-    // Parse JSON response (with error handling)
-    const data = await response.json();
-    return data;
+    // For 204 No Content or empty responses, return success object
+    if (response.status === 204 || response.headers.get('content-length') === '0') {
+      return { success: true };
+    }
+
+    // Try to parse JSON response
+    try {
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      // Return success object for empty successful responses
+      if (response.ok) {
+        return { success: true };
+      }
+      throw {
+        status: response.status,
+        statusText: 'Invalid JSON response',
+        message: 'Server returned invalid JSON'
+      };
+    }
   } catch (error) {
     console.error('API request failed:', error);
     throw error;
@@ -129,5 +150,15 @@ export function patch(endpoint, data = {}) {
  * Helper function for DELETE requests
  */
 export function del(endpoint) {
-  return apiRequest(endpoint, { method: 'DELETE' });
+  return apiRequest(endpoint, {
+    method: 'DELETE',
+    // Set validateStatus to true to prevent errors for 204 No Content responses
+    validateStatus: (status) => (status >= 200 && status < 300) || status === 204
+  }).catch(error => {
+    // For 204 No Content responses which are common for DELETE operations
+    if (error.status === 204) {
+      return { success: true };
+    }
+    throw error;
+  });
 }
