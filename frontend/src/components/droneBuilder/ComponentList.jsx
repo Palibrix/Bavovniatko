@@ -22,7 +22,8 @@ const ComponentList = ({
   selectedCategory,
   onSelectComponent,
   showOnlyCompatible,
-  setShowOnlyCompatible
+  setShowOnlyCompatible,
+  gridColumns = 3
 }) => {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [searchTerm, setSearchTerm] = useState('');
@@ -42,6 +43,15 @@ const ComponentList = ({
 
     return searchMatches && compatibilityMatches;
   });
+
+  // Get grid classes based on column count
+  const getGridClasses = () => {
+    if (viewMode !== 'grid') return 'flex flex-col gap-3';
+
+    return gridColumns === 2
+      ? 'grid grid-cols-1 sm:grid-cols-2 gap-4'
+      : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4';
+  };
 
   return (
     <>
@@ -99,13 +109,13 @@ const ComponentList = ({
       </div>
 
       {/* Component list/grid */}
-      <div className={`flex-1 overflow-y-auto p-4 ${viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4' : 'flex flex-col gap-3'}`}>
+      <div className={`flex-1 overflow-y-auto p-4 ${getGridClasses()}`}>
         {loading && <LoadingSpinner />}
 
         {error && <ErrorMessage message={error} />}
 
         {!loading && !error && filteredComponents.length === 0 && (
-          <div className="text-center text-gray-500 py-8">
+          <div className="text-center text-gray-500 py-8 col-span-full">
             {searchTerm ? `No ${currentMapping?.displayName} found matching "${searchTerm}"` : `No ${currentMapping?.displayName} available`}
           </div>
         )}
@@ -217,7 +227,8 @@ ComponentList.propTypes = {
   selectedCategory: PropTypes.string.isRequired,
   onSelectComponent: PropTypes.func.isRequired,
   showOnlyCompatible: PropTypes.bool.isRequired,
-  setShowOnlyCompatible: PropTypes.func.isRequired
+  setShowOnlyCompatible: PropTypes.func.isRequired,
+  gridColumns: PropTypes.number
 };
 
 export default ComponentList;

@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useSearchParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBorderAll, faCog, faFan, faMicrochip, faTachometerAlt,
-  faBroadcastTower, faCamera, faSatelliteDish, faWifi, faBatteryFull
+  faBroadcastTower, faCamera, faSatelliteDish, faWifi, faBatteryFull,
+  faFilter
 } from '@fortawesome/free-solid-svg-icons';
 import { getEntityThemeClass } from '../../utils/themeUtils';
 import { componentsApi } from '../../services/api';
 import ComponentList from './ComponentList';
 import BuildOverview from './BuildOverview';
+import { FilterSidebar } from '../../components/filters';
 
 /**
  * Middle panel for component selection in drone builder
@@ -23,10 +26,12 @@ const ComponentSelectionPanel = ({
   missingComponents = [],
   completionPercentage
 }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [components, setComponents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showOnlyCompatible, setShowOnlyCompatible] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
 
   // Get current component mapping
   const currentMapping = selectedCategory ? COMPONENT_MAPPING[selectedCategory] : null;
@@ -44,8 +49,16 @@ const ComponentSelectionPanel = ({
         // Get the API type from the mapping
         const apiType = COMPONENT_MAPPING[selectedCategory].theme;
 
+        // Extract filter params from URL
+        const filterParams = {};
+        searchParams.forEach((value, key) => {
+          if (key !== 'page' && key !== 'sort') {
+            filterParams[key] = value;
+          }
+        });
+
         // Fetch components from API
-        const result = await componentsApi.getComponentList(apiType);
+        const result = await componentsApi.getComponentList(apiType, filterParams);
         setComponents(result.results || result);
       } catch (err) {
         console.error(`Error fetching ${selectedCategory}:`, err);
@@ -56,9 +69,14 @@ const ComponentSelectionPanel = ({
     };
 
     fetchComponents();
-  }, [selectedCategory, showBuildOverview]);
+  }, [selectedCategory, showBuildOverview, searchParams]);
 
-    // Handle component selection
+  // Handle filter changes
+  const handleFilterChange = (newParams) => {
+    setSearchParams(newParams);
+  };
+
+  // Handle component selection
   const handleComponentSelect = (component) => {
     if (!currentMapping) return;
     onSelectComponent(component, selectedCategory);
@@ -73,12 +91,23 @@ const ComponentSelectionPanel = ({
     <div className="flex-1 bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col">
       <div className="py-4 px-6 border-b border-gray-100 font-semibold text-primary flex justify-between items-center">
         <span>{showBuildOverview ? 'Build Overview' : `Select ${currentMapping?.displayName || 'Component'}`}</span>
-        <button
-          className="text-sm px-3 py-1.5 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-          onClick={() => onBuildOverviewToggle()}
-        >
-          {showBuildOverview ? 'Select Components' : 'Build Overview'}
-        </button>
+        <div className="flex items-center gap-2">
+          {!showBuildOverview && selectedCategory && (
+            <button
+              className="text-sm px-3 py-1.5 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors flex items-center gap-1.5"
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <FontAwesomeIcon icon={faFilter} />
+              {showFilters ? 'Hide Filters' : 'Show Filters'}
+            </button>
+          )}
+          <button
+            className="text-sm px-3 py-1.5 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+            onClick={() => onBuildOverviewToggle()}
+          >
+            {showBuildOverview ? 'Select Components' : 'Build Overview'}
+          </button>
+        </div>
       </div>
 
       {showBuildOverview ? (
@@ -90,15 +119,28 @@ const ComponentSelectionPanel = ({
           onComponentRemove={handleComponentRemove}
         />
       ) : (
-        <ComponentList
-          components={components}
-          loading={loading}
-          error={error}
-          selectedCategory={selectedCategory}
-          onSelectComponent={handleComponentSelect}
-          showOnlyCompatible={showOnlyCompatible}
-          setShowOnlyCompatible={setShowOnlyCompatible}
-        />
+        <div className="flex flex-1 overflow-hidden">
+          {showFilters && (
+            <div className="w-64 border-r border-gray-100 p-3 overflow-y-auto">
+              <FilterSidebar
+                componentType={currentMapping?.theme || 'primary'}
+                setSearchParamsWithReplace={handleFilterChange}
+              />
+            </div>
+          )}
+          <div className="flex-1">
+            <ComponentList
+              components={components}
+              loading={loading}
+              error={error}
+              selectedCategory={selectedCategory}
+              onSelectComponent={handleComponentSelect}
+              showOnlyCompatible={showOnlyCompatible}
+              setShowOnlyCompatible={setShowOnlyCompatible}
+              gridColumns={showFilters ? 2 : 3}
+            />
+          </div>
+        </div>
       )}
     </div>
   );
