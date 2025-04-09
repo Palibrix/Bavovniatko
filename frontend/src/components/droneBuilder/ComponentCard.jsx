@@ -7,7 +7,7 @@ import { getKeySpecsForComponentType } from '../../config/componentSpecs';
 /**
  * Grid view card for component selection
  */
-const ComponentCard = ({ component, categoryType, isCompatible, themeClass, onSelect }) => {
+const ComponentCard = ({ component, categoryType, isCompatible, themeClass, onSelect, compatibilityIssues = [] }) => {
   return (
     <div
       className={`border rounded-xl transition-all hover:-translate-y-1 hover:shadow-md ${
@@ -15,8 +15,21 @@ const ComponentCard = ({ component, categoryType, isCompatible, themeClass, onSe
       }`}
     >
       {!isCompatible && (
-        <div className="absolute top-2 right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs">
+        <div
+          className="absolute top-2 right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs group cursor-help"
+          title={compatibilityIssues.length > 0 ? compatibilityIssues[0].message : "Incompatible with current configuration"}
+        >
           <FontAwesomeIcon icon={faExclamationTriangle} />
+          {compatibilityIssues.length > 0 && (
+            <div className="hidden group-hover:block absolute right-0 top-full mt-2 bg-white border border-gray-200 shadow-lg rounded-md p-3 w-64 z-10">
+              <div className="text-red-600 font-medium mb-1">Compatibility Issues:</div>
+              {compatibilityIssues.map((issue, idx) => (
+                <div key={idx} className="text-sm text-gray-700 mb-1">
+                  {issue.message}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -94,7 +107,8 @@ ComponentCard.propTypes = {
   categoryType: PropTypes.string.isRequired,
   isCompatible: PropTypes.bool.isRequired,
   themeClass: PropTypes.object.isRequired,
-  onSelect: PropTypes.func.isRequired
+  onSelect: PropTypes.func.isRequired,
+  compatibilityIssues: PropTypes.array
 };
 
 export default ComponentCard;

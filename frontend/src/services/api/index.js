@@ -10,5 +10,6 @@ export * as authApi from './auth';
 export * as usersApi from './users';
 // export * as suggestionsApi from './suggestions';
 export * as listsApi from './lists';
+export * as compatibilityApi from './compatibility';
 
 // You can add more domains as your application grows

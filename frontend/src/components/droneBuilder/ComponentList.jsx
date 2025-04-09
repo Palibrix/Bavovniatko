@@ -23,7 +23,9 @@ const ComponentList = ({
   onSelectComponent,
   showOnlyCompatible,
   setShowOnlyCompatible,
-  gridColumns = 3
+  gridColumns = 3,
+  droneComponents,
+  componentCompatibility
 }) => {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,14 +34,42 @@ const ComponentList = ({
   const currentMapping = selectedCategory ? COMPONENT_MAPPING[selectedCategory] : null;
   const themeClass = currentMapping ? getEntityThemeClass(currentMapping.theme) : getEntityThemeClass('primary');
 
-  // Filter components based on search term
+  // Determine if a component is compatible with current configuration
+  const isComponentCompatible = (component) => {
+    // If component has compatibility info from API
+    if (component.compatibility) {
+      return component.compatibility.is_compatible;
+    }
+
+    // Without direct compatibility info, check if there are issues involving this component type
+    if (!componentCompatibility) return true;
+
+    // For camera-frame compatibility (current focus)
+    const pairKeys = Object.keys(componentCompatibility);
+
+    // For the component type we're currently viewing
+    if (selectedCategory === 'cameras' && droneComponents.frame) {
+      // Check camera_frame compatibility
+      return componentCompatibility['camera_frame']?.is_compatible !== false;
+    }
+
+    if (selectedCategory === 'frames' && droneComponents.camera) {
+      // Check camera_frame compatibility
+      return componentCompatibility['camera_frame']?.is_compatible !== false;
+    }
+
+    // By default, assume compatible
+    return true;
+  };
+
+  // Filter components based on search term and compatibility
   const filteredComponents = components.filter(component => {
     // Search filter
     const searchMatches = !searchTerm ||
       `${component.manufacturer || ''} ${component.model || ''}`.toLowerCase().includes(searchTerm.toLowerCase());
 
-    // Compatibility filter - placeholder for now
-    const compatibilityMatches = !showOnlyCompatible || true;
+    // Compatibility filter - only apply if checkbox is checked
+    const compatibilityMatches = !showOnlyCompatible || isComponentCompatible(component);
 
     return searchMatches && compatibilityMatches;
   });
@@ -120,9 +150,9 @@ const ComponentList = ({
           </div>
         )}
 
-        {!loading && !error && filteredComponents.map(component => {
-          // Determine if component is compatible (placeholder)
-          const isCompatible = true; // Will implement real compatibility later
+                {!loading && !error && filteredComponents.map(component => {
+          // Determine if component is compatible
+          const isCompatible = isComponentCompatible(component);
 
           return viewMode === 'grid' ? (
             <ComponentCard
@@ -132,6 +162,7 @@ const ComponentList = ({
               isCompatible={isCompatible}
               themeClass={themeClass}
               onSelect={() => onSelectComponent(component, selectedCategory)}
+              compatibilityIssues={component.compatibility?.issues || []}
             />
           ) : (
             <ComponentListItem
@@ -142,6 +173,7 @@ const ComponentList = ({
               themeClass={themeClass}
               currentMapping={currentMapping}
               onSelect={() => onSelectComponent(component, selectedCategory)}
+              compatibilityIssues={component.compatibility?.issues || []}
             />
           );
         })}
@@ -228,7 +260,9 @@ ComponentList.propTypes = {
   onSelectComponent: PropTypes.func.isRequired,
   showOnlyCompatible: PropTypes.bool.isRequired,
   setShowOnlyCompatible: PropTypes.func.isRequired,
-  gridColumns: PropTypes.number
+  gridColumns: PropTypes.number,
+  droneComponents: PropTypes.object,
+  componentCompatibility: PropTypes.object
 };
 
 export default ComponentList;

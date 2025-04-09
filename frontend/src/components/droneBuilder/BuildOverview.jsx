@@ -7,6 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { getEntityThemeClass } from '../../utils/themeUtils';
 import { getKeySpecsForComponentType } from '../../config/componentSpecs';
+import CompatibilityIssue from './CompatibilityIssue';
 
 // Non-component drone properties to filter out
 const NON_COMPONENT_PROPERTIES = [
@@ -99,6 +100,7 @@ const BuildOverview = ({
   return (
     <>
       <div className="p-6 overflow-y-auto flex-1">
+
         {/* Compatibility issues section */}
         {compatibilityIssues.length > 0 && (
           <div className="build-issues mb-5 border border-red-200 rounded-lg overflow-hidden">
@@ -113,9 +115,9 @@ const BuildOverview = ({
             </div>
 
             <div className="issues-list p-4">
-              <div className="text-gray-500 italic">
-                Compatibility checking will be implemented in the next stage.
-              </div>
+              {compatibilityIssues.map((issue, index) => (
+                <CompatibilityIssue key={index} issue={issue} />
+              ))}
             </div>
           </div>
         )}

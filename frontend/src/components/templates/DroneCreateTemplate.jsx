@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faArrowLeft, faExclamationTriangle, faSave, faSpinner, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {ROUTES} from '../../routes';
-import {componentsApi, dronesApi} from '../../services/api';
+import {componentsApi, dronesApi, compatibilityApi} from '../../services/api';
 import ComponentCategoryPanel from '../droneBuilder/ComponentCategoryPanel';
 import ComponentSelectionPanel from '../droneBuilder/ComponentSelectionPanel';
 import DronePropertiesPanel from '../droneBuilder/DronePropertiesPanel';
@@ -66,6 +66,9 @@ const DroneCreateTemplate = ({isEditMode = false, initialDrone = null}) => {
     // Compatibility state (placeholders for now)
     const [componentCompatibility, setComponentCompatibility] = useState({});
     const [compatibilityIssues, setCompatibilityIssues] = useState([]);
+    const [compatibilityResults, setCompatibilityResults] = useState(null);
+    const [previousConfiguration, setPreviousConfiguration] = useState(null);
+    const [isCheckingCompatibility, setIsCheckingCompatibility] = useState(false);
 
     // Handle drone delete
     const handleDeleteDrone = async () => {
@@ -83,6 +86,79 @@ const DroneCreateTemplate = ({isEditMode = false, initialDrone = null}) => {
             setIsDeleting(false);
         }
     };
+
+        // Check compatibility when components change
+    const checkCompatibility = async () => {
+        // Don't check if we have less than 2 components
+        const selectedComponents = Object.entries(droneData)
+            .filter(([key, value]) => !['model', 'manufacturer', 'description', 'type', 'images',
+                'documents', 'total_weight', 'flight_duration', 'max_speed',
+                'control_range', 'max_altitude'].includes(key) && value);
+
+        if (selectedComponents.length < 2) {
+            setCompatibilityIssues([]);
+            setComponentCompatibility({});
+            return;
+        }
+
+        setIsCheckingCompatibility(true);
+
+        try {
+            // Prepare configuration object with component IDs
+            const configuration = {};
+            selectedComponents.forEach(([key, component]) => {
+                configuration[key] = component.id;
+            });
+
+            // Check compatibility with backend
+            const results = await compatibilityApi.checkCompatibility(
+                configuration,
+                previousConfiguration,
+                compatibilityResults
+            );
+
+            setCompatibilityResults(results);
+            setPreviousConfiguration(configuration);
+
+            // Extract issues
+            if (results.issues) {
+                setCompatibilityIssues(results.issues);
+            }
+
+            // Store component compatibility status
+            if (results.pair_results) {
+                setComponentCompatibility(results.pair_results);
+            }
+        } catch (error) {
+            console.error('Error checking compatibility:', error);
+        } finally {
+            setIsCheckingCompatibility(false);
+        }
+    };
+
+    // Check compatibility when components change
+    useEffect(() => {
+        // Skip during initial render or when saving/deleting
+        if (isSaving || isDeleting) return;
+
+        const debouncedCheck = setTimeout(() => {
+            checkCompatibility();
+        }, 500);
+
+        return () => clearTimeout(debouncedCheck);
+    }, [
+        droneData.frame,
+        droneData.motor,
+        droneData.propeller,
+        droneData.flight_controller,
+        droneData.speed_controller,
+        droneData.receiver,
+        droneData.transmitter,
+        droneData.antenna_receiver,
+        droneData.antenna_transmitter,
+        droneData.camera,
+        droneData.battery
+    ]);
 
     // Get completion percentage and missing components
     const getCompletionData = () => {

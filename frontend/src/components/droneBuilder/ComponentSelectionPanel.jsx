@@ -8,10 +8,11 @@ import {
   faFilter
 } from '@fortawesome/free-solid-svg-icons';
 import { getEntityThemeClass } from '../../utils/themeUtils';
-import { componentsApi } from '../../services/api';
+import { componentsApi, compatibilityApi } from '../../services/api';
 import ComponentList from './ComponentList';
 import BuildOverview from './BuildOverview';
 import { FilterSidebar } from '../../components/filters';
+
 
 /**
  * Middle panel for component selection in drone builder
@@ -24,7 +25,8 @@ const ComponentSelectionPanel = ({
   onBuildOverviewToggle,
   compatibilityIssues = [],
   missingComponents = [],
-  completionPercentage
+  completionPercentage,
+  componentCompatibility = {}
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [components, setComponents] = useState([]);
@@ -48,6 +50,7 @@ const ComponentSelectionPanel = ({
       try {
         // Get the API type from the mapping
         const apiType = COMPONENT_MAPPING[selectedCategory].theme;
+        const apiDroneComponent = COMPONENT_MAPPING[selectedCategory].droneProperty;
 
         // Extract filter params from URL
         const filterParams = {};
@@ -57,8 +60,33 @@ const ComponentSelectionPanel = ({
           }
         });
 
-        // Fetch components from API
-        const result = await componentsApi.getComponentList(apiType, filterParams);
+        // Prepare current component configuration for compatibility check
+        const configuration = {};
+        Object.entries(droneComponents).forEach(([key, component]) => {
+          if (component && typeof component === 'object' && component.id && !key.startsWith('total_') &&
+              !['model', 'manufacturer', 'description', 'type', 'images', 'documents',
+               'flight_duration', 'max_speed', 'control_range', 'max_altitude'].includes(key)) {
+            configuration[key] = component.id;
+          }
+        });
+
+        let result;
+
+        // If we have components selected and there's a defined compatibility relationship
+        if (Object.keys(configuration).length > 0) {
+          try {
+            // Try to get compatible components
+            result = await compatibilityApi.getCompatibleComponents(apiDroneComponent, configuration);
+          } catch (compatError) {
+            console.warn('Compatibility check failed, falling back to regular fetch:', compatError);
+            // Fall back to regular fetch if compatibility check fails
+            result = await componentsApi.getComponentList(apiType, filterParams);
+          }
+        } else {
+          // Regular fetch if no components selected yet
+          result = await componentsApi.getComponentList(apiType, filterParams);
+        }
+
         setComponents(result.results || result);
       } catch (err) {
         console.error(`Error fetching ${selectedCategory}:`, err);
@@ -69,7 +97,7 @@ const ComponentSelectionPanel = ({
     };
 
     fetchComponents();
-  }, [selectedCategory, showBuildOverview, searchParams]);
+  }, [selectedCategory, showBuildOverview, searchParams, droneComponents]);
 
   // Handle filter changes
   const handleFilterChange = (newParams) => {
@@ -138,6 +166,8 @@ const ComponentSelectionPanel = ({
               showOnlyCompatible={showOnlyCompatible}
               setShowOnlyCompatible={setShowOnlyCompatible}
               gridColumns={showFilters ? 2 : 3}
+              droneComponents={droneComponents}
+              componentCompatibility={componentCompatibility}
             />
           </div>
         </div>
@@ -224,7 +254,8 @@ ComponentSelectionPanel.propTypes = {
   onBuildOverviewToggle: PropTypes.func.isRequired,
   compatibilityIssues: PropTypes.array,
   missingComponents: PropTypes.array,
-  completionPercentage: PropTypes.number.isRequired
+  completionPercentage: PropTypes.number.isRequired,
+  componentCompatibility: PropTypes.object
 };
 
 export default ComponentSelectionPanel;

@@ -261,9 +261,35 @@ class CompatibilityService:
 
     def _serialize_component(self, component):
         """
-        Serialize a component instance to a simple dict
-        In a real implementation, we would use proper serializers
+        Serialize a component instance using proper serializers
         """
+        from api.v1.components.serializers import (
+            AntennaSerializer, CameraSerializer, FrameSerializer,
+            MotorSerializer, PropellerSerializer, ReceiverSerializer,
+            FlightControllerSerializer, SpeedControllerSerializer, TransmitterSerializer
+        )
+
+        # Map component types to serializers
+        serializer_map = {
+            'Camera': CameraSerializer,
+            'Frame': FrameSerializer,
+            'Motor': MotorSerializer,
+            'Propeller': PropellerSerializer,
+            'Receiver': ReceiverSerializer,
+            'FlightController': FlightControllerSerializer,
+            'SpeedController': SpeedControllerSerializer,
+            'Transmitter': TransmitterSerializer,
+            'Antenna': AntennaSerializer,
+        }
+
+        # Get the appropriate serializer for this component type
+        component_type = component.__class__.__name__
+        serializer_class = serializer_map.get(component_type)
+
+        if serializer_class:
+            return serializer_class(component).data
+
+        # Fallback to basic serialization if no serializer found
         return {
             'id': component.id,
             'manufacturer': component.manufacturer,
