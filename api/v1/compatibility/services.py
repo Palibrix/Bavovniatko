@@ -1,5 +1,3 @@
-from django.db.models import Q
-
 from api.v1.compatibility.checkers import get_checker
 from components.models import Camera, Frame, Antenna, Motor, Propeller, Receiver, \
     FlightController, SpeedController, Transmitter
@@ -210,6 +208,32 @@ class CompatibilityService:
             if not checker:
                 continue
 
+        # Check detailed compatibility for each component
+        results = []
+
+        # Process all components to include both compatible and incompatible
+        for component in queryset:
+            compatibility = self._check_component_compatibility(component, component_type, configuration)
+            # Add to results with compatibility info
+            component_data = self._serialize_component(component)
+            component_data['compatibility'] = compatibility
+            results.append(component_data)
+
+        return results
+
+    def get_compatible_components_from_queryset(self, component_type, configuration, queryset):
+        """
+        Get components from a pre-filtered queryset and add compatibility information.
+        This allows reusing existing filter functionality.
+
+        Args:
+            component_type: Type of component to get
+            configuration: Current component configuration
+            queryset: Pre-filtered queryset from component views
+
+        Returns:
+            List of components with compatibility information
+        """
         # Check detailed compatibility for each component
         results = []
 
