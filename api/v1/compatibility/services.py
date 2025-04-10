@@ -16,9 +16,9 @@ class CompatibilityService:
         frozenset(['antenna_transmitter', 'transmitter']): True,
 
         # Battery compatibility
-        frozenset(['battery', 'flight_controller']): True,
+        # frozenset(['battery', 'flight_controller']): True,
         frozenset(['battery', 'motor']): True,
-        frozenset(['battery', 'speed_controller']): True,
+        # frozenset(['battery', 'speed_controller']): True,
         frozenset(['battery', 'transmitter']): True,
 
         # Camera compatibility
@@ -26,10 +26,8 @@ class CompatibilityService:
         frozenset(['camera', 'transmitter']): True,
 
         # Frame compatibility
-        frozenset(['frame', 'flight_controller']): True,
         frozenset(['frame', 'motor']): True,
         frozenset(['frame', 'propeller']): True,
-        frozenset(['frame', 'speed_controller']): True,
         frozenset(['frame', 'transmitter']): True,
 
         # FC compatibility
