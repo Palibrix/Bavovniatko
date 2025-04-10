@@ -1,6 +1,6 @@
 from api.v1.compatibility.checkers import get_checker
 from components.models import Camera, Frame, Antenna, Motor, Propeller, Receiver, \
-    FlightController, SpeedController, Transmitter
+    FlightController, SpeedController, Transmitter, Battery
 
 
 class CompatibilityService:
@@ -11,14 +11,35 @@ class CompatibilityService:
     # Define which component pairs need compatibility checking
     COMPATIBILITY_RELATIONSHIPS = {
         # Format: frozenset([type1, type2]): True
-        frozenset(['camera', 'frame']): True,
-        frozenset(['motor', 'frame']): True,
-        frozenset(['propeller', 'motor']): True,
-        frozenset(['flight_controller', 'frame']): True,
-        frozenset(['flight_controller', 'speed_controller']): True,
-        frozenset(['receiver', 'flight_controller']): True,
+        # Antenna compatibility
         frozenset(['antenna_receiver', 'receiver']): True,
         frozenset(['antenna_transmitter', 'transmitter']): True,
+
+        # Battery compatibility
+        frozenset(['battery', 'flight_controller']): True,
+        frozenset(['battery', 'motor']): True,
+        frozenset(['battery', 'speed_controller']): True,
+        frozenset(['battery', 'transmitter']): True,
+
+        # Camera compatibility
+        frozenset(['camera', 'frame']): True,
+        frozenset(['camera', 'transmitter']): True,
+
+        # Frame compatibility
+        frozenset(['frame', 'flight_controller']): True,
+        frozenset(['frame', 'motor']): True,
+        frozenset(['frame', 'propeller']): True,
+        frozenset(['frame', 'speed_controller']): True,
+        frozenset(['frame', 'transmitter']): True,
+
+        # FC compatibility
+        frozenset(['flight_controller', 'speed_controller']): True,
+
+        # Motor compatibility
+        frozenset(['motor', 'speed_controller']): True,
+
+        # Receiver compatibility
+        frozenset(['receiver', 'flight_controller']): True,
     }
 
     # Map component type to model class
@@ -33,6 +54,7 @@ class CompatibilityService:
         'transmitter': Transmitter,
         'antenna_receiver': Antenna,
         'antenna_transmitter': Antenna,
+        'battery': Battery
     }
 
     def check_compatibility(self, configuration, previous_configuration=None, previous_results=None):

@@ -39,3 +39,16 @@ def get_checker(component1, component2):
 # For testing, we'll import this directly to ensure it's registered
 # In production, you would implement auto-discovery
 from api.v1.compatibility.checkers.camera_frame import CameraFrameCompatibilityChecker
+from api.v1.compatibility.checkers.antenna_receiver import AntennaReceiverCompatibilityChecker
+from api.v1.compatibility.checkers.antenna_transmitter import AntennaTransmitterCompatibilityChecker
+# from api.v1.compatibility.checkers.battery_flight_controller import BatteryFlightControllerCompatibilityChecker
+from api.v1.compatibility.checkers.battery_motor import BatteryMotorCompatibilityChecker
+# from api.v1.compatibility.checkers.battery_speed_controller import BatterySpeedControllerCompatibilityChecker
+from api.v1.compatibility.checkers.battery_transmitter import BatteryTransmitterCompatibilityChecker
+from api.v1.compatibility.checkers.camera_transmitter import CameraTransmitterCompatibilityChecker
+from api.v1.compatibility.checkers.frame_propeller import FramePropellerCompatibilityChecker
+from api.v1.compatibility.checkers.frame_transmitter import FrameTransmitterCompatibilityChecker
+from api.v1.compatibility.checkers.flight_controller_speed_controller import FlightControllerSpeedControllerCompatibilityChecker
+from api.v1.compatibility.checkers.motor_frame import MotorFrameCompatibilityChecker
+from api.v1.compatibility.checkers.motor_speed_controller import MotorSpeedControllerCompatibilityChecker
+from api.v1.compatibility.checkers.receiver_flight_controller import ReceiverFlightControllerCompatibilityChecker
