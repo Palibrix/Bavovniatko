@@ -175,22 +175,6 @@ const BuildOverview = ({
                                     </button>
                                 </div>
                             );
-
-                            // return (
-                            //   <div key={key} className="summary-card flex items-center p-3 border-b border-gray-100 last:border-0">
-                            //     <div className={`summary-icon w-10 h-10 rounded-full ${componentTheme.bg} text-white flex items-center justify-center font-semibold mr-3`}>
-                            //       <FontAwesomeIcon icon={mapping.icon} />
-                            //     </div>
-                            //     <div className="summary-content flex-1">
-                            //       <div className="summary-title font-medium">
-                            //         {component.manufacturer ? `${component.manufacturer} ${component.model}` : component.model ? component.model : mapping.displayName}
-                            //       </div>
-                            //       <div className="summary-details text-xs text-gray-500 mt-1">
-                            //         {getComponentShortSummary(component, key)}
-                            //       </div>
-                            //     </div>
-                            //   </div>
-                            // );
                         })}
 
                         {Object.values(droneComponents).filter(component =>
