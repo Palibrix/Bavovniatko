@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faBatteryFull,
     faBorderAll,
@@ -8,6 +8,8 @@ import {
     faCamera,
     faCog,
     faExclamationTriangle,
+    faInfoCircle,
+    faEye,
     faFan,
     faMicrochip,
     faSatelliteDish,
@@ -15,9 +17,11 @@ import {
     faTrash,
     faWifi
 } from '@fortawesome/free-solid-svg-icons';
-import {getEntityThemeClass} from '../../utils/themeUtils';
-import {getKeySpecsForComponentType} from '../../config/componentSpecs';
-import CompatibilityIssue from './CompatibilityIssue';
+import Tippy from '@tippyjs/react';
+import { getEntityThemeClass } from '../../utils/themeUtils';
+import { getKeySpecsForComponentType } from '../../config/componentSpecs';
+import DismissibleCompatibilityIssue from './DissmissibleCompatibilityIssue';
+import HiddenIssuesModal from './HiddenIssuesModal';
 
 // Non-component drone properties to filter out
 const NON_COMPONENT_PROPERTIES = [
@@ -101,32 +105,120 @@ const COMPONENT_MAPPING = {
  * Build overview component for showing selected components
  */
 const BuildOverview = ({
-                           droneComponents,
-                           compatibilityIssues = [],
-                           missingComponents = [],
-                           onComponentAdd,
-                           onComponentRemove
-                       }) => {
+    droneComponents,
+    compatibilityIssues = [],
+    persistentCompatibilityIssues = [],
+    dismissedIssues = [],
+    onDismissIssue,
+    onRestoreIssue, // New prop
+    missingComponents = [],
+    onComponentAdd,
+    onComponentRemove
+}) => {
+
+    const getVisibleIssues = () => {
+        return persistentCompatibilityIssues.filter(issue =>
+            !dismissedIssues.includes(issue.id)
+        );
+    };
+
+    const visibleIssues = getVisibleIssues();
+    const hasDismissedIssues = persistentCompatibilityIssues.length > visibleIssues.length;
+
+    const [showHiddenIssuesModal, setShowHiddenIssuesModal] = useState(false);
+
+    // Get hidden issues
+    const getHiddenIssues = () => {
+        return persistentCompatibilityIssues.filter(issue =>
+            dismissedIssues.includes(issue.id)
+        );
+    };
+
+    // Filter visible issues and separate recommendations from critical issues
+    const filterIssues = () => {
+        const visibleIssues = persistentCompatibilityIssues.filter(issue =>
+            !dismissedIssues.includes(issue.id)
+        );
+
+        const criticalIssues = visibleIssues.filter(issue =>
+            issue.severity !== 'recommendation'
+        );
+
+        const recommendations = visibleIssues.filter(issue =>
+            issue.severity === 'recommendation'
+        );
+
+        return { criticalIssues, recommendations };
+    };
+
+    const { criticalIssues, recommendations } = filterIssues();
+    const hiddenIssues = getHiddenIssues();
+
     return (
         <>
             <div className="p-6 overflow-y-auto flex-1">
-
-                {/* Compatibility issues section */}
-                {compatibilityIssues.length > 0 && (
+                {/* Critical compatibility issues section */}
+                {(criticalIssues.length > 0 || hasDismissedIssues) && (
                     <div className="build-issues mb-5 border border-red-200 rounded-lg overflow-hidden">
                         <div className="issues-header bg-red-100 p-3 flex justify-between items-center">
                             <div className="issues-title text-red-800 font-semibold flex items-center gap-2">
                                 <FontAwesomeIcon icon={faExclamationTriangle}/>
                                 Compatibility Issues
+
+                                {/* Indicator for hidden issues with button */}
+                                {hasDismissedIssues && (
+                                    <button
+                                        onClick={() => setShowHiddenIssuesModal(true)}
+                                        className="bg-gray-600 text-white text-xs px-2 py-0.5 rounded-full ml-2 flex items-center gap-1 hover:bg-gray-700"
+                                    >
+                                        <FontAwesomeIcon icon={faEye} className="mr-1" />
+                                        {hiddenIssues.length} hidden
+                                    </button>
+                                )}
                             </div>
                             <div className="issues-count text-xs text-red-800">
-                                {compatibilityIssues.length} issue{compatibilityIssues.length !== 1 ? 's' : ''} found
+                                {criticalIssues.length} visible / {criticalIssues.length + hiddenIssues.length} total issue(s)
                             </div>
                         </div>
 
                         <div className="issues-list p-4">
-                            {compatibilityIssues.map((issue, index) => (
-                                <CompatibilityIssue key={index} issue={issue}/>
+                            {criticalIssues.map((issue) => (
+                                <DismissibleCompatibilityIssue
+                                    key={issue.id}
+                                    issue={issue}
+                                    onDismiss={onDismissIssue}
+                                />
+                            ))}
+
+                            {criticalIssues.length === 0 && hasDismissedIssues && (
+                                <div className="text-gray-500 italic text-center py-2">
+                                    All issues have been dismissed. Click "hidden" to review them.
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Recommendations section - only show if there are recommendations */}
+                {recommendations.length > 0 && (
+                    <div className="build-recommendations mb-5 border border-blue-200 rounded-lg overflow-hidden">
+                        <div className="recommendations-header bg-blue-50 p-3 flex justify-between items-center">
+                            <div className="recommendations-title text-blue-700 font-semibold flex items-center gap-2">
+                                <FontAwesomeIcon icon={faInfoCircle}/>
+                                Recommendations
+                            </div>
+                            <div className="recommendations-count text-xs text-blue-700">
+                                {recommendations.length} recommendation(s)
+                            </div>
+                        </div>
+
+                        <div className="recommendations-list p-4">
+                            {recommendations.map((recommendation) => (
+                                <DismissibleCompatibilityIssue
+                                    key={recommendation.id}
+                                    issue={recommendation}
+                                    onDismiss={onDismissIssue}
+                                />
                             ))}
                         </div>
                     </div>
@@ -231,6 +323,12 @@ const BuildOverview = ({
                     </div>
                 )}
             </div>
+            <HiddenIssuesModal
+                isOpen={showHiddenIssuesModal}
+                onClose={() => setShowHiddenIssuesModal(false)}
+                issues={hiddenIssues}
+                onRestoreIssue={onRestoreIssue}
+            />
         </>
     );
 };
@@ -285,9 +383,11 @@ function getComponentShortSummary(component, componentKey) {
 BuildOverview.propTypes = {
     droneComponents: PropTypes.object.isRequired,
     compatibilityIssues: PropTypes.array,
+    persistentCompatibilityIssues: PropTypes.array,
+    dismissedIssues: PropTypes.array,
+    onDismissIssue: PropTypes.func,
     missingComponents: PropTypes.array,
     onComponentAdd: PropTypes.func.isRequired,
     onComponentRemove: PropTypes.func.isRequired
 };
-
 export default BuildOverview;

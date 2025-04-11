@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faArrowLeft, faExclamationTriangle, faSave, faSpinner, faTrash} from '@fortawesome/free-solid-svg-icons';
 import {ROUTES} from '../../routes';
-import {componentsApi, dronesApi, compatibilityApi} from '../../services/api';
+import {compatibilityApi, componentsApi, dronesApi} from '../../services/api';
 import ComponentCategoryPanel from '../droneBuilder/ComponentCategoryPanel';
 import ComponentSelectionPanel from '../droneBuilder/ComponentSelectionPanel';
 import DronePropertiesPanel from '../droneBuilder/DronePropertiesPanel';
@@ -70,6 +70,9 @@ const DroneCreateTemplate = ({isEditMode = false, initialDrone = null}) => {
     const [previousConfiguration, setPreviousConfiguration] = useState(null);
     const [isCheckingCompatibility, setIsCheckingCompatibility] = useState(false);
 
+    const [persistentCompatibilityIssues, setPersistentCompatibilityIssues] = useState([]);
+    const [dismissedIssues, setDismissedIssues] = useState([]);
+
     // Handle drone delete
     const handleDeleteDrone = async () => {
         if (!isEditMode || !initialDrone) return;
@@ -87,7 +90,13 @@ const DroneCreateTemplate = ({isEditMode = false, initialDrone = null}) => {
         }
     };
 
-        // Check compatibility when components change
+    // Check compatibility when components change
+    const handleRestoreIssue = (issueId) => {
+        // Remove from dismissed issues
+        setDismissedIssues(prev => prev.filter(id => id !== issueId));
+    };
+
+// Update the compatibility checking function to handle recommendations
     const checkCompatibility = async () => {
         // Don't check if we have less than 2 components
         const selectedComponents = Object.entries(droneData)
@@ -120,20 +129,71 @@ const DroneCreateTemplate = ({isEditMode = false, initialDrone = null}) => {
             setCompatibilityResults(results);
             setPreviousConfiguration(configuration);
 
-            // Extract issues
+            // Extract issues, ensuring recommendations don't count as incompatibilities
             if (results.issues) {
+                // For current display purposes
                 setCompatibilityIssues(results.issues);
+
+                // Process issues for persistence, adding IDs to recommendations for consistency
+                setPersistentCompatibilityIssues(prevIssues => {
+                    // Create a new array with existing issues
+                    const updatedIssues = [...prevIssues];
+
+                    // Add new issues if they don't already exist
+                    results.issues.forEach(newIssue => {
+                        // Create a unique key based on issue properties
+                        const issueKey = `${newIssue.type}-${newIssue.message}-${(newIssue.component_refs || []).join('-')}`;
+
+                        // Check if this issue already exists
+                        const exists = updatedIssues.some(existingIssue => {
+                            const existingKey = `${existingIssue.type}-${existingIssue.message}-${(existingIssue.component_refs || []).join('-')}`;
+                            return existingKey === issueKey;
+                        });
+
+                        // If it doesn't exist, add it with a unique ID
+                        if (!exists) {
+                            updatedIssues.push({
+                                ...newIssue,
+                                // Add severity as 'recommendation' if not specified
+                                severity: newIssue.severity || 'recommendation',
+                                id: `issue-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+                            });
+                        }
+                    });
+
+                    return updatedIssues;
+                });
             }
 
-            // Store component compatibility status
+            // Modify the component compatibility to not count recommendations as incompatibilities
             if (results.pair_results) {
-                setComponentCompatibility(results.pair_results);
+                // Create a modified version that doesn't count recommendations as incompatibilities
+                const modifiedPairResults = {};
+
+                Object.entries(results.pair_results).forEach(([key, result]) => {
+                    // Check if any issues are non-recommendations
+                    const hasCriticalIssues = result.issues.some(issue =>
+                        issue.severity !== 'recommendation' && issue.severity !== undefined);
+
+                    // Only count as incompatible if there are critical issues
+                    modifiedPairResults[key] = {
+                        ...result,
+                        is_compatible: !hasCriticalIssues
+                    };
+                });
+
+                setComponentCompatibility(modifiedPairResults);
             }
         } catch (error) {
             console.error('Error checking compatibility:', error);
         } finally {
             setIsCheckingCompatibility(false);
         }
+    };
+
+    const handleDismissIssue = (issueId) => {
+        // Add to dismissed issues
+        setDismissedIssues(prev => [...prev, issueId]);
     };
 
     // Check compatibility when components change
@@ -204,56 +264,68 @@ const DroneCreateTemplate = ({isEditMode = false, initialDrone = null}) => {
 
     // Handle component selection
     const handleSelectComponent = async (component, category, componentKeyToRemove = null) => {
-        // If componentKeyToRemove is provided, remove the component
-        if (componentKeyToRemove) {
-            // Special case for battery - we need to delete it completely
-            if (componentKeyToRemove === 'battery' && droneData.battery?.id) {
-                try {
-                    // Delete the battery from the API
-                    await componentsApi.deleteBattery(droneData.battery.id);
-                    console.log(`Battery ${droneData.battery.id} deleted`);
-                } catch (error) {
-                    console.error('Error deleting battery:', error);
-                    // setSaveErrors(`Failed to delete battery: ${error.message || 'Unknown error'}`);
-                    return;
-                }
+    // If componentKeyToRemove is provided, remove the component
+    if (componentKeyToRemove) {
+        // Special case for battery - we need to delete it completely
+        if (componentKeyToRemove === 'battery' && droneData.battery?.id) {
+            try {
+                // Delete the battery from the API
+                await componentsApi.deleteBattery(droneData.battery.id);
+                console.log(`Battery ${droneData.battery.id} deleted`);
+            } catch (error) {
+                console.error('Error deleting battery:', error);
+                // setSaveErrors(`Failed to delete battery: ${error.message || 'Unknown error'}`);
+                return;
             }
-
-            // Update the drone data
-            setDroneData({
-                ...droneData,
-                [componentKeyToRemove]: null
-            });
-            return;
         }
 
-        // Otherwise, map category ID to droneData property and add component
-        const categoryMap = {
-            frames: 'frame',
-            motors: 'motor',
-            propellers: 'propeller',
-            flight_controllers: 'flight_controller',
-            speed_controllers: 'speed_controller',
-            receivers: 'receiver',
-            cameras: 'camera',
-            transmitters: 'transmitter',
-            antennas_receiver: 'antenna_receiver',
-            antennas_transmitter: 'antenna_transmitter'
-        };
-
-        const propertyName = categoryMap[category];
-
-        if (propertyName) {
-            // Update drone data with selected component
-            setDroneData({
-                ...droneData,
-                [propertyName]: component
+        // Clean up any associated compatibility issues when removing a component
+        setPersistentCompatibilityIssues(prevIssues => {
+            // Filter out issues that reference this component type
+            return prevIssues.filter(issue => {
+                // If issue has component_refs, check if it includes the removed component
+                if (issue.component_refs && issue.component_refs.includes(componentKeyToRemove)) {
+                    return false; // Remove this issue
+                }
+                return true; // Keep all other issues
             });
+        });
 
-            // Show build overview after component selection
-            setShowBuildOverview(true);
-        }
+        // Update the drone data
+        setDroneData({
+            ...droneData,
+            [componentKeyToRemove]: null
+        });
+        return;
+    }
+
+    // Otherwise, map category ID to droneData property and add component
+    const categoryMap = {
+        frames: 'frame',
+        motors: 'motor',
+        propellers: 'propeller',
+        flight_controllers: 'flight_controller',
+        speed_controllers: 'speed_controller',
+        receivers: 'receiver',
+        cameras: 'camera',
+        transmitters: 'transmitter',
+        antennas_receiver: 'antenna_receiver',
+        antennas_transmitter: 'antenna_transmitter'
     };
+
+    const propertyName = categoryMap[category];
+
+    if (propertyName) {
+        // Update drone data with selected component
+        setDroneData({
+            ...droneData,
+            [propertyName]: component
+        });
+
+        // Show build overview after component selection
+        setShowBuildOverview(true);
+    }
+};
 
     // Handle battery save from modal
     const handleSaveBattery = async (batteryData) => {
@@ -469,11 +541,15 @@ const DroneCreateTemplate = ({isEditMode = false, initialDrone = null}) => {
                         onSelectComponent={handleSelectComponent}
                         showBuildOverview={showBuildOverview}
                         droneComponents={droneData}
-                        componentCompatibility={componentCompatibility}
                         onBuildOverviewToggle={handleBuildOverviewToggle}
                         compatibilityIssues={compatibilityIssues}
+                        persistentCompatibilityIssues={persistentCompatibilityIssues}
+                        dismissedIssues={dismissedIssues}
+                        onDismissIssue={handleDismissIssue}
+                        onRestoreIssue={handleRestoreIssue}
                         missingComponents={missingComponents}
                         completionPercentage={completionPercentage}
+                        componentCompatibility={componentCompatibility}
                     />
                 </div>
 

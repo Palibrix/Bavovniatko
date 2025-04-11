@@ -26,16 +26,20 @@ import {FilterSidebar} from '../../components/filters';
  * Middle panel for component selection in drone builder
  */
 const ComponentSelectionPanel = ({
-                                     selectedCategory,
-                                     onSelectComponent,
-                                     showBuildOverview,
-                                     droneComponents,
-                                     onBuildOverviewToggle,
-                                     compatibilityIssues = [],
-                                     missingComponents = [],
-                                     completionPercentage,
-                                     componentCompatibility = {}
-                                 }) => {
+    selectedCategory,
+    onSelectComponent,
+    showBuildOverview,
+    droneComponents,
+    onBuildOverviewToggle,
+    compatibilityIssues = [],
+    persistentCompatibilityIssues = [],
+    dismissedIssues = [],
+    onDismissIssue,
+    onRestoreIssue,
+    missingComponents = [],
+    completionPercentage,
+    componentCompatibility = {}
+}) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [components, setComponents] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -155,6 +159,10 @@ const ComponentSelectionPanel = ({
                 <BuildOverview
                     droneComponents={droneComponents}
                     compatibilityIssues={compatibilityIssues}
+                    persistentCompatibilityIssues={persistentCompatibilityIssues}
+                    dismissedIssues={dismissedIssues}
+                    onDismissIssue={onDismissIssue}
+                    onRestoreIssue={onRestoreIssue}
                     missingComponents={missingComponents}
                     onComponentAdd={onBuildOverviewToggle}
                     onComponentRemove={handleComponentRemove}
@@ -181,6 +189,8 @@ const ComponentSelectionPanel = ({
                             gridColumns={showFilters ? 2 : 3}
                             droneComponents={droneComponents}
                             componentCompatibility={componentCompatibility}
+                            dismissedIssues={dismissedIssues}
+                            persistentIssues={persistentCompatibilityIssues}
                         />
                     </div>
                 </div>
@@ -266,6 +276,10 @@ ComponentSelectionPanel.propTypes = {
     droneComponents: PropTypes.object.isRequired,
     onBuildOverviewToggle: PropTypes.func.isRequired,
     compatibilityIssues: PropTypes.array,
+    persistentCompatibilityIssues: PropTypes.array,
+    dismissedIssues: PropTypes.array,
+    onDismissIssue: PropTypes.func,
+    onRestoreIssue: PropTypes.func,
     missingComponents: PropTypes.array,
     completionPercentage: PropTypes.number.isRequired,
     componentCompatibility: PropTypes.object
