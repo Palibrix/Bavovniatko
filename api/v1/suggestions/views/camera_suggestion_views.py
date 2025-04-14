@@ -18,7 +18,7 @@ class VideoFormatSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
         if self.request.user.is_superuser:
             return VideoFormatSuggestion.objects.distinct()
         else:
-            return VideoFormatSuggestion.objects.filter(user=self.request.user).distinct()
+            return VideoFormatSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class CameraSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixin, ModelViewSet):
@@ -30,7 +30,7 @@ class CameraSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixin, Mo
         if self.request.user.is_superuser:
             return CameraSuggestion.objects.distinct()
         else:
-            return CameraSuggestion.objects.filter(user=self.request.user).distinct()
+            return CameraSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class ExistingCameraDetailSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -42,4 +42,4 @@ class ExistingCameraDetailSuggestionAPIViewSet(SuggestionActionsMixin, ModelView
         if self.request.user.is_superuser:
             return ExistingCameraDetailSuggestion.objects.distinct()
         else:
-            return ExistingCameraDetailSuggestion.objects.filter(user=self.request.user).distinct()
+            return ExistingCameraDetailSuggestion.objects.filter(user_id=self.request.user.id).distinct()

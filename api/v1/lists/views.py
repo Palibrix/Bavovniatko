@@ -24,6 +24,9 @@ class ListViewSet(viewsets.ModelViewSet):
     search_fields = ['name', 'description']
 
     def get_queryset(self):
+
+        if getattr(self, 'swagger_fake_view', False):
+            return List.objects.none()
         """Return only lists owned by the current user."""
         return List.objects.filter(owner=self.request.user)
 

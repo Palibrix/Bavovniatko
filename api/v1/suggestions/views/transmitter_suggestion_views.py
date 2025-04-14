@@ -20,7 +20,7 @@ class TransmitterSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixi
         if self.request.user.is_superuser:
             return TransmitterSuggestion.objects.distinct()
         else:
-            return TransmitterSuggestion.objects.filter(user=self.request.user).distinct()
+            return TransmitterSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class OutputPowerSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -32,4 +32,4 @@ class OutputPowerSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
         if self.request.user.is_superuser:
             return OutputPowerSuggestion.objects.distinct()
         else:
-            return OutputPowerSuggestion.objects.filter(user=self.request.user).distinct()
+            return OutputPowerSuggestion.objects.filter(user_id=self.request.user.id).distinct()

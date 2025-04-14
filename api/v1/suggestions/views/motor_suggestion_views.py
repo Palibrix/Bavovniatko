@@ -24,7 +24,7 @@ class MotorSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixin, Mod
         if self.request.user.is_superuser:
             return MotorSuggestion.objects.distinct()
         else:
-            return MotorSuggestion.objects.filter(user=self.request.user).distinct()
+            return MotorSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class RatedVoltageSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -35,7 +35,7 @@ class RatedVoltageSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
         if self.request.user.is_superuser:
             return RatedVoltageSuggestion.objects.distinct()
         else:
-            return RatedVoltageSuggestion.objects.filter(user=self.request.user).distinct()
+            return RatedVoltageSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class ExistingMotorDetailSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -46,4 +46,4 @@ class ExistingMotorDetailSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewS
         if self.request.user.is_superuser:
             return ExistingMotorDetailSuggestion.objects.distinct()
         else:
-            return ExistingMotorDetailSuggestion.objects.filter(user=self.request.user).distinct()
+            return ExistingMotorDetailSuggestion.objects.filter(user_id=self.request.user.id).distinct()

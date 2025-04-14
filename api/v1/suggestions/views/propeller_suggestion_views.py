@@ -17,4 +17,4 @@ class PropellerSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixin,
         if self.request.user.is_superuser:
             return PropellerSuggestion.objects.distinct()
         else:
-            return PropellerSuggestion.objects.filter(user=self.request.user).distinct()
+            return PropellerSuggestion.objects.filter(user_id=self.request.user.id).distinct()

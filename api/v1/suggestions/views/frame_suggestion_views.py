@@ -27,7 +27,7 @@ class FrameSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixin, Mod
         if self.request.user.is_superuser:
             return FrameSuggestion.objects.distinct()
         else:
-            return FrameSuggestion.objects.filter(user=self.request.user).distinct()
+            return FrameSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class ExistingFrameCameraDetailSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -39,7 +39,7 @@ class ExistingFrameCameraDetailSuggestionAPIViewSet(SuggestionActionsMixin, Mode
         if self.request.user.is_superuser:
             return ExistingFrameCameraDetailSuggestion.objects.distinct()
         else:
-            return ExistingFrameCameraDetailSuggestion.objects.filter(user=self.request.user).distinct()
+            return ExistingFrameCameraDetailSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class ExistingFrameMotorDetailSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -51,7 +51,7 @@ class ExistingFrameMotorDetailSuggestionAPIViewSet(SuggestionActionsMixin, Model
         if self.request.user.is_superuser:
             return ExistingFrameMotorDetailSuggestion.objects.distinct()
         else:
-            return ExistingFrameMotorDetailSuggestion.objects.filter(user=self.request.user).distinct()
+            return ExistingFrameMotorDetailSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class ExistingFrameVTXDetailSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -63,4 +63,4 @@ class ExistingFrameVTXDetailSuggestionAPIViewSet(SuggestionActionsMixin, ModelVi
         if self.request.user.is_superuser:
             return ExistingFrameVTXDetailSuggestion.objects.distinct()
         else:
-            return ExistingFrameVTXDetailSuggestion.objects.filter(user=self.request.user).distinct()
+            return ExistingFrameVTXDetailSuggestion.objects.filter(user_id=self.request.user.id).distinct()

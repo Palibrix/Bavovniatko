@@ -11,7 +11,7 @@ from api.v1.galleries.mixins import GalleryContextMixin
 from api.v1.suggestions.serializers.antenna_suggestion_serializers import AntennaTypeSuggestionSerializer, \
     AntennaConnectorSuggestionSerializer, \
     ExistingAntennaDetailSuggestionSerializer, AntennaSuggestionSerializer
-from components.models import AntennaType
+
 from suggestions.models import AntennaSuggestion
 # from drf_rw_serializers.viewsets import ModelViewSet
 
@@ -29,7 +29,7 @@ class AntennaSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixin, M
         if self.request.user.is_superuser:
             return AntennaSuggestion.objects.distinct()
         else:
-            return AntennaSuggestion.objects.filter(user=self.request.user).distinct()
+            return AntennaSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class AntennaTypeSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -41,7 +41,7 @@ class AntennaTypeSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
         if self.request.user.is_superuser:
             return AntennaTypeSuggestion.objects.distinct()
         else:
-            return AntennaTypeSuggestion.objects.filter(user=self.request.user).distinct()
+            return AntennaTypeSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class AntennaConnectorSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -53,7 +53,7 @@ class AntennaConnectorSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet)
         if self.request.user.is_superuser:
             return AntennaConnectorSuggestion.objects.distinct()
         else:
-            return AntennaConnectorSuggestion.objects.filter(user=self.request.user).distinct()
+            return AntennaConnectorSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class ExistingAntennaDetailSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -65,4 +65,4 @@ class ExistingAntennaDetailSuggestionAPIViewSet(SuggestionActionsMixin, ModelVie
         if self.request.user.is_superuser:
             return ExistingAntennaDetailSuggestion.objects.distinct()
         else:
-            return ExistingAntennaDetailSuggestion.objects.filter(user=self.request.user).distinct()
+            return ExistingAntennaDetailSuggestion.objects.filter(user_id=self.request.user.id).distinct()

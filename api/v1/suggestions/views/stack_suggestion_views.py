@@ -31,7 +31,7 @@ class FlightControllerSuggestionAPIViewSet(GalleryContextMixin, SuggestionAction
     def get_queryset(self):
         if self.request.user.is_superuser:
             return FlightControllerSuggestion.objects.distinct()
-        return FlightControllerSuggestion.objects.filter(user=self.request.user).distinct()
+        return FlightControllerSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class SpeedControllerSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixin, ModelViewSet):
@@ -41,7 +41,7 @@ class SpeedControllerSuggestionAPIViewSet(GalleryContextMixin, SuggestionActions
     def get_queryset(self):
         if self.request.user.is_superuser:
             return SpeedControllerSuggestion.objects.distinct()
-        return SpeedControllerSuggestion.objects.filter(user=self.request.user).distinct()
+        return SpeedControllerSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class StackSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixin, ModelViewSet):
@@ -51,7 +51,7 @@ class StackSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixin, Mod
     def get_queryset(self):
         if self.request.user.is_superuser:
             return StackSuggestion.objects.distinct()
-        return StackSuggestion.objects.filter(user=self.request.user).distinct()
+        return StackSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class GyroSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -61,7 +61,7 @@ class GyroSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return GyroSuggestion.objects.distinct()
-        return GyroSuggestion.objects.filter(user=self.request.user).distinct()
+        return GyroSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class FlightControllerFirmwareSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -71,7 +71,7 @@ class FlightControllerFirmwareSuggestionAPIViewSet(SuggestionActionsMixin, Model
     def get_queryset(self):
         if self.request.user.is_superuser:
             return FlightControllerFirmwareSuggestion.objects.distinct()
-        return FlightControllerFirmwareSuggestion.objects.filter(user=self.request.user).distinct()
+        return FlightControllerFirmwareSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class SpeedControllerFirmwareSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -81,7 +81,7 @@ class SpeedControllerFirmwareSuggestionAPIViewSet(SuggestionActionsMixin, ModelV
     def get_queryset(self):
         if self.request.user.is_superuser:
             return SpeedControllerFirmwareSuggestion.objects.distinct()
-        return SpeedControllerFirmwareSuggestion.objects.filter(user=self.request.user).distinct()
+        return SpeedControllerFirmwareSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class SpeedControllerProtocolSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -91,4 +91,4 @@ class SpeedControllerProtocolSuggestionAPIViewSet(SuggestionActionsMixin, ModelV
     def get_queryset(self):
         if self.request.user.is_superuser:
             return SpeedControllerProtocolSuggestion.objects.distinct()
-        return SpeedControllerProtocolSuggestion.objects.filter(user=self.request.user).distinct()
+        return SpeedControllerProtocolSuggestion.objects.filter(user_id=self.request.user.id).distinct()

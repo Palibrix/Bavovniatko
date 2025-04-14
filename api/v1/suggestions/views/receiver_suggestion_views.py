@@ -21,7 +21,7 @@ class ReceiverProtocolTypeSuggestionAPIViewSet(SuggestionActionsMixin, ModelView
         if self.request.user.is_superuser:
             return ReceiverProtocolTypeSuggestion.objects.distinct()
         else:
-            return ReceiverProtocolTypeSuggestion.objects.filter(user=self.request.user).distinct()
+            return ReceiverProtocolTypeSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class ReceiverSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixin, ModelViewSet):
@@ -33,7 +33,7 @@ class ReceiverSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixin, 
         if self.request.user.is_superuser:
             return ReceiverSuggestion.objects.distinct()
         else:
-            return ReceiverSuggestion.objects.filter(user=self.request.user).distinct()
+            return ReceiverSuggestion.objects.filter(user_id=self.request.user.id).distinct()
 
 
 class ExistingReceiverDetailSuggestionAPIViewSet(SuggestionActionsMixin, ModelViewSet):
@@ -45,4 +45,4 @@ class ExistingReceiverDetailSuggestionAPIViewSet(SuggestionActionsMixin, ModelVi
         if self.request.user.is_superuser:
             return ExistingReceiverDetailSuggestion.objects.distinct()
         else:
-            return ExistingReceiverDetailSuggestion.objects.filter(user=self.request.user).distinct()
+            return ExistingReceiverDetailSuggestion.objects.filter(user_id=self.request.user.id).distinct()
