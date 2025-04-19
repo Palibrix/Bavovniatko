@@ -13,6 +13,9 @@ export const ROUTES = {
         CURRENT: routesConfig.profile.current.path,
         DETAIL: routesConfig.profile.detail.path,
     },
+    LISTS: {
+        DETAIL: routesConfig.lists.detail.path,
+    },
     COMPONENTS: {
         ANTENNAS: {
             LIST: routesConfig.components.antennas.list.path,

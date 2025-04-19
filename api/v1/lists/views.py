@@ -146,5 +146,9 @@ class ListViewSet(viewsets.ModelViewSet):
         # Sort by added_at
         items = sorted(items, key=lambda x: x.added_at, reverse=True)
 
-        serializer = ComponentItemSerializer(items, many=True)
+        serializer = ComponentItemSerializer(
+            items,
+            many=True,
+            context={'request': request}  # Pass request context for absolute URLs
+        )
         return Response(serializer.data)

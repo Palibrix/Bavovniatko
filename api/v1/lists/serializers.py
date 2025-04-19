@@ -28,20 +28,55 @@ class ComponentItemSerializer(serializers.Serializer):
     """
     Serializer for any component item in a list.
     Used as part of ListDetailSerializer to provide a unified representation
-    of different component types.
+    of different component types with full component data.
     """
     id = serializers.IntegerField(read_only=True)
     component_type = serializers.CharField(read_only=True)
     component_id = serializers.IntegerField(read_only=True)
-    display_name = serializers.SerializerMethodField(read_only=True)
+    component_data = serializers.SerializerMethodField(read_only=True)
     image_url = serializers.SerializerMethodField(read_only=True)
     added_at = serializers.DateTimeField(read_only=True)
 
-    def get_display_name(self, obj):
-        """Return the string representation of the component"""
-        if hasattr(obj, 'component'):
-            return str(obj.component)
-        return "Unknown Component"
+    def get_component_data(self, obj):
+        """Return fully serialized component data"""
+        if not hasattr(obj, 'component'):
+            return None
+
+        component = obj.component
+        component_type = obj.component_type
+
+        # Get the appropriate serializer for this component type
+        from api.v1.components.serializers import (
+            AntennaSerializer, CameraSerializer, FrameSerializer,
+            MotorSerializer, PropellerSerializer, ReceiverSerializer,
+            FlightControllerSerializer, SpeedControllerSerializer,
+            TransmitterSerializer, StackSerializer
+        )
+
+        # Map component types to serializers
+        serializer_map = {
+            'antenna': AntennaSerializer,
+            'camera': CameraSerializer,
+            'frame': FrameSerializer,
+            'motor': MotorSerializer,
+            'propeller': PropellerSerializer,
+            'receiver': ReceiverSerializer,
+            'flight_controller': FlightControllerSerializer,
+            'speed_controller': SpeedControllerSerializer,
+            'transmitter': TransmitterSerializer,
+            'stack': StackSerializer,
+        }
+
+        serializer_class = serializer_map.get(component_type)
+        if serializer_class:
+            return serializer_class(component).data
+
+        # Fallback to basic info if no serializer found
+        return {
+            'id': component.id,
+            'manufacturer': getattr(component, 'manufacturer', ''),
+            'model': getattr(component, 'model', ''),
+        }
 
     def get_image_url(self, obj):
         """Return the image with lowest order or order=0 if available"""
@@ -54,15 +89,22 @@ class ComponentItemSerializer(serializers.Serializer):
             # Try to get the image with order=0 first
             zero_ordered = images.filter(order=0).first()
             if zero_ordered:
-                return zero_ordered.image.url
+                image_url = zero_ordered.image.url
+            else:
+                # Otherwise get the image with the lowest order value
+                lowest_ordered = images.order_by('order').first()
+                if lowest_ordered:
+                    image_url = lowest_ordered.image.url
+                else:
+                    return None
 
-            # Otherwise get the image with the lowest order value
-            lowest_ordered = images.order_by('order').first()
-            if lowest_ordered:
-                return lowest_ordered.image.url
+            # Build absolute URL if request is in context
+            request = self.context.get('request')
+            if request is not None and image_url:
+                return request.build_absolute_uri(image_url)
+            return image_url
 
         return None
-
 
 class ListDetailSerializer(ListOverviewSerializer):
     """
@@ -85,9 +127,7 @@ class ListDetailSerializer(ListOverviewSerializer):
             if not hasattr(obj, related_name):
                 continue
 
-            component_items = getattr(obj, related_name).select_related('component').prefetch_related(
-                'component__images'
-            ).all()
+            component_items = getattr(obj, related_name).select_related('component').all()
 
             for item in component_items:
                 # Add component type information
@@ -98,8 +138,12 @@ class ListDetailSerializer(ListOverviewSerializer):
         # Sort by added_at (newest first)
         sorted_items = sorted(all_items, key=lambda x: x.added_at, reverse=True)
 
-        # Apply pagination if requested in query params
-        return ComponentItemSerializer(sorted_items, many=True).data
+        'https://stackoverflow.com/questions/35522768/django-serializer-imagefield-to-get-full-url'
+        return ComponentItemSerializer(
+            sorted_items,
+            many=True,
+            context=self.context  # Pass through the context that contains the request
+        ).data
 
     def get_parts_count_by_type(self, obj):
         """Get count of parts by component type"""

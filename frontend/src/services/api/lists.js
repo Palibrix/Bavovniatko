@@ -33,7 +33,7 @@ export const getListById = async (id) => {
  * @returns {Promise} Promise with created list data
  */
 export const createList = async (listData) => {
-  return post(ENDPOINTS.lists, listData);
+  return post(`${ENDPOINTS.lists}/`, listData);
 };
 
 /**

@@ -13,6 +13,7 @@ import DroneCreatePage from "../pages/drones/DroneCreatePage";
 import AuthPage from "../pages/auth/AuthPage";
 import {ProfilePage} from "../pages/profile";
 import DroneEditPage from "../pages/drones/DroneEditPage";
+import ListDetailPage from "../pages/lists/ListDetailPage";
 
 const routesConfig = {
     // Home route
@@ -39,6 +40,15 @@ const routesConfig = {
             path: '/profile/:id',
             element: ProfilePage,
         },
+    },
+
+    // List routes
+    lists: {
+        detail: {
+            path: '/lists/:id',
+            element: ListDetailPage,
+            protected: true,
+        }
     },
 
     // Component routes grouped by component type

@@ -6,37 +6,41 @@ import LoadingSpinner from '../../common/LoadingSpinner';
 import ErrorMessage from '../../common/ErrorMessage';
 import { listsApi } from '../../../services/api';
 import Toast from '../../common/Toast';
+import CreateListModal from '../../lists/CreateListModal';
+import {useNavigate} from "react-router-dom";
+import {ROUTES} from "../../../routes";
 
 const ListsTab = ({ profileData }) => {
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [toast, setToast] = useState({ visible: false, message: '', type: '' });
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   // Fetch real list data
   useEffect(() => {
-    const fetchLists = async () => {
-      try {
-        setLoading(true);
-        const response = await listsApi.getUserLists();
-
-        // Check if response is paginated (has results property)
-        const listsData = response.results || response;
-
-        // Ensure we have an array
-        setLists(Array.isArray(listsData) ? listsData : []);
-
-        console.log('Lists data:', listsData); // For debugging
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching lists:', err);
-        setError(err.message || 'Failed to load lists');
-        setLoading(false);
-      }
-    };
-
     fetchLists();
   }, []);
+
+  const fetchLists = async () => {
+    try {
+      setLoading(true);
+      const response = await listsApi.getUserLists();
+
+      // Check if response is paginated (has results property)
+      const listsData = response.results || response;
+
+      // Ensure we have an array
+      setLists(Array.isArray(listsData) ? listsData : []);
+
+      console.log('Lists data:', listsData); // For debugging
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching lists:', err);
+      setError(err.message || 'Failed to load lists');
+      setLoading(false);
+    }
+  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -44,21 +48,26 @@ const ListsTab = ({ profileData }) => {
   };
 
   const handleCreateList = () => {
-    // This would open a modal or navigate to create list page
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCreateSuccess = (newList) => {
+    // Add the new list to the existing lists
+    setLists(prev => [newList, ...prev]);
+
+    // Show success toast
     setToast({
       visible: true,
-      message: 'Create list functionality will be implemented soon',
-      type: 'info'
+      message: 'List created successfully',
+      type: 'success'
     });
   };
 
+  const navigate = useNavigate();
+
   const handleViewList = (listId) => {
-    // This would navigate to list detail page
-    setToast({
-      visible: true,
-      message: 'View list functionality will be implemented soon',
-      type: 'info'
-    });
+    // Navigate to list detail page
+    navigate(ROUTES.LISTS.DETAIL.replace(':id', listId));
   };
 
   const handleEditList = (listId) => {
@@ -148,6 +157,13 @@ const ListsTab = ({ profileData }) => {
           ))}
         </div>
       )}
+
+      {/* Create List Modal */}
+      <CreateListModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={handleCreateSuccess}
+      />
 
       {toast.visible && (
         <Toast
