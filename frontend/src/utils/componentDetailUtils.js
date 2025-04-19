@@ -122,7 +122,8 @@ export const componentToJson = (item, specsConfig) => {
   if (item.details && Array.isArray(item.details) && item.details.length > 0) {
     result.details = item.details.map(detail => {
       // Create a clean details object without circular references
-      const cleanDetail = { ...detail };
+      // const cleanDetail = { ...detail };
+      const { created_at, updated_at, ...cleanDetail } = detail;
 
       // Remove any object references that might cause circular JSON
       if (cleanDetail.antenna) delete cleanDetail.antenna;
@@ -136,15 +137,24 @@ export const componentToJson = (item, specsConfig) => {
 
   // Add frame-specific details
   if (item.camera_details && Array.isArray(item.camera_details) && item.camera_details.length > 0) {
-    result.camera_details = item.camera_details;
+    result.camera_details = item.camera_details.map(camera => {
+      const { created_at, updated_at, ...rest } = camera;
+      return rest;
+    });
   }
 
   if (item.motor_details && Array.isArray(item.motor_details) && item.motor_details.length > 0) {
-    result.motor_details = item.motor_details;
+    result.motor_details = item.motor_details.map(motor => {
+      const { created_at, updated_at, ...rest } = motor;
+      return rest;
+    });
   }
 
   if (item.vtx_details && Array.isArray(item.vtx_details) && item.vtx_details.length > 0) {
-    result.vtx_details = item.vtx_details;
+    result.vtx_details = item.vtx_details.map(vtx => {
+      const { created_at, updated_at, ...rest } = vtx;
+      return rest;
+    });
   }
 
   return JSON.stringify(result, null, 2);

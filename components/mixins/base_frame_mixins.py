@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -23,8 +24,11 @@ class BaseFrameMixin(BaseComponentMixin):
         BOX = 'box', _('Box')
         ANOTHER = 'another', _('Another')
 
-    prop_size = models.CharField(max_length=50, help_text=_("Propeller size in inches"),
-                                verbose_name=_("Propeller size"))
+    prop_size = models.IntegerField(
+        validators=[MinValueValidator(2)],
+        help_text=_("Size of the propeller in inches"),
+        verbose_name=_("Propeller Size")
+    )
     size = models.CharField(max_length=50, help_text=_("Size(Diagonal) of the frame in mm"),
                            verbose_name=_("Frame size"))
     weight = models.FloatField(help_text=_('Weight of the frame in grams'),

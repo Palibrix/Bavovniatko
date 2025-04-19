@@ -61,7 +61,7 @@ class BaseTransmitterMixin(BaseComponentMixin):
 
     length = models.FloatField(help_text=_('Length of the item, mm'))
     height = models.FloatField(help_text=_('Height of the item, mm'))
-    thickness = models.FloatField(help_text=_('Thickness of the item, mm'))
+    width = models.FloatField(help_text=_('Width of the item, mm'))
     weight = models.FloatField(
         help_text=_('Weight oh the transmitter in grams'),
         blank=True,
@@ -80,7 +80,7 @@ class BaseTransmitterMixin(BaseComponentMixin):
     @property
     @admin.display(description=_('Physical Dimensions'))
     def get_dimensions(self):
-        return _(f'L{self.length} x H{self.height} x T{self.thickness}')
+        return _(f'L{self.length} x H{self.height} x W{self.width}')
 
     def clean(self):
         if not self.input_voltage_min <= self.input_voltage_max:

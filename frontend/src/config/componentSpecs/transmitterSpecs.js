@@ -47,7 +47,7 @@ export const transmitterSpecs = [
         label: 'Dimensions',
         path: 'dimensions',
         icon: faRuler,
-        formatter: (_, item) => `${item.length}×${item.height}×${item.thickness}mm`
+        formatter: (_, item) => `${item.length}×${item.height}×${item.width}mm`
     },
     {
         label: 'Weight',
