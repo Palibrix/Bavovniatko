@@ -1,7 +1,7 @@
 import { get, post, put, del } from './base';
 
 const ENDPOINTS = {
-  lists: '/lists/',
+  lists: '/lists',
   addComponent: (listId) => `/lists/${listId}/add_component/`,
   removeComponents: (listId) => `/lists/${listId}/remove_components/`,
   filterByType: (listId) => `/lists/${listId}/filter_by_type/`
@@ -23,7 +23,7 @@ export const getUserLists = async () => {
  * @returns {Promise} Promise with list data
  */
 export const getListById = async (id) => {
-  return get(`${ENDPOINTS.lists}${id}/`);
+  return get(`${ENDPOINTS.lists}/${id}/`);
 };
 
 /**
@@ -44,7 +44,7 @@ export const createList = async (listData) => {
  * @returns {Promise} Promise with updated list data
  */
 export const updateList = async (id, listData) => {
-  return put(`${ENDPOINTS.lists}${id}/`, listData);
+  return put(`${ENDPOINTS.lists}/${id}/`, listData);
 };
 
 /**
@@ -54,7 +54,7 @@ export const updateList = async (id, listData) => {
  * @returns {Promise} Promise with response
  */
 export const deleteList = async (id) => {
-  return del(`${ENDPOINTS.lists}${id}/`);
+  return del(`${ENDPOINTS.lists}/${id}/`);
 };
 
 /**
