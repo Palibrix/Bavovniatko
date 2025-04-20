@@ -31,6 +31,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'password', 'profile', 'id']
+        write_only_fields = ('password', )
+        read_only_fields = ('id', 'username')
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
