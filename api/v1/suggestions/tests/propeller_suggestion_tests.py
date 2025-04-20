@@ -41,7 +41,6 @@ class TestPropellerSuggestionAPIView(BaseAPITest):
             "blade_count": "2",
             "suggested_images": [
                 {
-                    'id': 1,
                     "image": self.create_base64_image('test_test.jpg'),
                     "order": 1
                 },
@@ -96,8 +95,6 @@ class TestPropellerSuggestionAPIView(BaseAPITest):
             "suggested_images": [
                 {
                     'id': 1,
-                    "image": self.create_base64_image('test_test.jpg'),
-                    "order": 1
                 },
             ]
         }

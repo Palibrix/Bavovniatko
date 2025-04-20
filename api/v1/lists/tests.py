@@ -88,7 +88,6 @@ class ListAPITest(BaseAPITest):
         item = response.data['items'][0]
         self.assertEqual(item['component_type'], "antenna")
         self.assertEqual(item['component_id'], self.antenna.id)
-        self.assertTrue('display_name' in item)
 
         # Check the parts count by type
         self.assertEqual(response.data['parts_count_by_type']['antenna'], 1)

@@ -80,7 +80,6 @@ class TestMotorSuggestionAPIView(BaseAPITest):
             ],
             "suggested_images": [
                 {
-                    'id': 1,
                     "image": self.create_base64_image('test_test.jpg'),
                     "order": 1
                 },
@@ -144,8 +143,6 @@ class TestMotorSuggestionAPIView(BaseAPITest):
                       "suggested_images": [
                           {
                               'id': 1,
-                              "image": self.create_base64_image('test_test.jpg'),
-                              "order": 1
                           },
                       ]}
         url = reverse("api:v1:suggestions:motor-detail", args={self.motor_suggestion_1.id})

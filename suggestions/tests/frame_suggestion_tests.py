@@ -28,7 +28,7 @@ class TestFrameSuggestionModel(BaseUserTest):
         self.frame_suggestion = mixer.blend(FrameSuggestion,
                                             model='Test Model',
                                             manufacturer='Test Manufacturer',
-                                            prop_size='5 inch',
+                                            prop_size=5,
                                             size='220mm',
                                             material=Frame.MaterialChoice.FIBRE,
                                             configuration=Frame.ConfigurationChoice.X)
@@ -152,7 +152,7 @@ class TestExistingFrameCameraDetailSuggestionModel(BaseUserTest):
     def setUp(self):
         self.frame = mixer.blend(Frame,
                                  description='Test Frame',
-                                 prop_size='5 inch',
+                                 prop_size=5,
                                  size='220mm')
 
         self.camera_detail = mixer.blend(FrameCameraDetail, frame=self.frame)
@@ -190,7 +190,7 @@ class TestSuggestedFrameCameraDetailSuggestionModel(BaseUserTest):
     def setUp(self):
         self.frame_suggestion = mixer.blend(FrameSuggestion,
                                             description='Test Frame',
-                                            prop_size='5 inch',
+                                            prop_size=5,
                                             size='220mm')
         self.camera_details = [
             mixer.blend(SuggestedFrameCameraDetailSuggestion, suggestion=self.frame_suggestion)
@@ -237,7 +237,7 @@ class TestExistingFrameMotorDetailSuggestionModel(BaseUserTest):
     def setUp(self):
         self.frame = mixer.blend(Frame,
                                  description='Test Frame',
-                                 prop_size='5 inch',
+                                 prop_size=5,
                                  size='220mm')
 
         self.motor_detail = mixer.blend(FrameMotorDetail, frame=self.frame)
@@ -275,7 +275,7 @@ class TestSuggestedFrameMotorDetailSuggestionModel(BaseUserTest):
     def setUp(self):
         self.frame_suggestion = mixer.blend(FrameSuggestion,
                                             description='Test Frame',
-                                            prop_size='5 inch',
+                                            prop_size=5,
                                             size='220mm')
         self.motor_details = [
             mixer.blend(SuggestedFrameMotorDetailSuggestion, suggestion=self.frame_suggestion)
@@ -322,7 +322,7 @@ class TestExistingFrameVTXDetailSuggestionModel(BaseUserTest):
     def setUp(self):
         self.frame = mixer.blend(Frame,
                                  description='Test Frame',
-                                 prop_size='5 inch',
+                                 prop_size=5,
                                  size='220mm')
 
         self.vtx_detail = mixer.blend(FrameVTXDetail, frame=self.frame)
@@ -360,7 +360,7 @@ class TestSuggestedFrameVTXDetailSuggestionModel(BaseUserTest):
     def setUp(self):
         self.frame_suggestion = mixer.blend(FrameSuggestion,
                                             description='Test Frame',
-                                            prop_size='5 inch',
+                                            prop_size=5,
                                             size='220mm')
         self.vtx_details = [
             mixer.blend(SuggestedFrameVTXDetailSuggestion, suggestion=self.frame_suggestion)

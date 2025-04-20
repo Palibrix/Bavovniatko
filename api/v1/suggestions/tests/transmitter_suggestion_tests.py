@@ -43,7 +43,7 @@ class TestTransmitterSuggestionAPIView(BaseAPITest):
             "microphone": True,
             "length": 50,
             "height": 30,
-            "thickness": 10,
+            "width": 10,
             "weight": 50,
             "video_formats": [self.format1.pk],
             "suggested_images": [

@@ -17,7 +17,7 @@ class TestFrameSuggestionAPIView(BaseAPITest):
         self.frame = mixer.blend(Frame)
 
         self.frame_suggestion_1 = mixer.blend(FrameSuggestion,
-                                            prop_size='5 inch',
+                                            prop_size=5,
                                             size='220mm',
                                             material=Frame.MaterialChoice.FIBRE,
                                             configuration=Frame.ConfigurationChoice.X,
@@ -26,7 +26,7 @@ class TestFrameSuggestionAPIView(BaseAPITest):
         mixer.blend(FrameGallery, suggestion=self.frame_suggestion_1)
 
         self.frame_suggestion_2 = mixer.blend(FrameSuggestion,
-                                            prop_size='5 inch',
+                                            prop_size=5,
                                             size='220mm',
                                             material=Frame.MaterialChoice.FIBRE,
                                             configuration=Frame.ConfigurationChoice.X)
@@ -42,7 +42,7 @@ class TestFrameSuggestionAPIView(BaseAPITest):
             "model": "Model 1",
             "manufacturer": "Manufacturer 2",
             "description": "Description 1",
-            "prop_size": "5 inch",
+            "prop_size": 5,
             "size": "220mm",
             "weight": 150.5,
             "material": Frame.MaterialChoice.FIBRE,
@@ -126,8 +126,6 @@ class TestFrameSuggestionAPIView(BaseAPITest):
             "suggested_images": [
                 {
                     'id': 1,
-                    "image": self.create_base64_image('test_test.jpg'),
-                    "order": 1
                 }
             ]
         }

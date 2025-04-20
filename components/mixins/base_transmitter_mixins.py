@@ -12,7 +12,7 @@ class BaseTransmitterMixin(BaseComponentMixin):
         'manufacturer', 'model', 'description',
         'input_voltage_min', 'input_voltage_max', 'output_voltage',
         'channels_quantity', 'output', 'max_power', 'microphone',
-        'length', 'height', 'thickness', 'weight'
+        'length', 'height', 'width', 'weight'
     ]
 
     class OutputChoices(models.TextChoices):

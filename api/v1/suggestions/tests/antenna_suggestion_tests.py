@@ -60,7 +60,6 @@ class TestAntennaSuggestionAPIView(BaseAPITest):
                             ],
                             "suggested_images": [
                                 {
-                                    'id': 1,
                                     "image": self.create_base64_image('test_test.jpg'),
                                     "order": 1
                                 },
@@ -117,8 +116,6 @@ class TestAntennaSuggestionAPIView(BaseAPITest):
                        "suggested_images": [
                            {
                                'id': 1,
-                               "image": self.create_base64_image('test_test.jpg'),
-                               "order": 1
                            },
                        ]}
         url = reverse("api:v1:suggestions:antenna-detail", args={self.antenna_suggestion_1.id})
