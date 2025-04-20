@@ -9,10 +9,10 @@ from components.mixins import BaseComponentMixin
 class Battery(BaseComponentMixin):
 
     class Types(models.TextChoices):
-        LIPO = 'LIPO', _('LiPo')
-        LI_ION = 'LI_ION', _('Li-Ion')
-        LIHV = 'LIHV', _('LiHV')
-        Another = 'ANOTHER', _('Another')
+        LIPO = 'lipo', _('LiPo')
+        LI_ION = 'li_ion', _('Li-Ion')
+        LIHV = 'lihv', _('LiHV')
+        ANOTHER = 'another', _('Another')
 
     # drone = models.OneToOneField('Drone', on_delete=models.CASCADE, related_name='battery')
 

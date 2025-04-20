@@ -19,12 +19,9 @@ class BaseDocumentMixin(models.Model):
 
     file = models.FileField(upload_to=upload_to_filestorage)
     created_at = models.DateTimeField(auto_now_add=True)
-    accepted = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         self.clean()
-        if self.object and not self.accepted:
-            self.accepted = True
         super().save(*args, **kwargs)
 
     class Meta:
@@ -40,7 +37,7 @@ class BaseDocumentMixin(models.Model):
 class BaseDocumentInlineAdminMixin(admin.StackedInline):
     extra = 0
     max_num = 10
-    readonly_fields = ('object', 'suggestion', 'accepted', 'created_at')
+    readonly_fields = ('object', 'suggestion', 'created_at')
 
 
 class Base64ValidatedFileField(Base64FileField):

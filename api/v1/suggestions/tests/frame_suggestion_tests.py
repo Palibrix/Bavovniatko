@@ -171,7 +171,6 @@ class TestFrameSuggestionAPIView(BaseAPITest):
         self.frame_suggestion_1.refresh_from_db()
         self.assertEqual(self.frame_suggestion_1.status, 'approved')
         self.assertEqual(Frame.objects.filter(id=self.frame_suggestion_1.related_instance.id).get().images.count(), 1)
-        self.assertEqual(FrameGallery.objects.get(id=1).accepted, True)
 
     def test_deny(self):
         self.logout()

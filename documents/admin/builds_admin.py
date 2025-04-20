@@ -4,4 +4,4 @@ from documents.models import DroneDocument
 
 class DroneDocumentInlineAdmin(BaseDocumentInlineAdminMixin):
     model = DroneDocument
-    readonly_fields = ('object', 'accepted', 'created_at')
+    readonly_fields = ('object', 'created_at')

@@ -24,7 +24,6 @@ class BaseImageMixin(models.Model):
     image = ProcessedImageField(upload_to=upload_to_gallery, options={'quality': 75}, format='WEBP')
     order = models.PositiveIntegerField(default=0, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    accepted = models.BooleanField(default=False)
 
     class Meta:
         abstract = True
@@ -32,8 +31,6 @@ class BaseImageMixin(models.Model):
 
     def save(self, *args, **kwargs):
         self.clean()
-        if self.object and not self.accepted:
-            self.accepted = True
         super().save(*args, **kwargs)
 
 
@@ -48,4 +45,4 @@ class BaseGalleryInlineAdminMixin(admin.StackedInline):
     min_num = 1
     max_num = 10
     formset = RequiredInlineFormSet
-    readonly_fields = ('object', 'suggestion', 'accepted', 'created_at')
+    readonly_fields = ('object', 'suggestion', 'created_at')

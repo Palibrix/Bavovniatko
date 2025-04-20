@@ -161,7 +161,6 @@ class TestAntennaSuggestionAPIView(BaseAPITest):
         self.antenna_suggestion_1.refresh_from_db()
         self.assertEqual(self.antenna_suggestion_1.status, 'approved')
         self.assertEqual(Antenna.objects.filter(id=self.antenna_suggestion_1.related_instance.id).get().images.count(), 1)
-        self.assertEqual(AntennaGallery.objects.get(id=1).accepted, True)
 
     def test_deny(self):
         """Test denying with admin comment"""

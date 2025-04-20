@@ -313,21 +313,6 @@ class TestReceiverSuggestionAPIView(BaseAPITest):
         self.receiver_suggestion_1.refresh_from_db()
         self.assertEqual(self.receiver_suggestion_1.status, 'pending')
 
-    def test_images_become_accepted_after_suggestion_accepted(self):
-        """Test that gallery images are marked as accepted after suggestion acceptance"""
-        gallery = mixer.blend(ReceiverGallery,
-                              image=self.create_image(),
-                              suggestion=self.receiver_suggestion_1,
-                              accepted=False,
-                              order=3)
-        url = reverse("api:v1:suggestions:receiver-accept", args={self.receiver_suggestion_1.id})
-        self.logout()
-        self.create_and_login('test_superuser', is_super=True)
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, 200)
-        gallery.refresh_from_db()
-        self.assertTrue(gallery.accepted)
-
 
 class TestExistingReceiverDetailSuggestionAPIView(BaseAPITest):
     def setUp(self):

@@ -19,6 +19,7 @@ class SuggestedReceiverDetailInline(admin.StackedInline):
     extra = 0
     formset = RequiredInlineFormSet
     fk_name = 'suggestion'
+    exclude = ('related_instance',)
 
 
 @admin.register(ReceiverSuggestion)

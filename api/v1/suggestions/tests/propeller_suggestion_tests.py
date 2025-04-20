@@ -142,7 +142,6 @@ class TestPropellerSuggestionAPIView(BaseAPITest):
         self.assertEqual(self.propeller_suggestion_1.status, 'approved')
         self.assertEqual(Propeller.objects.filter(
             id=self.propeller_suggestion_1.related_instance.id).get().images.count(), 1)
-        self.assertEqual(PropellerGallery.objects.get(id=1).accepted, True)
 
     def test_deny(self):
         """Test denying with admin comment"""

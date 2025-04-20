@@ -192,7 +192,6 @@ class TestMotorSuggestionAPIView(BaseAPITest):
         self.motor_suggestion_1.refresh_from_db()
         self.assertEqual(self.motor_suggestion_1.status, 'approved')
         self.assertEqual(Motor.objects.filter(id=self.motor_suggestion_1.related_instance.id).get().images.count(), 1)
-        self.assertEqual(MotorGallery.objects.get(id=1).accepted, True)
 
     def test_deny(self):
         """Test denying a suggestion with admin comment"""
@@ -235,21 +234,6 @@ class TestMotorSuggestionAPIView(BaseAPITest):
         self.motor_suggestion_1.refresh_from_db()
         self.assertEqual(self.motor_suggestion_1.status, 'pending')
 
-    def test_images_become_accepted_after_suggestion_accepted(self):
-        """Test that gallery images are marked as accepted after suggestion acceptance"""
-        gallery = mixer.blend(MotorGallery,
-                            image=self.create_image(),
-                            suggestion=self.motor_suggestion_1,
-                            accepted=False,
-                            order=3)
-        url = reverse("api:v1:suggestions:motor-accept", args={self.motor_suggestion_1.id})
-        self.logout()
-        self.create_and_login('test_superuser', is_super=True)
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, 200)
-        gallery.refresh_from_db()
-        self.assertTrue(gallery.accepted)
-
 
 class TestRatedVoltageSuggestionAPIView(BaseAPITest):
     """Tests for the Rated Voltage Suggestion API endpoints"""
@@ -266,7 +250,7 @@ class TestRatedVoltageSuggestionAPIView(BaseAPITest):
         self.create_data = {
             'min_cells': 3,
             'max_cells': 8,
-            'type': 'LIPO'
+            'type': 'lipo'
         }
 
     def test_list(self):

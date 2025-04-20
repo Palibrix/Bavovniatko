@@ -86,17 +86,6 @@ class TestFlightControllerSuggestionModel(BaseUserTest):
         document.refresh_from_db()
         self.assertEqual(self.fc_suggestion.related_instance, document.object)
 
-    def test_images_become_accepted_after_suggestion_accepted(self):
-        gallery = mixer.blend(FlightControllerGallery,
-                              image=self.create_image(),
-                              suggestion=self.fc_suggestion,
-                              accepted=False,
-                              order=3)
-        self.fc_suggestion.accept()
-        gallery.refresh_from_db()
-        self.assertTrue(gallery.accepted)
-        self.assertEqual(gallery.object, self.fc_suggestion.related_instance)
-
     def test_accept_multiple_times(self):
         self.fc_suggestion.accept()
         self.assertEqual(FlightController.objects.count(), 1)
@@ -183,17 +172,6 @@ class TestSpeedControllerSuggestionModel(BaseUserTest):
         self.esc_suggestion.accept()
         document.refresh_from_db()
         self.assertEqual(self.esc_suggestion.related_instance, document.object)
-
-    def test_images_become_accepted_after_suggestion_accepted(self):
-        gallery = mixer.blend(SpeedControllerGallery,
-                              image=self.create_image(),
-                              suggestion=self.esc_suggestion,
-                              accepted=False,
-                              order=3)
-        self.esc_suggestion.accept()
-        gallery.refresh_from_db()
-        self.assertTrue(gallery.accepted)
-        self.assertEqual(gallery.object, self.esc_suggestion.related_instance)
 
     def test_accept_multiple_times(self):
         self.esc_suggestion.accept()
@@ -352,17 +330,6 @@ class TestStackSuggestionModel(BaseUserTest):
         self.stack_suggestion.accept()
         document.refresh_from_db()
         self.assertEqual(self.stack_suggestion.related_instance, document.object)
-
-    def test_images_become_accepted_after_suggestion_accepted(self):
-        gallery = mixer.blend(StackGallery,
-                              image=self.create_image(),
-                              suggestion=self.stack_suggestion,
-                              accepted=False,
-                              order=3)
-        self.stack_suggestion.accept()
-        gallery.refresh_from_db()
-        self.assertTrue(gallery.accepted)
-        self.assertEqual(gallery.object, self.stack_suggestion.related_instance)
 
     def test_accept_multiple_times(self):
         self.stack_suggestion.accept()

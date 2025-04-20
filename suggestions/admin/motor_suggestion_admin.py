@@ -17,6 +17,7 @@ class SuggestedMotorDetailInline(admin.StackedInline):
     extra = 0
     formset = RequiredInlineFormSet
     fk_name = 'suggestion'
+    exclude = ('related_instance',)
 
 
 @admin.register(MotorSuggestion)

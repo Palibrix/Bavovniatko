@@ -1,23 +1,18 @@
-from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-
-from api.mixins import SuggestionActionsMixin
 from rest_framework.viewsets import ModelViewSet
 
+from api.mixins import SuggestionActionsMixin
 from api.v1.galleries.mixins import GalleryContextMixin
 from api.v1.suggestions.serializers.antenna_suggestion_serializers import AntennaTypeSuggestionSerializer, \
     AntennaConnectorSuggestionSerializer, \
     ExistingAntennaDetailSuggestionSerializer, AntennaSuggestionSerializer
-
 from suggestions.models import AntennaSuggestion
-# from drf_rw_serializers.viewsets import ModelViewSet
-
 from suggestions.models.antenna_suggestion import AntennaTypeSuggestion, AntennaConnectorSuggestion, \
     ExistingAntennaDetailSuggestion
 from users.permissions import HasAcceptDeny
+
+
+# from drf_rw_serializers.viewsets import ModelViewSet
 
 
 class AntennaSuggestionAPIViewSet(GalleryContextMixin, SuggestionActionsMixin, ModelViewSet):

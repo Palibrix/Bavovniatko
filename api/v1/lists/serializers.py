@@ -81,7 +81,7 @@ class ComponentItemSerializer(serializers.Serializer):
     def get_image_url(self, obj):
         """Return the image with lowest order or order=0 if available"""
         if hasattr(obj, 'component') and hasattr(obj.component, 'images'):
-            images = obj.component.images.filter(accepted=True)
+            images = obj.component.images.all()
 
             if not images.exists():
                 return None

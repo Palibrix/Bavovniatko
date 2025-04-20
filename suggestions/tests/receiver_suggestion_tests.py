@@ -123,18 +123,6 @@ class TestReceiverSuggestionModel(BaseUserTest):
         self.assertEqual(ReceiverDocument.objects.count(), 1)
         self.assertEqual(ReceiverSuggestion.objects.count(), 0)
 
-    def test_images_become_accepted_after_suggestion_accepted(self):
-        """Gallery images should become accepted after suggestion is accepted"""
-        gallery = mixer.blend(ReceiverGallery,
-                              image=self.create_image(),
-                              suggestion=self.suggestion,
-                              accepted=False,
-                              order=3)
-        self.suggestion.accept()
-        gallery.refresh_from_db()
-        self.assertTrue(gallery.accepted)
-        self.assertEqual(gallery.object, self.suggestion.related_instance)
-
 
 class TestReceiverProtocolTypeSuggestionModel(BaseUserTest):
     """Tests for ReceiverProtocolTypeSuggestion"""

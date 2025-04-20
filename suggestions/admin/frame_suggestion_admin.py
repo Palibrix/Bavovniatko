@@ -19,6 +19,7 @@ class SuggestedFrameCameraDetailInline(admin.StackedInline):
     extra = 0
     formset = RequiredInlineFormSet
     fk_name = 'suggestion'
+    exclude = ('related_instance',)
 
 
 class SuggestedFrameMotorDetailInline(admin.StackedInline):
@@ -27,6 +28,7 @@ class SuggestedFrameMotorDetailInline(admin.StackedInline):
     extra = 0
     formset = RequiredInlineFormSet
     fk_name = 'suggestion'
+    exclude = ('related_instance',)
 
 
 class SuggestedFrameVTXDetailInline(admin.StackedInline):
@@ -35,6 +37,7 @@ class SuggestedFrameVTXDetailInline(admin.StackedInline):
     extra = 0
     formset = RequiredInlineFormSet
     fk_name = 'suggestion'
+    exclude = ('related_instance',)
 
 
 @admin.register(FrameSuggestion)

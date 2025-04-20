@@ -108,20 +108,6 @@ class TestPropellerSuggestionModel(BaseUserTest):
         self.assertEqual(PropellerDocument.objects.count(), 1)
         self.assertEqual(PropellerSuggestion.objects.count(), 0)
 
-    def test_images_become_accepted_after_suggestion_accepted(self):
-        """
-        Gallery images should become accepted after suggestion is accepted
-        """
-        gallery = mixer.blend(PropellerGallery,
-                            image=self.create_image(),
-                            suggestion=self.propeller_suggestion,
-                            accepted=False,
-                            order=3)
-        self.propeller_suggestion.accept()
-        gallery.refresh_from_db()
-        self.assertTrue(gallery.accepted)
-        self.assertEqual(gallery.object, self.propeller_suggestion.related_instance)
-
     def test_accept_multiple_times(self):
         self.propeller_suggestion.accept()
         self.assertEqual(Propeller.objects.count(), 1)

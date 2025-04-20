@@ -132,18 +132,6 @@ class TestMotorSuggestionModel(BaseUserTest):
             self.motor_suggestion.accept()
         self.assertEqual(Motor.objects.count(), 1)
 
-    def test_images_become_accepted_after_suggestion_accepted(self):
-        """Gallery images should become accepted after suggestion is accepted"""
-        gallery = mixer.blend(MotorGallery,
-                              image=self.create_image(),
-                              suggestion=self.motor_suggestion,
-                              accepted=False,
-                              order=3)
-        self.motor_suggestion.accept()
-        gallery.refresh_from_db()
-        self.assertTrue(gallery.accepted)
-        self.assertEqual(gallery.object, self.motor_suggestion.related_instance)
-
 
 class TestRatedVoltageSuggestionModel(BaseUserTest):
     def setUp(self):
