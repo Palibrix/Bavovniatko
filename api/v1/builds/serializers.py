@@ -8,7 +8,7 @@ from api.v1.components.serializers import (AntennaSerializer, CameraSerializer, 
 from api.v1.components.serializers.battery_serializers import BatterySerializer
 from api.v1.documents.serializers import DroneDocumentReadSerializer, DroneDocumentWriteSerializer
 from api.v1.galleries.serializers import DroneGalleryReadSerializer, DroneGalleryWriteSerializer
-from api.v1.users.serializers import UserSerializer
+from api.v1.users.serializers import UserSerializer, UserProfileSerializer
 from builds.models import Drone
 from components.models import Antenna, Camera, Battery, Frame, FlightController, Motor, Propeller, Receiver, \
     SpeedController, Transmitter
@@ -26,7 +26,7 @@ class DroneSerializer(serializers.ModelSerializer):
     receiver = ReceiverSerializer(read_only=True)
     speed_controller = SpeedControllerSerializer(read_only=True)
     transmitter = TransmitterSerializer(read_only=True)
-    user = UserSerializer(read_only=True)
+    user = UserProfileSerializer(read_only=True)
 
     images = DroneGalleryReadSerializer(many=True)
     documents = DroneDocumentReadSerializer(many=True)

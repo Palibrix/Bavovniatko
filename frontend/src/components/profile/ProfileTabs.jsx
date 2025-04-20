@@ -4,25 +4,34 @@ import ListsTab from './tabs/ListsTab';
 import DronesTab from './tabs/DronesTab';
 import SuggestionsTab from './tabs/SuggestionsTab';
 
-const ProfileTabs = ({ profileData }) => {
-  const [activeTab, setActiveTab] = useState('lists');
+const ProfileTabs = ({ profileData, isCurrentUser, userId }) => {
+  const [activeTab, setActiveTab] = useState('drones');
 
+  // Only show certain tabs for the user's own profile
   const tabs = [
-    { id: 'lists', label: 'My Lists' },
-    { id: 'drones', label: 'My Drones' },
-    { id: 'suggestions', label: 'My Suggestions' }
-  ];
+    { id: 'drones', label: `${isCurrentUser ? 'My' : `${profileData.username}'s`} Drones`, always: true },
+    { id: 'lists', label: 'My Lists', onlyForCurrentUser: true },
+    { id: 'suggestions', label: 'My Suggestions', onlyForCurrentUser: true }
+  ].filter(tab => tab.always || (tab.onlyForCurrentUser && isCurrentUser));
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'lists':
         return <ListsTab profileData={profileData} />;
       case 'drones':
-        return <DronesTab profileData={profileData} />;
+        return <DronesTab
+                 profileData={profileData}
+                 userId={userId}
+                 isCurrentUser={isCurrentUser}
+               />;
       case 'suggestions':
         return <SuggestionsTab profileData={profileData} />;
       default:
-        return <ListsTab profileData={profileData} />;
+        return <DronesTab
+                 profileData={profileData}
+                 userId={userId}
+                 isCurrentUser={isCurrentUser}
+               />;
     }
   };
 
@@ -59,7 +68,13 @@ const ProfileTabs = ({ profileData }) => {
 };
 
 ProfileTabs.propTypes = {
-  profileData: PropTypes.object.isRequired
+  profileData: PropTypes.object.isRequired,
+  isCurrentUser: PropTypes.bool,
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+};
+
+ProfileTabs.defaultProps = {
+  isCurrentUser: false
 };
 
 export default ProfileTabs;

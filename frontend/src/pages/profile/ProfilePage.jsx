@@ -71,9 +71,11 @@ const ProfilePage = () => {
         onProfileUpdate={(updatedData) => setProfileData(updatedData)}
       />
 
-      {isCurrentUser && (
-        <ProfileTabs profileData={profileData} />
-      )}
+      <ProfileTabs
+        profileData={profileData}
+        isCurrentUser={isCurrentUser}
+        userId={profileData.id}
+      />
     </div>
   );
 };

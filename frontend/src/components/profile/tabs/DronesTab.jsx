@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBorderAll, faCog, faMicrochip, faBatteryFull,
-  faEye, faEdit, faPlus, faClock
+  faEye, faEdit, faPlus, faDroneAlt, faHelicopter
 } from '@fortawesome/free-solid-svg-icons';
 import LoadingSpinner from '../../common/LoadingSpinner';
 import ErrorMessage from '../../common/ErrorMessage';
@@ -12,7 +12,7 @@ import { ROUTES } from '../../../routes';
 import { dronesApi } from '../../../services/api';
 import Toast from '../../common/Toast';
 
-const DronesTab = ({ profileData }) => {
+const DronesTab = ({ profileData, userId, isCurrentUser }) => {
   const [drones, setDrones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,13 +22,15 @@ const DronesTab = ({ profileData }) => {
     const fetchDrones = async () => {
       try {
         setLoading(true);
-        // Fetch drones for the current user
-        const params = { show_user_drones: true };
+
+        // Add user_id parameter if we're viewing someone else's profile
+        const params = userId ? { user_id: userId } : { show_user_drones: true };
+
         const response = await dronesApi.getDrones(params);
 
         // Get drones from results if it's paginated, otherwise use response directly
         const droneData = response.results || response;
-        setDrones(droneData);
+        setDrones(Array.isArray(droneData) ? droneData : []);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching drones:', err);
@@ -38,7 +40,7 @@ const DronesTab = ({ profileData }) => {
     };
 
     fetchDrones();
-  }, [profileData.id]);
+  }, [userId, profileData.id]);
 
   const calculateCompletion = (drone) => {
     // Define required components
@@ -60,21 +62,8 @@ const DronesTab = ({ profileData }) => {
   };
 
   const handleCreateDrone = () => {
-    // This would navigate to create drone page
-    setToast({
-      visible: true,
-      message: 'Create drone functionality will be implemented soon',
-      type: 'info'
-    });
-  };
-
-  const handleEditDrone = (droneId) => {
-    // This would navigate to edit drone page
-    setToast({
-      visible: true,
-      message: 'Edit drone functionality will be implemented soon',
-      type: 'info'
-    });
+    // Navigate to create drone page
+    window.location.href = ROUTES.BUILDS.DRONES.CREATE;
   };
 
   if (loading) return <LoadingSpinner />;
@@ -83,31 +72,46 @@ const DronesTab = ({ profileData }) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-primary">Your Drones</h2>
-        <button
-          onClick={handleCreateDrone}
-          className="px-4 py-2 bg-drone text-white rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-2"
-        >
-          <FontAwesomeIcon icon={faPlus} />
-          Create New Drone
-        </button>
+        <h2 className="text-xl font-semibold text-primary">
+          {isCurrentUser ? 'Your Drones' : `${profileData.username}'s Drones`}
+        </h2>
+
+        {/* Only show Create button for current user */}
+        {isCurrentUser && (
+          <Link
+            to={ROUTES.BUILDS.DRONES.CREATE}
+            className="px-4 py-2 bg-drone text-white rounded-lg hover:bg-opacity-90 transition-colors flex items-center gap-2"
+          >
+            <FontAwesomeIcon icon={faPlus} />
+            Create New Drone
+          </Link>
+        )}
       </div>
 
       {drones.length === 0 ? (
         <div className="bg-white rounded-xl p-12 text-center shadow-sm">
           <div className="text-5xl text-gray-300 mb-6">
-            <FontAwesomeIcon icon={faClock} />
+            <FontAwesomeIcon icon={faHelicopter} />
           </div>
-          <h3 className="text-xl font-semibold text-primary mb-2">No Drones Yet</h3>
+          <h3 className="text-xl font-semibold text-primary mb-2">
+            {isCurrentUser
+              ? 'No Drones Yet'
+              : `${profileData.username} hasn't built any drones yet`}
+          </h3>
           <p className="text-gray-500 mb-6 max-w-md mx-auto">
-            Create your first drone build to keep track of components and visualize your setup.
+            {isCurrentUser
+              ? 'Create your first drone build to keep track of components and visualize your setup.'
+              : 'Check back later to see what they build!'}
           </p>
-          <button
-            onClick={handleCreateDrone}
-            className="px-4 py-2 bg-drone text-white rounded-lg hover:bg-opacity-90 transition-colors"
-          >
-            Build Your First Drone
-          </button>
+
+          {isCurrentUser && (
+            <button
+              onClick={handleCreateDrone}
+              className="px-4 py-2 bg-drone text-white rounded-lg hover:bg-opacity-90 transition-colors"
+            >
+              Build Your First Drone
+            </button>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -125,7 +129,7 @@ const DronesTab = ({ profileData }) => {
                 <div className="p-5 flex-grow flex flex-col">
                   <div className="mb-4">
                     <span className="inline-block px-3 py-1 text-xs font-semibold text-white bg-drone rounded-full mb-2">
-                      {drone.type.charAt(0).toUpperCase() + drone.type.slice(1)}
+                      {drone.type?.charAt(0).toUpperCase() + drone.type?.slice(1) || 'Custom'}
                     </span>
                     <h3 className="text-lg font-semibold text-primary">{drone.manufacturer ? `${drone.manufacturer} ${drone.model}` : drone.model}</h3>
                   </div>
@@ -178,13 +182,16 @@ const DronesTab = ({ profileData }) => {
                       <FontAwesomeIcon icon={faEye} />
                       View
                     </Link>
-                    <Link
-                      to={`${ROUTES.BUILDS.DRONES.EDIT.replace(':id', drone.id)}`}
-                      className="flex-1 py-2 px-3 border border-drone text-drone rounded-md hover:bg-gray-50 transition-colors text-sm font-medium flex items-center justify-center gap-2"
-                    >
-                      <FontAwesomeIcon icon={faEdit} />
-                      Edit
-                    </Link>
+
+                    {isCurrentUser && (
+                      <Link
+                        to={`${ROUTES.BUILDS.DRONES.EDIT.replace(':id', drone.id)}`}
+                        className="flex-1 py-2 px-3 border border-drone text-drone rounded-md hover:bg-gray-50 transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                      >
+                        <FontAwesomeIcon icon={faEdit} />
+                        Edit
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
@@ -205,7 +212,13 @@ const DronesTab = ({ profileData }) => {
 };
 
 DronesTab.propTypes = {
-  profileData: PropTypes.object.isRequired
+  profileData: PropTypes.object.isRequired,
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  isCurrentUser: PropTypes.bool
+};
+
+DronesTab.defaultProps = {
+  isCurrentUser: false
 };
 
 export default DronesTab;

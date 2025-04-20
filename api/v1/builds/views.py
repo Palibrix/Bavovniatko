@@ -19,6 +19,9 @@ class DroneAPIViewSet(ModelViewSet):
             return DroneWriteSerializer
         return DroneSerializer
 
+    # In api/v1/builds/views.py
+    # Update the get_queryset method to support filtering by user_id
+
     def get_queryset(self):
         queryset = Drone.objects.all().distinct()
 
@@ -27,6 +30,11 @@ class DroneAPIViewSet(ModelViewSet):
             return queryset
 
         user_id = self.request.user.id
+
+        # Handle filtering by specific user_id for list views
+        filter_user_id = self.request.query_params.get('user_id')
+        if filter_user_id:
+            return queryset.filter(user_id=filter_user_id)
 
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
             return queryset.filter(user_id=user_id)

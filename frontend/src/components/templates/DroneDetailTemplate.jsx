@@ -17,20 +17,12 @@ import {
   SpecificationsTab,
   DocumentsTab
 } from '../detail/tabs';
-import {ROUTES} from "../../routes";
+import { ROUTES } from "../../routes";
 
 /**
  * Template for displaying detailed drone information
  * with gallery, components, and tabbed content sections
- *
- * @param {Object} props Component properties
- * @param {string} props.componentType Type of entity (drones)
- * @param {Object} props.item The drone data to display
- * @param {boolean} props.isRefreshing Whether data is currently being refreshed
- * @param {Function} props.onRefresh Function to call to refresh data
- * @param {Function} props.onAddToList Callback when "Add to List" button is clicked
  */
-
 const DroneDetailTemplate = ({
   componentType,
   item,
@@ -45,10 +37,17 @@ const DroneDetailTemplate = ({
     return <LoadingSpinner />;
   }
 
-    const getManufacturerDisplay = () => {
-    // If drone has a user, show "Username's Drone"
+  const getManufacturerDisplay = () => {
+    // If drone has a user, show "Username's Drone" with a link to profile
     if (item.user) {
-      return `${item.user.username}'s Drone`;
+      return (
+        <Link
+          to={`/profile/${item.user.id}`}
+          className="text-white hover:text-white hover:underline"
+        >
+          {item.user.username}'s Drone
+        </Link>
+      );
     }
     // Otherwise show the actual manufacturer or default text
     return item.manufacturer || "Custom Drone";
@@ -122,7 +121,7 @@ const DroneDetailTemplate = ({
 
         <div className="mb-6 relative">
         <span
-            className={`inline-block text-xs font-semibold text-white ${themeClass.bg} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
+            className={`inline-block text-xs font-semibold ${themeClass.bg} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
           {getManufacturerDisplay()}
         </span>
           <h1 className="text-4xl font-bold text-primary">{item.model}</h1>
