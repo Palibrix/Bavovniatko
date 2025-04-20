@@ -1,24 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { listsApi } from '../../services/api';
 
 /**
- * Modal for creating a new list
+ * Modal for creating or editing a list
  *
  * @param {Object} props Component properties
  * @param {boolean} props.isOpen Whether the modal is open
  * @param {Function} props.onClose Callback when modal is closed
- * @param {Function} props.onSuccess Callback when list is created successfully
+ * @param {Function} props.onSuccess Callback when list is created/updated successfully
+ * @param {Object} props.list Optional list data for editing mode
+ * @param {Function} props.onDelete Optional callback for delete action in edit mode
  */
-const CreateListModal = ({ isOpen, onClose, onSuccess }) => {
+const CreateListModal = ({ isOpen, onClose, onSuccess, list = null, onDelete = null }) => {
+  // Determine if we're in edit mode
+  const isEditMode = !!list;
+
   const [formData, setFormData] = useState({
     name: '',
     description: ''
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Populate form data when list changes or modal opens
+  useEffect(() => {
+    if (isOpen && isEditMode) {
+      setFormData({
+        name: list.name || '',
+        description: list.description || ''
+      });
+    } else if (isOpen && !isEditMode) {
+      // Reset form in create mode
+      setFormData({
+        name: '',
+        description: ''
+      });
+    }
+  }, [isOpen, list, isEditMode]);
 
   if (!isOpen) return null;
 
@@ -57,20 +78,29 @@ const CreateListModal = ({ isOpen, onClose, onSuccess }) => {
     setIsSubmitting(true);
 
     try {
-      // Call API to create new list
-      const newList = await listsApi.createList(formData);
+      let result;
 
-      // Clear form
-      setFormData({
-        name: '',
-        description: ''
-      });
+      if (isEditMode) {
+        // Update existing list
+        result = await listsApi.updateList(list.id, formData);
+      } else {
+        // Create new list
+        result = await listsApi.createList(formData);
+      }
 
-      // Call success callback with the new list
-      if (onSuccess) onSuccess(newList);
+      // Call success callback with the result
+      if (onSuccess) onSuccess(result);
 
       // Close modal
       onClose();
+
+      // Only reset form for create mode - edit mode will be reset on next open
+      if (!isEditMode) {
+        setFormData({
+          name: '',
+          description: ''
+        });
+      }
     } catch (error) {
       // Handle API errors
       if (error.data && error.data.name) {
@@ -81,7 +111,7 @@ const CreateListModal = ({ isOpen, onClose, onSuccess }) => {
       } else {
         setErrors(prev => ({
           ...prev,
-          form: 'Failed to create list. Please try again.'
+          form: `Failed to ${isEditMode ? 'update' : 'create'} list. Please try again.`
         }));
       }
     } finally {
@@ -90,20 +120,25 @@ const CreateListModal = ({ isOpen, onClose, onSuccess }) => {
   };
 
   const handleClose = () => {
-    // Reset form state
-    setFormData({
-      name: '',
-      description: ''
-    });
+    // Reset form state and errors
     setErrors({});
     onClose();
+  };
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete();
+      onClose();
+    }
   };
 
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-md mx-4 overflow-hidden">
         <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-primary">Create New List</h2>
+          <h2 className="text-xl font-semibold text-primary">
+            {isEditMode ? 'Edit List' : 'Create New List'}
+          </h2>
           <button
             onClick={handleClose}
             className="text-gray-400 hover:text-gray-600"
@@ -155,31 +190,45 @@ const CreateListModal = ({ isOpen, onClose, onSuccess }) => {
             ></textarea>
           </div>
 
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50"
-              onClick={handleClose}
-              disabled={isSubmitting}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 flex items-center gap-2"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <span className="animate-pulse">Creating...</span>
-                </>
-              ) : (
-                <>
-                  <FontAwesomeIcon icon={faCheck} />
-                  Create List
-                </>
-              )}
-            </button>
+          <div className="flex items-center justify-between">
+            {/* Show delete button only in edit mode */}
+            {isEditMode && onDelete && (
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="px-4 py-2 text-red-600 border border-red-200 bg-red-50 rounded-md hover:bg-red-100 transition-colors flex items-center gap-2"
+              >
+                <FontAwesomeIcon icon={faTrash} />
+                Delete List
+              </button>
+            )}
+
+            <div className={`flex gap-3 ${isEditMode ? 'ml-auto' : ''}`}>
+              <button
+                type="button"
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                onClick={handleClose}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 flex items-center gap-2"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="animate-pulse">{isEditMode ? 'Saving...' : 'Creating...'}</span>
+                  </>
+                ) : (
+                  <>
+                    <FontAwesomeIcon icon={faCheck} />
+                    {isEditMode ? 'Save Changes' : 'Create List'}
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </form>
       </div>
@@ -190,7 +239,9 @@ const CreateListModal = ({ isOpen, onClose, onSuccess }) => {
 CreateListModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onSuccess: PropTypes.func
+  onSuccess: PropTypes.func,
+  list: PropTypes.object,
+  onDelete: PropTypes.func
 };
 
 export default CreateListModal;

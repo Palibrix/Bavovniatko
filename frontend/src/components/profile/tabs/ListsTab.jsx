@@ -15,7 +15,11 @@ const ListsTab = ({ profileData }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [toast, setToast] = useState({ visible: false, message: '', type: '' });
+
+  // Create and Edit modal states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingList, setEditingList] = useState(null);
 
   // Fetch real list data
   useEffect(() => {
@@ -70,12 +74,40 @@ const ListsTab = ({ profileData }) => {
     navigate(ROUTES.LISTS.DETAIL.replace(':id', listId));
   };
 
-  const handleEditList = (listId) => {
-    // This would open edit modal
+  const handleEditList = (list) => {
+    // Set the list to edit and open the edit modal
+    setEditingList(list);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditSuccess = (updatedList) => {
+    // Update the list in state
+    setLists(prev => prev.map(list =>
+      list.id === updatedList.id ? updatedList : list
+    ));
+
+    // Show success toast
     setToast({
       visible: true,
-      message: 'Edit list functionality will be implemented soon',
-      type: 'info'
+      message: 'List updated successfully',
+      type: 'success'
+    });
+  };
+
+  const handleDeleteList = () => {
+    // This will be handled inside the edit modal
+    // when the user clicks the delete button
+  };
+
+  const handleDeleteSuccess = (deletedListId) => {
+    // Remove the deleted list from state
+    setLists(prev => prev.filter(list => list.id !== deletedListId));
+
+    // Show success toast
+    setToast({
+      visible: true,
+      message: 'List deleted successfully',
+      type: 'success'
     });
   };
 
@@ -145,7 +177,7 @@ const ListsTab = ({ profileData }) => {
                     View
                   </button>
                   <button
-                    onClick={() => handleEditList(list.id)}
+                    onClick={() => handleEditList(list)}
                     className="flex-1 py-2 px-3 border border-primary text-primary rounded-md hover:bg-gray-50 transition-colors text-sm font-medium flex items-center justify-center gap-2"
                   >
                     <FontAwesomeIcon icon={faEdit} />
@@ -163,6 +195,35 @@ const ListsTab = ({ profileData }) => {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={handleCreateSuccess}
+      />
+
+      {/* Edit List Modal */}
+      <CreateListModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingList(null);
+        }}
+        onSuccess={handleEditSuccess}
+        list={editingList}
+        onDelete={async () => {
+          try {
+            // Call API to delete list
+            if (editingList) {
+              await listsApi.deleteList(editingList.id);
+              handleDeleteSuccess(editingList.id);
+            }
+          } catch (err) {
+            console.error('Error deleting list:', err);
+            setToast({
+              visible: true,
+              message: 'Failed to delete list',
+              type: 'error'
+            });
+          }
+          setIsEditModalOpen(false);
+          setEditingList(null);
+        }}
       />
 
       {toast.visible && (

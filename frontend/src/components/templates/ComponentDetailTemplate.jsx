@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,6 +7,8 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import ComponentGallery from '../detail/ComponentGallery';
 import KeySpecsPanel from '../detail/KeySpecsPanel';
 import TabContainer from '../detail/TabContainer';
+import SelectListsModal from '../lists/SelectListsModal';
+import Toast from '../common/Toast';
 import { getFullSpecsForComponentType } from '../../config/componentSpecs';
 import { getEntityThemeClass} from '../../utils/themeUtils';
 import {
@@ -34,6 +36,9 @@ const ComponentDetailTemplate = ({
   onRefresh,
   onAddToList
 }) => {
+  const [showListsModal, setShowListsModal] = useState(false);
+  const [toast, setToast] = useState({ visible: false, message: '', type: '' });
+
   if (!item) {
     return <LoadingSpinner />;
   }
@@ -46,9 +51,44 @@ const ComponentDetailTemplate = ({
 
   // Handle adding item to list
   const handleAddToList = () => {
-    if (onAddToList) {
-      onAddToList(item);
+    setShowListsModal(true);
+  };
+
+  // Handle list update success
+  const handleListsUpdateSuccess = (result) => {
+    setToast({
+      visible: true,
+      message: `Component ${result.added_to > 0 ? 'added to' : 'removed from'} ${result.added_to + result.removed_from} ${result.added_to + result.removed_from === 1 ? 'list' : 'lists'}`,
+      type: 'success'
+    });
+
+    // Call the original callback if provided
+    if (onAddToList) onAddToList(item);
+  };
+
+  // Get component type for API calls (convert plural to singular)
+  const getApiComponentType = () => {
+    // Convert plural to singular for API calls
+    if (componentType.endsWith('s')) {
+      // Handle special cases first
+      if (componentType === 'antennas') return 'antenna';
+      if (componentType === 'cameras') return 'camera';
+      if (componentType === 'frames') return 'frame';
+      if (componentType === 'propellers') return 'propeller';
+      if (componentType === 'receivers') return 'receiver';
+      if (componentType === 'transmitters') return 'transmitter';
+
+      // Default: remove trailing 's'
+      return componentType.slice(0, -1);
     }
+    return componentType;
+  };
+
+  // Get component display name
+  const getComponentName = () => {
+    return item.manufacturer
+      ? `${item.manufacturer} ${item.model}`
+      : item.model || 'Component';
   };
 
   return (
@@ -112,6 +152,25 @@ const ComponentDetailTemplate = ({
           />
         </div>
       </div>
+
+      {/* Lists selection modal */}
+      <SelectListsModal
+        isOpen={showListsModal}
+        onClose={() => setShowListsModal(false)}
+        componentType={getApiComponentType()}
+        componentId={item.id}
+        componentName={getComponentName()}
+        onSuccess={handleListsUpdateSuccess}
+      />
+
+      {/* Toast notifications */}
+      {toast.visible && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({...toast, visible: false})}
+        />
+      )}
     </div>
   );
 };

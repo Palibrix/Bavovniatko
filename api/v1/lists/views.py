@@ -4,11 +4,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.translation import gettext_lazy as _
+from django.db import transaction
 
 from api.v1.lists.serializers import (
     ListOverviewSerializer, ListDetailSerializer,
     AddComponentSerializer, RemoveComponentSerializer,
-    ComponentItemSerializer
+    ComponentItemSerializer, ComponentListsMembershipSerializer
 )
 from lists.models import List
 from lists.registry import ComponentRegistry
@@ -152,3 +153,65 @@ class ListViewSet(viewsets.ModelViewSet):
             context={'request': request}  # Pass request context for absolute URLs
         )
         return Response(serializer.data)
+
+    @action(detail=False, methods=['post'])
+    def set_component_lists(self, request):
+        """
+        Set which lists a component should be a member of.
+        This handles additions and removals in a single operation.
+        """
+        serializer = ComponentListsMembershipSerializer(data=request.data)
+
+        if serializer.is_valid():
+            component_type = serializer.validated_data['component_type']
+            component = serializer.validated_data['component']
+            list_ids = set(serializer.validated_data['list_ids'])
+
+            # Get user's lists
+            user_lists = List.objects.filter(owner=request.user)
+
+            # Validate that all list_ids belong to the user
+            user_list_ids = set(user_lists.values_list('id', flat=True))
+            if not list_ids.issubset(user_list_ids):
+                invalid_ids = list_ids - user_list_ids
+                return Response(
+                    {"detail": _(f"Lists not found or not owned by you: {invalid_ids}")},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Get item model for this component type
+            list_item_model = ComponentRegistry.get_model(component_type)
+            if not list_item_model:
+                return Response(
+                    {"detail": _(f"Invalid component type: {component_type}")},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            with transaction.atomic():
+                # Find lists where component currently exists
+                current_memberships = list_item_model.objects.filter(
+                    component=component,
+                    list__owner=request.user
+                )
+                current_list_ids = set(current_memberships.values_list('list_id', flat=True))
+
+                # Lists to add to (in list_ids but not in current_list_ids)
+                lists_to_add = list_ids - current_list_ids
+                for add_list_id in lists_to_add:
+                    list_item_model.objects.create(
+                        list_id=add_list_id,
+                        component=component
+                    )
+
+                # Lists to remove from (in current_list_ids but not in list_ids)
+                lists_to_remove = current_list_ids - list_ids
+                if lists_to_remove:
+                    current_memberships.filter(list_id__in=lists_to_remove).delete()
+
+            return Response({
+                "detail": _("Component lists updated successfully"),
+                "added_to": len(lists_to_add),
+                "removed_from": len(lists_to_remove)
+            })
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

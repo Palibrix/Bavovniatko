@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {Link} from 'react-router-dom';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
 import {formatSpecValue} from "../../utils/componentDetailUtils";
 import {getEntityThemeClass} from "../../utils/themeUtils";
 import {ROUTES} from '../../routes';
+import SelectListsModal from '../lists/SelectListsModal';
+import Toast from '../common/Toast';
 
 /**
  * Reusable component card that supports both list and grid views
@@ -33,6 +35,9 @@ const ComponentCard = ({
                            isInList = false,
                            onRemoveFromList
                        }) => {
+    const [showListsModal, setShowListsModal] = useState(false);
+    const [toast, setToast] = useState({ visible: false, message: '', type: '' });
+
     if (!item) return null;
 
     // Generate the detail URL based on the entity type and category
@@ -96,7 +101,7 @@ const ComponentCard = ({
     const handleAddToList = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (onAddToList) onAddToList(item);
+        setShowListsModal(true);
     };
 
     // Remove from list handler with stop propagation
@@ -106,163 +111,244 @@ const ComponentCard = ({
         if (onRemoveFromList) onRemoveFromList(item);
     };
 
+    // Handle successful list update
+    const handleListsUpdateSuccess = (result) => {
+        setToast({
+            visible: true,
+            message: `Component ${result.added_to > 0 ? 'added to' : 'removed from'} ${result.added_to + result.removed_from} ${result.added_to + result.removed_from === 1 ? 'list' : 'lists'}`,
+            type: 'success'
+        });
+
+        // Call the original callback if provided
+        if (onAddToList) onAddToList(item);
+    };
+
+    // Get component type for API calls (convert plural to singular)
+    const getApiComponentType = () => {
+        // Convert plural to singular for API calls
+        // This is a simple implementation - more robust handling would be needed for irregular plurals
+        if (entityType.endsWith('s')) {
+            // Handle special cases first
+            if (entityType === 'antennas') return 'antenna';
+            if (entityType === 'cameras') return 'camera';
+            if (entityType === 'frames') return 'frame';
+            if (entityType === 'propellers') return 'propeller';
+            if (entityType === 'receivers') return 'receiver';
+            if (entityType === 'transmitters') return 'transmitter';
+            if (entityType === 'drones') return 'drone';
+
+            // Default: remove trailing 's'
+            return entityType.slice(0, -1);
+        }
+        return entityType;
+    };
+
+    // Get component display name
+    const getComponentName = () => {
+        return item.manufacturer
+            ? `${item.manufacturer} ${item.model}`
+            : item.model || 'Component';
+    };
+
     // Render list view
     if (viewMode === 'list') {
         return (
-            <Link
-                to={detailUrl}
-                className={`bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-300 mb-4 flex flex-col border-t-4 border border-gray-200 ${themeClass.borderTop} hover:shadow-lg hover:-translate-y-1`}>
-                <div className="flex items-center p-6 border-b border-gray-100">
-                    <div className="flex-1">
-                        {item.manufacturer ? (
-                            <span
-                                className={`inline-block text-xs font-semibold text-white ${themeClass.bg} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
+            <>
+                <Link
+                    to={detailUrl}
+                    className={`bg-white rounded-2xl overflow-hidden shadow-md transition-all duration-300 mb-4 flex flex-col border-t-4 border border-gray-200 ${themeClass.borderTop} hover:shadow-lg hover:-translate-y-1`}>
+                    <div className="flex items-center p-6 border-b border-gray-100">
+                        <div className="flex-1">
+                            {item.manufacturer ? (
+                                <span
+                                    className={`inline-block text-xs font-semibold text-white ${themeClass.bg} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
                   {item.manufacturer}
                 </span>
-                        ) : isDrone ? (
-                            <span
-                                className={`inline-block text-xs font-semibold text-white ${themeClass.bg} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
+                            ) : isDrone ? (
+                                <span
+                                    className={`inline-block text-xs font-semibold text-white ${themeClass.bg} px-3 py-1 rounded-full uppercase tracking-wider mb-2`}>
                   Custom Drone
                 </span>
-                        ) : null}
-                        <h3 className="text-xl font-bold text-primary leading-snug">
-                            {item.model || item.display_name}
-                        </h3>
-                    </div>
-                    {isInList ? (
-                        <button
-                            onClick={handleRemoveFromList}
-                            className="px-5 py-2 rounded-lg border-2 border-red-500 text-red-500 font-semibold text-sm flex items-center gap-2 transition-all hover:bg-red-500 hover:text-white"
-                        >
-                            <FontAwesomeIcon icon={faTimes}/>
-                            Remove
-                        </button>
-                    ) : (
-                        <button
-                            onClick={handleAddToList}
-                            className={themeClass.combined.actionButton + " px-5 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 transition-all"}
-                        >
-                            <FontAwesomeIcon icon={faPlus}/>
-                            Add to List
-                        </button>
-                    )}
-                </div>
-
-                <div className="flex relative">
-                    <div className="w-56 min-w-56 p-6 flex items-center justify-center bg-gray-50 relative">
-                        <div className={`absolute top-0 bottom-0 right-0 w-0.5 ${themeClass.bg}`}></div>
-                        <img
-                            src={getImageUrl()}
-                            alt={`${item.manufacturer || ''} ${item.model}`}
-                            className="max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
-                        />
-                    </div>
-
-                    <div className="flex-1 p-6">
-                        <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
-                            {isDrone ? 'SPECIFICATIONS' : 'SPECIFICATIONS'}
+                            ) : null}
+                            <h3 className="text-xl font-bold text-primary leading-snug">
+                                {item.model || item.display_name}
+                            </h3>
                         </div>
-                        <div className="grid grid-cols-3 gap-5">
-                            {specsConfig.slice(0, 6).map((spec, index) => {
-                                const value = spec.path.split('.').reduce((obj, key) =>
-                                    obj && obj[key] !== undefined ? obj[key] : null, item);
+                        {isInList ? (
+                            <button
+                                onClick={handleRemoveFromList}
+                                className="px-5 py-2 rounded-lg border-2 border-red-500 text-red-500 font-semibold text-sm flex items-center gap-2 transition-all hover:bg-red-500 hover:text-white"
+                            >
+                                <FontAwesomeIcon icon={faTimes}/>
+                                Remove
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleAddToList}
+                                className={themeClass.combined.actionButton + " px-5 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 transition-all"}
+                            >
+                                <FontAwesomeIcon icon={faPlus}/>
+                                Add to List
+                            </button>
+                        )}
+                    </div>
 
-                                return renderSpecValue(spec, value) !== "N/A" ? (
-                                    <div
-                                        key={index}
-                                        className="bg-gray-50 p-2 rounded-lg transition-all border hover:bg-gray-100 hover:-translate-y-0.5"
-                                    >
-                                        <div className="flex items-center text-xs text-gray-500 mb-1 gap-1">
-                                            {spec.icon && (
-                                                <FontAwesomeIcon icon={spec.icon} className={themeClass.text}/>
-                                            )}
-                                            {spec.label}
+                    <div className="flex relative">
+                        <div className="w-56 min-w-56 p-6 flex items-center justify-center bg-gray-50 relative">
+                            <div className={`absolute top-0 bottom-0 right-0 w-0.5 ${themeClass.bg}`}></div>
+                            <img
+                                src={getImageUrl()}
+                                alt={`${item.manufacturer || ''} ${item.model}`}
+                                className="max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
+                            />
+                        </div>
+
+                        <div className="flex-1 p-6">
+                            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
+                                {isDrone ? 'SPECIFICATIONS' : 'SPECIFICATIONS'}
+                            </div>
+                            <div className="grid grid-cols-3 gap-5">
+                                {specsConfig.slice(0, 6).map((spec, index) => {
+                                    const value = spec.path.split('.').reduce((obj, key) =>
+                                        obj && obj[key] !== undefined ? obj[key] : null, item);
+
+                                    return renderSpecValue(spec, value) !== "N/A" ? (
+                                        <div
+                                            key={index}
+                                            className="bg-gray-50 p-2 rounded-lg transition-all border hover:bg-gray-100 hover:-translate-y-0.5"
+                                        >
+                                            <div className="flex items-center text-xs text-gray-500 mb-1 gap-1">
+                                                {spec.icon && (
+                                                    <FontAwesomeIcon icon={spec.icon} className={themeClass.text}/>
+                                                )}
+                                                {spec.label}
+                                            </div>
+                                            <div className="font-semibold text-primary">
+                                                {renderSpecValue(spec, value)}
+                                            </div>
                                         </div>
-                                        <div className="font-semibold text-primary">
-                                            {renderSpecValue(spec, value)}
-                                        </div>
-                                    </div>
-                                ) : null;
-                            })}
+                                    ) : null;
+                                })}
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="bg-gray-50 p-4 border-t border-gray-100 relative">
-                    <div className={`absolute top-0 left-0 right-0 h-0.5 ${themeClass.bg}`}></div>
-                    <div className="flex flex-wrap gap-2">
-                        {item.tags && item.tags.map((tag, index) => (
-                            <span key={index}
-                                  className="bg-white text-gray-600 text-xs py-1 px-3 rounded-full border border-gray-200 hover:bg-gray-100 transition-colors">
+                    <div className="bg-gray-50 p-4 border-t border-gray-100 relative">
+                        <div className={`absolute top-0 left-0 right-0 h-0.5 ${themeClass.bg}`}></div>
+                        <div className="flex flex-wrap gap-2">
+                            {item.tags && item.tags.map((tag, index) => (
+                                <span key={index}
+                                      className="bg-white text-gray-600 text-xs py-1 px-3 rounded-full border border-gray-200 hover:bg-gray-100 transition-colors">
                 {tag}
               </span>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </Link>
+                </Link>
+
+                {/* Lists selection modal */}
+                <SelectListsModal
+                    isOpen={showListsModal}
+                    onClose={() => setShowListsModal(false)}
+                    componentType={getApiComponentType()}
+                    componentId={item.id}
+                    componentName={getComponentName()}
+                    onSuccess={handleListsUpdateSuccess}
+                />
+
+                {/* Toast notifications */}
+                {toast.visible && (
+                    <Toast
+                        message={toast.message}
+                        type={toast.type}
+                        onClose={() => setToast({...toast, visible: false})}
+                    />
+                )}
+            </>
         );
     }
 
     // Render grid view
     return (
-        <Link
-            to={detailUrl}
-            className={`bg-white rounded-lg overflow-hidden shadow-sm transition-all duration-300 flex flex-col border-t-4 ${themeClass.borderTop}`}>
-            <div className="p-6 h-52 min-h-52 flex items-center justify-center bg-gray-50">
-                <img
-                    src={getImageUrl()}
-                    alt={`${item.manufacturer || ''} ${item.model}`}
-                    className="max-w-[90%] max-h-[90%] object-contain"
+        <>
+            <Link
+                to={detailUrl}
+                className={`bg-white rounded-lg overflow-hidden shadow-sm transition-all duration-300 flex flex-col border-t-4 ${themeClass.borderTop}`}>
+                <div className="p-6 h-52 min-h-52 flex items-center justify-center bg-gray-50">
+                    <img
+                        src={getImageUrl()}
+                        alt={`${item.manufacturer || ''} ${item.model}`}
+                        className="max-w-[90%] max-h-[90%] object-contain"
+                    />
+                </div>
+
+                <div className="p-6 flex flex-col flex-grow">
+                    <h3 className="text-lg font-semibold text-primary mb-3">
+                        {item.manufacturer ? `${item.manufacturer} ${item.model}` : item.model}
+                    </h3>
+
+                    <div className="grid grid-cols-2 gap-3 mb-6">
+                        {specsConfig.slice(0, 4).map((spec, index) => {
+                            const value = spec.path.split('.').reduce((obj, key) =>
+                                obj && obj[key] !== undefined ? obj[key] : null, item);
+
+                            return renderSpecValue(spec, value) !== "N/A" ? (
+                                <div key={index} className="flex flex-col">
+                                    <span className="text-xs text-gray-500">{spec.label}</span>
+                                    <span className="font-medium">{renderSpecValue(spec, value)}</span>
+                                </div>
+                            ) : null;
+                        })}
+                    </div>
+
+                    <div className="flex justify-between mt-auto">
+                        <Link
+                            to={detailUrl}
+                            className={`${themeClass.text} text-sm font-medium hover:underline`}
+                        >
+                            View Details
+                        </Link>
+
+                        {isInList ? (
+                            <button
+                                onClick={handleRemoveFromList}
+                                className="text-red-500 text-sm font-medium hover:underline flex items-center gap-1"
+                            >
+                                <FontAwesomeIcon icon={faTimes}/>
+                                Remove
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleAddToList}
+                                className={`${themeClass.text} text-sm font-medium hover:underline flex items-center gap-1`}
+                            >
+                                <FontAwesomeIcon icon={faPlus}/>
+                                Add to List
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </Link>
+
+            {/* Lists selection modal */}
+            <SelectListsModal
+                isOpen={showListsModal}
+                onClose={() => setShowListsModal(false)}
+                componentType={getApiComponentType()}
+                componentId={item.id}
+                componentName={getComponentName()}
+                onSuccess={handleListsUpdateSuccess}
+            />
+
+            {/* Toast notifications */}
+            {toast.visible && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onClose={() => setToast({...toast, visible: false})}
                 />
-            </div>
-
-            <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-lg font-semibold text-primary mb-3">
-                    {item.manufacturer ? `${item.manufacturer} ${item.model}` : item.model}
-                </h3>
-
-                <div className="grid grid-cols-2 gap-3 mb-6">
-                    {specsConfig.slice(0, 4).map((spec, index) => {
-                        const value = spec.path.split('.').reduce((obj, key) =>
-                            obj && obj[key] !== undefined ? obj[key] : null, item);
-
-                        return renderSpecValue(spec, value) !== "N/A" ? (
-                            <div key={index} className="flex flex-col">
-                                <span className="text-xs text-gray-500">{spec.label}</span>
-                                <span className="font-medium">{renderSpecValue(spec, value)}</span>
-                            </div>
-                        ) : null;
-                    })}
-                </div>
-
-                <div className="flex justify-between mt-auto">
-                    <Link
-                        to={detailUrl}
-                        className={`${themeClass.text} text-sm font-medium hover:underline`}
-                    >
-                        View Details
-                    </Link>
-
-                    {isInList ? (
-                        <button
-                            onClick={handleRemoveFromList}
-                            className="text-red-500 text-sm font-medium hover:underline flex items-center gap-1"
-                        >
-                            <FontAwesomeIcon icon={faTimes}/>
-                            Remove
-                        </button>
-                    ) : (
-                        <button
-                            onClick={handleAddToList}
-                            className={`${themeClass.text} text-sm font-medium hover:underline flex items-center gap-1`}
-                        >
-                            <FontAwesomeIcon icon={faPlus}/>
-                            Add to List
-                        </button>
-                    )}
-                </div>
-            </div>
-        </Link>
+            )}
+        </>
     );
 };
 

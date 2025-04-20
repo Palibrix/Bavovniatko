@@ -49,7 +49,7 @@ const ListItemGrid = ({
         </p>
         <div className="flex justify-center gap-4">
           <Link
-            to={ROUTES.COMPONENTS.ANTENNAS.LIST}
+            to={ROUTES.HOME}
             className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90 transition-colors"
           >
             <FontAwesomeIcon icon={faSearch} className="mr-2" />

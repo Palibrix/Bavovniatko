@@ -1,190 +1,292 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faSync } from '@fortawesome/free-solid-svg-icons';
 import { listsApi } from '../../services/api';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
-import ErrorMessage from '../../components/common/ErrorMessage';
 import ListDetailHeader from '../../components/lists/ListDetailHeader';
 import ComponentTypeFilter from '../../components/lists/ComponentTypeFilter';
 import ListItemGrid from '../../components/lists/ListItemGrid';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
+import ErrorMessage from '../../components/common/ErrorMessage';
+import Toast from '../../components/common/Toast';
+import ConfirmationModal from '../../components/common/ConfirmationModal';
+import CreateListModal from '../../components/lists/CreateListModal';
 import { ROUTES } from '../../routes';
 
-/**
- * Detail page for a specific list
- */
 const ListDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // List state
   const [list, setList] = useState(null);
+  const [listItems, setListItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  // UI state
   const [activeType, setActiveType] = useState('all');
-  const [viewMode, setViewMode] = useState('list');
-  const [sortBy, setSortBy] = useState('newest');
-  const [filteredItems, setFilteredItems] = useState([]);
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'grid'
+  const [sortBy, setSortBy] = useState('name-asc');
+  const [toast, setToast] = useState({ visible: false, message: '', type: '' });
+
+  // Edit and delete state
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   // Fetch list data
   useEffect(() => {
     fetchListData();
   }, [id]);
 
-  // Filter items when activeType changes
+  // Fetch list data whenever active type changes
   useEffect(() => {
-    if (!list) return;
-
-    filterItemsByType(activeType);
+    if (list) {
+      if (activeType === 'all') {
+        // All items are already in the list data
+        setListItems(list.items || []);
+      } else {
+        // Fetch specific component type
+        fetchItemsByType(activeType);
+      }
+    }
   }, [activeType, list]);
 
   const fetchListData = async () => {
     try {
       setLoading(true);
+      setError(null);
+
       const data = await listsApi.getListById(id);
       setList(data);
-      filterItemsByType(activeType);
+      setListItems(data.items || []);
+
+      setLoading(false);
     } catch (err) {
       console.error('Error fetching list:', err);
-      setError(err.message || 'Failed to load list');
-    } finally {
+      setError(err.message || 'Failed to load list details');
       setLoading(false);
     }
   };
 
-  const filterItemsByType = (type) => {
-    if (!list || !list.items) {
-      setFilteredItems([]);
-      return;
-    }
-
-    if (type === 'all') {
-      setFilteredItems(list.items);
-    } else {
-      setFilteredItems(list.items.filter(item => item.component_type === type));
-    }
-  };
-
-  const handleTypeChange = (type) => {
-    setActiveType(type);
-  };
-
-  const handleViewModeChange = (mode) => {
-    setViewMode(mode);
-  };
-
-  const handleSortChange = (sort) => {
-    setSortBy(sort);
-
-    // Sort filtered items
-    let sorted = [...filteredItems];
-
-    switch (sort) {
-      case 'name-asc':
-        sorted.sort((a, b) => a.display_name.localeCompare(b.display_name));
-        break;
-      case 'name-desc':
-        sorted.sort((a, b) => b.display_name.localeCompare(a.display_name));
-        break;
-      case 'newest':
-        sorted.sort((a, b) => new Date(b.added_at) - new Date(a.added_at));
-        break;
-      case 'oldest':
-        sorted.sort((a, b) => new Date(a.added_at) - new Date(b.added_at));
-        break;
-      default:
-        break;
-    }
-
-    setFilteredItems(sorted);
-  };
-
-  const handleRemoveItem = async (item) => {
+  const fetchItemsByType = async (type) => {
     try {
+      const items = await listsApi.getListItemsByType(id, type);
+      setListItems(items);
+    } catch (err) {
+      console.error(`Error fetching ${type} items:`, err);
+      // Show toast error but don't set main error state
+      setToast({
+        visible: true,
+        message: `Failed to load ${type} items`,
+        type: 'error'
+      });
+    }
+  };
+
+  const handleRefreshList = async () => {
+    setRefreshing(true);
+
+    try {
+      await fetchListData();
+      setToast({
+        visible: true,
+        message: 'List refreshed successfully',
+        type: 'success'
+      });
+    } catch (err) {
+      // Error is already set in fetchListData
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  // Edit list handlers
+  const handleEditList = () => {
+    setShowEditModal(true);
+  };
+
+  const handleEditSuccess = (updatedList) => {
+    // Update list in state
+    setList(prev => ({
+      ...prev,
+      ...updatedList
+    }));
+
+    setToast({
+      visible: true,
+      message: 'List updated successfully',
+      type: 'success'
+    });
+  };
+
+  // Delete list handlers
+  const handleDeleteList = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDeleteList = async () => {
+    try {
+      setDeleting(true);
+
+      // Call API to delete list
+      await listsApi.deleteList(id);
+
+      // Show success toast
+      setToast({
+        visible: true,
+        message: 'List deleted successfully',
+        type: 'success'
+      });
+
+      // Navigate back to lists
+      navigate(ROUTES.PROFILE.CURRENT);
+    } catch (err) {
+      console.error('Error deleting list:', err);
+      setToast({
+        visible: true,
+        message: 'Failed to delete list',
+        type: 'error'
+      });
+      setDeleting(false);
+    }
+  };
+
+  const handleRemoveComponent = async (item) => {
+    try {
+      // Call API to remove component
       await listsApi.removeComponentFromList(
         id,
         item.component_type,
         item.component_id
       );
 
-      // Update the local state by removing the item
-      setFilteredItems(prev => prev.filter(i =>
-        !(i.component_type === item.component_type && i.component_id === item.component_id)
-      ));
-
-      // If list state is available, update it too
-      if (list && list.items) {
-        setList({
-          ...list,
-          items: list.items.filter(i =>
-            !(i.component_type === item.component_type && i.component_id === item.component_id)
-          ),
-          parts_count: list.parts_count > 0 ? list.parts_count - 1 : 0
-        });
+      // Update total count in list
+      if (list && list.parts_count) {
+        setList(prev => ({
+          ...prev,
+          parts_count: prev.parts_count - 1
+        }));
       }
 
-      // Show success message (optional)
-      console.log('Item removed successfully');
+      // Refetch the list items based on current filter
+      if (activeType === 'all') {
+        // Refetch all list data to get fresh items
+        await fetchListData();
+      } else {
+        // Only refetch the filtered items
+        await fetchItemsByType(activeType);
+      }
+
+      setToast({
+        visible: true,
+        message: 'Component removed from list',
+        type: 'success'
+      });
     } catch (err) {
-      console.error('Error removing item:', err);
-      // Could add toast notification here
+      console.error('Error removing component:', err);
+      setToast({
+        visible: true,
+        message: 'Failed to remove component',
+        type: 'error'
+      });
     }
   };
 
-  if (loading) return <LoadingSpinner />;
-  if (error) return <ErrorMessage message={error} />;
-  if (!list) return <ErrorMessage message="List not found" />;
+  // Get component type counts for filtering
+  const getComponentCounts = () => {
+    if (!list || !list.parts_count_by_type) {
+      return {};
+    }
+
+    return list.parts_count_by_type;
+  };
+
+  if (loading && !list) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return <ErrorMessage message={error} onRetry={fetchListData} />;
+  }
+
+  if (!list) {
+    return <ErrorMessage message="List not found" />;
+  }
 
   return (
-    <div className="w-[90%] max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Back button */}
-      <div className="mb-6 flex justify-between items-center">
-        <div>
-          <a
-            href={ROUTES.PROFILE.CURRENT}
-            className="inline-flex items-center text-primary hover:text-gray-600"
-          >
-            <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
-            Back to Lists
-          </a>
-        </div>
+      <Link
+        to={ROUTES.PROFILE.CURRENT}
+        className="inline-flex items-center text-primary hover:text-gray-600 mb-6"
+      >
+        <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+        Back to Profile
+      </Link>
 
-        <button
-          className="px-4 py-2 border border-primary text-primary rounded-md hover:bg-gray-50 transition-colors flex items-center gap-2"
-          onClick={() => {/* Edit list functionality */}}
-        >
-          <FontAwesomeIcon icon={faEdit} />
-          Edit List
-        </button>
-      </div>
-
-      {/* List header */}
+      {/* List header with actions */}
       <ListDetailHeader
         list={list}
-        onRefresh={fetchListData}
+        onRefresh={handleRefreshList}
+        onEdit={handleEditList}
       />
 
-      {/* Filter and controls */}
+      {/* Component filtering */}
       <ComponentTypeFilter
         activeType={activeType}
-        onTypeChange={handleTypeChange}
+        onTypeChange={setActiveType}
         viewMode={viewMode}
-        onViewModeChange={handleViewModeChange}
+        onViewModeChange={setViewMode}
         sortBy={sortBy}
-        onSortChange={handleSortChange}
-        totalCount={filteredItems.length}
-        typeCounts={list.parts_count_by_type || {}}
+        onSortChange={setSortBy}
+        totalCount={list.parts_count || 0}
+        typeCounts={getComponentCounts()}
       />
 
-      {/* Component grid */}
+      {/* Component list */}
       <ListItemGrid
-        items={filteredItems}
+        items={listItems}
         viewMode={viewMode}
-        onRemoveItem={handleRemoveItem}
+        onRemoveItem={handleRemoveComponent}
         emptyState={{
-          title: "No components in this list yet",
-          message: "Browse components and add them to your list to see them here."
+          title: activeType === 'all'
+            ? "No components in this list"
+            : `No ${activeType} components in this list`,
+          message: "Add components to your list by browsing components and clicking 'Add to List'"
         }}
       />
+
+      {/* Edit list modal */}
+      <CreateListModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        onSuccess={handleEditSuccess}
+        list={list}
+        onDelete={handleDeleteList}
+      />
+
+      {/* Delete confirmation modal */}
+      <ConfirmationModal
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={confirmDeleteList}
+        title="Delete List"
+        message={`Are you sure you want to delete the list "${list.name}"? This action cannot be undone.`}
+        confirmText={deleting ? "Deleting..." : "Delete"}
+        cancelText="Cancel"
+        type="danger"
+      />
+
+      {/* Toast notifications */}
+      {toast.visible && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({...toast, visible: false})}
+        />
+      )}
     </div>
   );
 };

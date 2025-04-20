@@ -106,6 +106,7 @@ class ComponentItemSerializer(serializers.Serializer):
 
         return None
 
+
 class ListDetailSerializer(ListOverviewSerializer):
     """
     Detailed serializer for lists, including all items.
@@ -263,5 +264,67 @@ class RemoveComponentSerializer(serializers.Serializer):
 
             # Replace with validated items
             data['items'] = validated_items
+
+        return data
+
+
+class ComponentListsMembershipSerializer(serializers.Serializer):
+    """
+    Serializer for setting a component's membership across multiple lists.
+    Defines which lists a component should be in after the operation.
+    """
+    component_type = serializers.ChoiceField(choices=[
+        ('antenna', _('Antenna')),
+        ('camera', _('Camera')),
+        ('frame', _('Frame')),
+        ('motor', _('Motor')),
+        ('propeller', _('Propeller')),
+        ('receiver', _('Receiver')),
+        ('stack', _('Stack')),
+        ('flight_controller', _('Flight Controller')),
+        ('speed_controller', _('Speed Controller')),
+        ('transmitter', _('Transmitter')),
+    ])
+    component_id = serializers.IntegerField(min_value=1)
+    list_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        required=True
+    )
+
+    def validate(self, data):
+        """Validate the component exists"""
+        component_type = data['component_type']
+        component_id = data['component_id']
+
+        # Map component types to models
+        model_map = {
+            'antenna': Antenna,
+            'camera': Camera,
+            'frame': Frame,
+            'motor': Motor,
+            'propeller': Propeller,
+            'receiver': Receiver,
+            'stack': Stack,
+            'flight_controller': FlightController,
+            'speed_controller': SpeedController,
+            'transmitter': Transmitter,
+        }
+
+        model_class = model_map.get(component_type)
+        if not model_class:
+            raise serializers.ValidationError(
+                _("Invalid component type: {0}").format(component_type)
+            )
+
+        try:
+            component = model_class.objects.get(pk=component_id)
+            # Store the actual component in validated data
+            data['component'] = component
+        except model_class.DoesNotExist:
+            raise serializers.ValidationError(
+                _("{0} with ID {1} does not exist").format(
+                    component_type.replace('_', ' ').title(), component_id
+                )
+            )
 
         return data
