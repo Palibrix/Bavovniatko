@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
-import { authApi } from '../services/api';
+import { authApi, usersApi } from '../services/api';
 
 // Create the context
 const AuthContext = createContext();
@@ -12,6 +12,22 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Helper function to fetch user profile data
+  const fetchUserProfile = async () => {
+    try {
+      const userData = await usersApi.getCurrentUserProfile();
+      // Set user with id and username from profile data
+      setUser({
+        id: userData.id,
+        username: userData.username
+      });
+      return userData;
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      throw error;
+    }
+  };
+
   // Initialize: check if user is already logged in
   useEffect(() => {
     const initAuth = async () => {
@@ -21,14 +37,14 @@ export const AuthProvider = ({ children }) => {
             // Verify token validity
             await authApi.verifyToken();
 
-            // Here we would normally fetch user profile data
-            // For now, we'll just set a basic user object based on JWT
-            setUser({ username: localStorage.getItem('username') || 'User' });
+            // Fetch user profile to get ID and other data
+            await fetchUserProfile();
           } catch (error) {
             // Token invalid - try to refresh
             try {
               await authApi.refreshToken();
-              setUser({ username: localStorage.getItem('username') || 'User' });
+              // After refresh, fetch user data
+              await fetchUserProfile();
             } catch (refreshError) {
               // Refresh failed - user needs to login again
               authApi.logout();
@@ -53,9 +69,12 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const response = await authApi.login(credentials);
-      // Save username for display
+      // Save username for display (as fallback)
       localStorage.setItem('username', credentials.username);
-      setUser({ username: credentials.username });
+
+      // Fetch user profile to get ID
+      await fetchUserProfile();
+
       return response;
     } catch (e) {
       setError(e.message || 'Login failed');

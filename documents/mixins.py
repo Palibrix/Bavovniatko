@@ -9,7 +9,7 @@ def upload_to_filestorage(instance, filename):
     _object = instance.object or instance.suggestion
     _object_type = _object.__class__._meta.app_label
     if _object.pk:
-        filepath = f"documents/{_object_type}/{_object.__class__._meta.verbose_name_plural}/{_object.id}/{filename}"
+        filepath = f"documents/{_object_type}/{_object.__class__._meta.object_name}/{_object.id}/{filename}"
     else:
         filepath = f"documents/{_object_type}/Unknown/{filename}"
     return filepath
