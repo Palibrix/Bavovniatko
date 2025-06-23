@@ -84,7 +84,7 @@ class BaseAntennaTypeMixin(BaseModelMixin):
         LEFT_CIRCULAR = 'left_circular', 'Left-hand Circular, LHCP'
         RIGHT_CIRCULAR = 'right_circular', 'Right-hand Circular, RHCP'
 
-    type = models.CharField(max_length=50, unique=True,
+    type = models.CharField(max_length=50,
                             help_text=_("Type of the antenna, e.g. Monopole, Dipole etc."))
     direction = models.CharField(max_length=50, choices=DirectionalityChoice.choices,
                                  default=DirectionalityChoice.DIRECTIONAL,

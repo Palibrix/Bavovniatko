@@ -84,7 +84,6 @@ class BaseCameraDetailMixin(BaseModelMixin):
     def get_dimensions(self):
         return f'{self.height}x{self.width}'
 
-
     class Meta:
         abstract = True
 

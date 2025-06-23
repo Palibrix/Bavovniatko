@@ -211,7 +211,7 @@ class TestFrameSuggestionAPIView(BaseAPITest):
 class TestExistingFrameMotorDetailSuggestionAPIView(BaseAPITest):
     def setUp(self):
         self.user_1 = self.create_and_login(username="test1", email="test1@email.com")
-        self.frame = mixer.blend(Frame)
+        self.frame = mixer.blend(Frame, prop_size=4)
 
         self.motor_detail = mixer.blend(FrameMotorDetail, frame=self.frame)
 

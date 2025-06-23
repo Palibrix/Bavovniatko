@@ -1,7 +1,7 @@
 from django_filters import rest_framework as filters
 
 from api.mixins import MetadataFilterSet
-from components.models import Antenna, AntennaConnector
+from components.models import Antenna
 
 
 class AntennaFilter(MetadataFilterSet):

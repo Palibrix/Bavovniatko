@@ -1,9 +1,9 @@
 # favorites/tests/test_models.py
-from django.test import TestCase
-from django.contrib.auth import get_user_model
-from django.utils import timezone
 from datetime import timedelta
 
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.utils import timezone
 from mixer.backend.django import mixer
 
 from components.models import Antenna, Camera
@@ -35,14 +35,14 @@ class ListModelTests(TestCase):
     def test_mixed_components_list(self):
         """Test creating a list with different types of components"""
         mixer.blend(AntennaListItem,
-            list=self.list,
-            component=self.antenna1,
-            added_at=timezone.now() - timedelta(minutes=5)
-        )
+                    list=self.list,
+                    component=self.antenna1,
+                    added_at=timezone.now() - timedelta(minutes=5)
+                    )
         mixer.blend(CameraListItem,
-            list=self.list,
-            component=self.camera1
-        )
+                    list=self.list,
+                    component=self.camera1
+                    )
 
         # Verify both items are in the list
         self.assertEqual(self.list.count_by_type()['antenna'], 1)
@@ -52,14 +52,14 @@ class ListModelTests(TestCase):
     def test_items_ordering(self):
         """Test that items are returned in correct order by added_at"""
         antenna_item = mixer.blend(AntennaListItem,
-            list=self.list,
-            component=self.antenna1,
-            added_at=timezone.now() - timedelta(minutes=5)
-        )
+                                   list=self.list,
+                                   component=self.antenna1,
+                                   added_at=timezone.now() - timedelta(minutes=5)
+                                   )
         camera_item = mixer.blend(CameraListItem,
-            list=self.list,
-            component=self.camera1
-        )
+                                  list=self.list,
+                                  component=self.camera1
+                                  )
 
         items = self.list.get_all_items()
 
@@ -69,13 +69,13 @@ class ListModelTests(TestCase):
     def test_delete_specific_item(self):
         """Test removing a single item from a list"""
         antenna_item = mixer.blend(AntennaListItem,
-            list=self.list,
-            component=self.antenna1,
-        )
+                                   list=self.list,
+                                   component=self.antenna1,
+                                   )
         camera_item = mixer.blend(CameraListItem,
-            list=self.list,
-            component=self.camera1
-        )
+                                  list=self.list,
+                                  component=self.camera1
+                                  )
 
         antenna_item.delete()
 
@@ -105,22 +105,22 @@ class ListModelTests(TestCase):
     def test_bulk_remove_items(self):
         """Test removing multiple items at once from a list"""
         # Add several items to the list
-        antenna_item1 = mixer.blend(AntennaListItem,
-                                    list=self.list,
-                                    component=self.antenna1
-                                    )
-        antenna_item2 = mixer.blend(AntennaListItem,
-                                    list=self.list,
-                                    component=self.antenna2
-                                    )
-        camera_item1 = mixer.blend(CameraListItem,
-                                   list=self.list,
-                                   component=self.camera1
-                                   )
-        camera_item2 = mixer.blend(CameraListItem,
-                                   list=self.list,
-                                   component=self.camera2
-                                   )
+        mixer.blend(AntennaListItem,
+                    list=self.list,
+                    component=self.antenna1
+                    )
+        mixer.blend(AntennaListItem,
+                    list=self.list,
+                    component=self.antenna2
+                    )
+        mixer.blend(CameraListItem,
+                    list=self.list,
+                    component=self.camera1
+                    )
+        mixer.blend(CameraListItem,
+                    list=self.list,
+                    component=self.camera2
+                    )
 
         # Initial count verification
         self.assertEqual(self.list.count_all, 4)
@@ -146,10 +146,10 @@ class ListModelTests(TestCase):
     def test_bulk_remove_nonexistent_items(self):
         """Test removing items that don't exist or invalid types"""
         # Add one item
-        antenna_item = mixer.blend(AntennaListItem,
-                                   list=self.list,
-                                   component=self.antenna1
-                                   )
+        mixer.blend(AntennaListItem,
+                    list=self.list,
+                    component=self.antenna1
+                    )
 
         # Try to remove items that don't exist or have invalid types
         items_to_remove = [

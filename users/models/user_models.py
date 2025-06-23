@@ -16,10 +16,6 @@ class User(AbstractBaseUser, PermissionsMixin):
                                         'Designates whether this user should be treated as active. '
                                         'Unselect this instead of deleting accounts'),
                                     verbose_name=_('Active'))
-    is_superuser =  models.BooleanField(default=False,
-                                         help_text=_('Designates that this user has all permissions '
-                                                     'without explicitly assigning them.'),
-                                         verbose_name=_('Superuser status'))
 
     date_joined = models.DateTimeField(auto_now_add=True, verbose_name=_("Date joined"))
     last_login = models.DateTimeField(blank=True, null=True, verbose_name=_('Last login'))

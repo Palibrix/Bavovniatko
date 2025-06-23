@@ -253,7 +253,22 @@ const DetailsTab = ({item, componentType, inPanel = false}) => {
                             </>
                         )}
 
-                        {/* Add more component types as needed */}
+                        {componentType === 'cameras' && (
+                            <>
+                                <tr>
+                                    <th className="text-left py-3 text-gray-500 w-1/3">Height</th>
+                                    <td className="py-3 font-medium">
+                                        {details[selectedVariantIndex]?.height ? `${details[selectedVariantIndex].height}cm` : 'N/A'}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th className="text-left py-3 text-gray-500 w-1/3">Widht</th>
+                                    <td className="py-3 font-medium">
+                                        {details[selectedVariantIndex]?.width ? `${details[selectedVariantIndex].width}cm` : 'N/A'}
+                                    </td>
+                                </tr>
+                            </>
+                        )}
                         </tbody>
                     </table>
                 </div>
